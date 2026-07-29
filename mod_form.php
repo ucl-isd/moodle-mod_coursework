@@ -1339,6 +1339,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function add_automatic_agreement_enabled() {
+        global $PAGE;
         $options = [
             'none' => get_string('none'),
             'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
@@ -1360,10 +1361,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->hideif('automaticagreementstrategy', 'numberofmarkers', 'eq', 1);
         $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'average_grade');
         $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
-        $this->form()->hideif('automaticagreementrange', 'advancedgradingmethod_submissions', 'neq', '');
-
-        // If guide or rubric grading in use, none of the existing auto agreement options will work correctly, so hide for now.
-        $this->form()->hideif('automaticagreementstrategy', 'advancedgradingmethod_submissions', 'neq', "");
 
         $this->form()->addElement(
             'select',
@@ -1391,6 +1388,8 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->setDefault('roundingrule', 'mid');
         $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'percentage_distance');
         $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'none');
+
+        $PAGE->requires->js_call_amd('mod_coursework/mod_form', 'init');
     }
 
     private function add_enable_plagiarism_flag_field() {
