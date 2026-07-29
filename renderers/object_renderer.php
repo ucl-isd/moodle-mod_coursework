@@ -1059,19 +1059,17 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws dml_exception
      */
     private function render_personaldeadline_table_row($personaldeadlinerow) {
-
         global $USER;
 
         $coursework = $personaldeadlinerow->get_coursework();
-
-        $personaldeadline =
-            personaldeadline::get_personaldeadline_for_student(user::get_from_id($personaldeadlinerow->get_allocatable()->id()), $coursework);
+        $allocatable = $personaldeadlinerow->get_allocatable();
+        $personaldeadline = personaldeadline::get_personaldeadline_for_student(user::get_from_id($allocatable->id()), $coursework);
 
         if (!$personaldeadline) {
             $personaldeadline = personaldeadline::build(
                 [
-                    'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
-                    'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
+                    'allocatableid' => $allocatable->id(),
+                    'allocatabletype' => $allocatable->type(),
                     'courseworkid' => $personaldeadlinerow->get_coursework()->id,
                 ]
             );
@@ -1080,10 +1078,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $ability = new ability($USER->id, $coursework);
         $disabledelement = (!$personaldeadline || ($personaldeadline && $ability->can('edit', $personaldeadline)) ) ? "" : " disabled='disabled' ";
 
-        $rowhtml = '<tr id="' . $personaldeadlinerow->get_allocatable()->type() . '_' . $personaldeadlinerow->get_allocatable()->id() . '">';
+        $rowhtml = '<tr id="' . $allocatable->type() . '_' . $allocatable->id() . '">';
         $rowhtml .= '<td>';
-        $rowhtml .= '<input type="checkbox" name="allocatableid_arr[' . $personaldeadlinerow->get_allocatable()->id() . ']" id="date_' . $personaldeadlinerow->get_allocatable()->type() . '_' . $personaldeadlinerow->get_allocatable()->id() . '" class="date_select" value="' . $personaldeadlinerow->get_allocatable()->id() . '" ' . $disabledelement . ' >';
-        $rowhtml .= '<input type="hidden" name="allocatabletype_' . $personaldeadlinerow->get_allocatable()->id() . '" value="' . $personaldeadlinerow->get_allocatable()->type() . '" />';
+        $rowhtml .= '<input type="checkbox" name="allocatableid_arr[' . $allocatable->id() . ']" id="date_' . $allocatable->type() . '_' . $allocatable->id() . '" class="date_select" value="' . $allocatable->id() . '" ' . $disabledelement . ' >';
+        $rowhtml .= '<input type="hidden" name="allocatabletype_' . $allocatable->id() . '" value="' . $allocatable->type() . '" />';
         $rowhtml .= '</td>';
 
         $allocatablecellhelper = $personaldeadlinerow->get_allocatable_cell();

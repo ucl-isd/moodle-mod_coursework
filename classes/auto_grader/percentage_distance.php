@@ -71,7 +71,8 @@ class percentage_distance implements auto_grader {
     public function create_auto_grade_if_rules_match() {
 
         // bounce out if conditions are not right/
-        if (!$this->get_allocatable()->has_all_initial_feedbacks($this->get_coursework())) {
+        $allocatable = $this->get_allocatable();
+        if (!$allocatable->has_all_initial_feedbacks($this->get_coursework())) {
             return;
         }
         if ($this->get_coursework()->numberofmarkers == 1) {
@@ -83,11 +84,11 @@ class percentage_distance implements auto_grader {
         }
 
         if ($this->grades_are_close_enough()) {
-            if (!$this->get_allocatable()->has_agreed_feedback($this->get_coursework())) {
+            if (!$allocatable->has_agreed_feedback($this->get_coursework())) {
                 $this->create_final_feedback();
             } else {
                 // update only if AgreedGrade has been automatic
-                $agreedfeedback = $this->get_allocatable()->get_agreed_feedback($this->get_coursework());
+                $agreedfeedback = $allocatable->get_agreed_feedback($this->get_coursework());
                 if ($agreedfeedback->timecreated == $agreedfeedback->timemodified || $agreedfeedback->lasteditedbyuser == 0) {
                     $this->update_final_feedback($agreedfeedback);
                 }

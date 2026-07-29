@@ -543,11 +543,12 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_allocation_by_stage($stageidentifier) {
+        $allocatable = $this->get_allocatable();
         return allocation::get_cached_object(
             $this->get_coursework()->id,
             [
-                'allocatableid' => $this->get_allocatable()->id(),
-                'allocatabletype' => $this->get_allocatable()->type(),
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
                 'stageidentifier' => $stageidentifier,
             ]
         );
@@ -1222,10 +1223,11 @@ class submission extends table_base implements renderable {
      * @throws \core\exception\coding_exception|dml_exception
      */
     public function sampled_feedback_exists(): bool {
+        $allocatable = $this->get_allocatable();
         return assessment_set_membership::membership_count(
             $this->get_coursework()->id(),
-            $this->get_allocatable()->type(),
-            $this->get_allocatable()->id()
+            $allocatable->type(),
+            $allocatable->id()
         ) > 0;
     }
 
@@ -1238,11 +1240,12 @@ class submission extends table_base implements renderable {
      */
     public function max_number_of_feedbacks(): int {
         if ($this->get_coursework()->sampling_enabled()) {
+            $allocatable = $this->get_allocatable();
             return assessment_set_membership::membership_count(
-                $this->get_coursework()->id(),
-                $this->get_allocatable()->type(),
-                $this->get_allocatable()->id()
-            ) + 1;  // We add one as by default 1st stage is always marked.
+                    $this->get_coursework()->id(),
+                    $allocatable->type(),
+                    $allocatable->id()
+                ) + 1;  // We add one as by default 1st stage is always marked.
         } else {
             return $this->get_coursework()->get_max_markers();
         }
@@ -1351,8 +1354,9 @@ class submission extends table_base implements renderable {
      * @throws coding_exception
      */
     public function submission_personaldeadline() {
-        $allocatableid = $this->get_allocatable()->id();
-        $allocatabletype = $this->get_allocatable()->type();
+        $allocatable = $this->get_allocatable();
+        $allocatableid = $allocatable->id();
+        $allocatabletype = $allocatable->type();
         $personaldeadline = personaldeadline::get_cached_object(
             $this->courseworkid,
             ['allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
