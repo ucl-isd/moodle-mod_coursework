@@ -83,6 +83,18 @@ class marking_cell_data extends cell_data_base {
 
         if ($this->coursework->has_multiple_markers()) {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
+
+            // Can the user view all the feedback in one place?
+            $submission = $rowsbase->get_submission();
+            if ($submission) {
+                $rowdata->viewallfeedback = $submission->can_show_all_feedback() ? [
+                    'url' => $this->get_mark_url(
+                        'all',
+                        $submission,
+                        null,
+                    ),
+                ] : false;
+            }
         }
 
         if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
@@ -224,23 +236,30 @@ class marking_cell_data extends cell_data_base {
     /**
      * Get the mark URL for a particular action.
      *
-     * @param string $action 'edit', 'show' or 'new'
+     * @param string $action 'edit', 'show', 'new' or 'all'.
      * @param submission $submission the submission
-     * @param stage $stage the stage of the row
+     * @param stage|null $stage the stage of the row
      * @param feedback|null $feedback $feedback the feedback if editing existing
      * @return string
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_mark_url(string $action, submission $submission, stage $stage, ?feedback $feedback = null): string {
-        if (!in_array($action, ['new', 'edit', 'show'])) {
+    public function get_mark_url(string $action, submission $submission, ?stage $stage = null, ?feedback $feedback = null): string {
+        if (!in_array($action, ['new', 'edit', 'show', 'all'])) {
             throw new invalid_parameter_exception("Unknown action $action");
         }
+
+        if ($action === 'all') {
+            $params = ['submissionid' => $submission->id()];
+        } else if ($action === 'new') {
+            $params = ['submissionid' => $submission->id(), 'stageidentifier' => $stage->identifier()];
+        } else {
+            $params = ['feedbackid' => $feedback ? $feedback->id() : null];
+        }
+
         return (new url(
             "/mod/coursework/actions/feedbacks/$action.php",
-            ($action == 'new')
-               ? ['submissionid' => $submission->id(), 'stageidentifier' => $stage->identifier()]
-               : ['feedbackid' => $feedback ? $feedback->id() : null]
+            $params
         ))->out();
     }
 

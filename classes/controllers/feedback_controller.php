@@ -106,6 +106,25 @@ class feedback_controller extends controller_base {
         echo $renderer->show_feedback_page($teacherfeedback);
     }
 
+    /**
+     * Show the entire feedback on one page.
+     *
+     * @throws access_denied
+     */
+    public function show_all() {
+        global $PAGE, $USER;
+        $PAGE->set_url('/mod/coursework/actions/feedbacks/all.php', [
+            'submissionid' => $this->params['submissionid'],
+        ]);
+        $submission = new submission($this->params['submissionid']);
+        // There's no specific ability for this, we loop through all feedback and see if we can see it all.
+        if (!$submission->can_show_all_feedback()) {
+            throw new access_denied($submission->get_coursework());
+        }
+        $renderer = $this->get_page_renderer();
+        echo $renderer->show_all_feedback_page($submission);
+    }
+
     public function viewpdf() {
         global $PAGE, $USER;
 

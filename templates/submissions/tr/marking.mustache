@@ -159,6 +159,11 @@
             {{#addfinalfeedback}}
             <a href="{{{url}}}" class="btn btn-sm btn-success" data-mark-action="addfeedback">{{#str}} agree_marking, mod_coursework {{/str}}</a>
             {{/addfinalfeedback}}
+
+            {{#viewallfeedback}}
+                <a href="{{{url}}}" class="btn btn-sm btn-secondary"
+                    data-mark-action="viewallfeedback">{{#str}} viewallfeedback, mod_coursework {{/str}}</a>
+            {{/viewallfeedback}}
         </div>
     </li>
     {{/agreedmark}}
