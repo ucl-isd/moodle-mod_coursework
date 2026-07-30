@@ -217,4 +217,55 @@ final class submission_test extends \advanced_testcase {
         $timemodified = $grade->timemodified;
         $this->assertEquals($feedback->timemodified, $timemodified);
     }
+
+    /**
+     * Check for when there is no feedback at all.
+     */
+    public function test_can_show_all_feedback_returns_false_when_no_feedback_exists(): void {
+        $student = $this->create_a_student();
+        $submission = $this->create_a_submission_for_the_student();
+        $this->setUser((object)['id' => $student->id]);
+        $this->assertFalse($submission->can_show_all_feedback());
+    }
+
+    /**
+     * Check that a user without permission to view some of the feedback, can't view it all.
+     */
+    public function test_can_show_all_feedback_returns_false_when_user_cannot_view_initial_feedback(): void {
+        [$submission, $student] = $this->create_published_submission_with_all_feedback_types();
+        $this->setUser((object)['id' => $student->id]);
+        $this->assertFalse($submission->can_show_all_feedback());
+    }
+
+    /**
+     * Check that a user with permission to view all the feedback, can see it.
+     */
+    public function test_can_show_all_feedback_returns_true_when_user_can_view_all_feedback(): void {
+        [$submission, $student, $teacher, $manager] = $this->create_published_submission_with_all_feedback_types();
+        $this->setUser((object)['id' => $manager->id]);
+        $this->assertTrue($submission->can_show_all_feedback());
+    }
+
+    /**
+     * Helper method to create submission and feedback.
+     * @return array
+     */
+    private function create_published_submission_with_all_feedback_types(): array {
+        $this->coursework->update_attribute('numberofmarkers', 2);
+
+        $student = $this->create_a_student();
+        $submission = $this->create_a_submission_for_the_student();
+
+        // This creates 1 teacher and 1 manager and then they both add feedback, and a final agreed feedback is added.
+        $teacher = $this->create_a_teacher();
+        $manager = $this->create_another_teacher();
+        $this->enrol_the_other_teacher_as_a_manager();
+        $this->create_an_assessor_feedback_for_the_submission($this->teacher);
+        $this->create_an_assessor_feedback_for_the_submission($this->otherteacher);
+        $this->create_a_final_feedback_for_the_submission();
+
+        $submission->update_attribute('firstpublished', time());
+
+        return [$submission, $student, $teacher, $manager];
+    }
 }
