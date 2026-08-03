@@ -966,7 +966,7 @@ class submission extends table_base implements renderable {
     /**
      * @return allocatable
      */
-    public function get_allocatable() {
+    public function get_allocatable(): allocatable {
         /**
          * @var table_base $classname
          */

@@ -20,26 +20,48 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_coursework\traits;
-use core\exception\coding_exception;
+namespace mod_coursework\allocation;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
-use mod_coursework\models\allocation;
+use stdClass;
 
 /**
- * Class allocatable
- * @package mod_coursework\traits
+ * This tells us that a class (e.g. user or group) can be allocated to a teacher for marking
+ * or moderation.
+ *
+ * @property int id
+ * @package mod_coursework\allocation
  */
-trait allocatable_functions {
+abstract class allocatable_table_base extends table_base implements allocatable {
+    /**
+     * @return string
+     */
+    abstract public function name(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function type(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function profile_link(): string;
+
+    /**
+     * @param stdClass $course
+     * @return mixed
+     */
+    abstract public function is_valid_for_course($course): bool;
+
     /**
      * @param coursework $coursework
      * @return bool
-     * @throws \coding_exception
-     * @throws \dml_exception
      */
-    public function has_agreed_feedback($coursework) {
+    public function has_agreed_feedback($coursework): bool {
         global $DB;
         $sql = "
             SELECT COUNT(*)
@@ -56,11 +78,9 @@ trait allocatable_functions {
 
     /**
      * @param coursework $coursework
-     * @return bool
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @return object|bool
      */
-    public function get_agreed_feedback($coursework) {
+    public function get_agreed_feedback($coursework): object|bool {
         global $DB;
         $sql = "
             SELECT f.*
@@ -77,10 +97,8 @@ trait allocatable_functions {
     /**
      * @param coursework $coursework
      * @return bool
-     * @throws \coding_exception
-     * @throws \dml_exception
      */
-    public function has_all_initial_feedbacks($coursework) {
+    public function has_all_initial_feedbacks($coursework): bool {
         global $DB;
 
         $expectedmarkers = $coursework->numberofmarkers;
@@ -98,7 +116,7 @@ trait allocatable_functions {
         $feedbacks = $DB->count_records_sql(
             $sql,
             ['id' => $this->id(),
-            'courseworkid' => $coursework->id()]
+                'courseworkid' => $coursework->id()]
         );
 
         // when sampling is enabled, calculate how many stages are in sample
@@ -115,9 +133,9 @@ trait allocatable_functions {
 
     /**
      * @param $coursework
-     * @return array
+     * @return feedback[]
      */
-    public function get_initial_feedbacks($coursework) {
+    public function get_initial_feedbacks($coursework): array {
         $result = [];
         $submission = $this->get_submission($coursework);
         if ($submission) {
@@ -133,7 +151,7 @@ trait allocatable_functions {
      * @param $coursework
      * @return ?submission
      */
-    public function get_submission($coursework) {
+    public function get_submission($coursework): ?submission {
         return submission::get_cached_object(
             $coursework->id,
             ['allocatableid' => $this->id]

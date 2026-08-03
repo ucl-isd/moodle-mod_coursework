@@ -31,10 +31,8 @@ namespace mod_coursework\models;
 use AllowDynamicProperties;
 use cm_info;
 use core_availability\info_module;
-use mod_coursework\allocation\allocatable;
+use mod_coursework\allocation\allocatable_table_base;
 use mod_coursework\allocation\moderatable;
-use mod_coursework\framework\table_base;
-use mod_coursework\traits\allocatable_functions;
 use stdClass;
 
 /**
@@ -45,9 +43,7 @@ use stdClass;
  * @package mod_coursework\models
  */
 #[AllowDynamicProperties]
-class group extends table_base implements allocatable, moderatable {
-    use allocatable_functions;
-
+class group extends allocatable_table_base implements moderatable {
     /**
      * @var string
      */
@@ -56,7 +52,7 @@ class group extends table_base implements allocatable, moderatable {
     /**
      * @return string
      */
-    public function name() {
+    public function name(): string {
         return $this->name;
     }
 
@@ -70,7 +66,7 @@ class group extends table_base implements allocatable, moderatable {
     /**
      * @return string
      */
-    public function type() {
+    public function type(): string {
         return 'group';
     }
 
@@ -78,8 +74,6 @@ class group extends table_base implements allocatable, moderatable {
      * @param $context
      * @param $cm
      * @return user[]
-     * @throws \coding_exception
-     * @throws \dml_exception
      */
     public function get_members($context, $cm) {
         $members = groups_get_members($this->id());
@@ -101,15 +95,15 @@ class group extends table_base implements allocatable, moderatable {
      * @param bool $withpicture
      * @return void
      */
-    public function profile_link($withpicture = false) {
-        // TODO: Implement profle_link() method.
+    public function profile_link($withpicture = false): string {
+        debugging('Cannot call profile_link on a group', DEBUG_DEVELOPER);
     }
 
     /**
      * @param stdClass $course
      * @return bool
      */
-    public function is_valid_for_course($course) {
+    public function is_valid_for_course($course): bool {
         return $this->courseid == $course->id;
     }
 }
