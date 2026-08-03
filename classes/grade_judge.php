@@ -144,7 +144,8 @@ class grade_judge {
             &&
             $allocatable = $submission->get_allocatable()
         ) {
-            if (assessment_set_membership::cached_objects_exist(
+            if (
+                assessment_set_membership::cached_objects_exist(
                     $this->coursework->id,
                     ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
                 )

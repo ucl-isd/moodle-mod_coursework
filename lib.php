@@ -365,7 +365,7 @@ function mod_coursework_core_calendar_provide_event_action(
                     [
                         'allocatableid' => $allocatable->id(),
                         'allocatabletype' => $allocatable->type(),
-                        'courseworkid' => $coursework->id
+                        'courseworkid' => $coursework->id,
                     ]
                 );
             } else {

@@ -1242,10 +1242,10 @@ class submission extends table_base implements renderable {
         if ($this->get_coursework()->sampling_enabled()) {
             $allocatable = $this->get_allocatable();
             return assessment_set_membership::membership_count(
-                    $this->get_coursework()->id(),
-                    $allocatable->type(),
-                    $allocatable->id()
-                ) + 1;  // We add one as by default 1st stage is always marked.
+                $this->get_coursework()->id(),
+                $allocatable->type(),
+                $allocatable->id()
+            ) + 1;  // We add one as by default 1st stage is always marked.
         } else {
             return $this->get_coursework()->get_max_markers();
         }
