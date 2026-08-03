@@ -35,7 +35,7 @@ trait autoagreement_functions {
         global $DB;
 
         $feedbacks = $DB->get_records('coursework_feedbacks', [
-            'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
+            'submissionid' => $this->allocatable->get_submission($this->get_coursework())->id(),
             'isfinalgrade' => 0,
         ]);
         $feedbackcomment = '';

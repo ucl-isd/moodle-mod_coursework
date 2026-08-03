@@ -149,14 +149,7 @@ class moderation extends table_base {
      * @return bool
      */
     public function is_moderator_allocated() {
-        return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
-    }
-
-    /**
-     * @return allocatable
-     */
-    public function get_allocatable() {
-        return $this->get_submission()->get_allocatable();
+        return $this->get_stage()->assessor_has_allocation($this->get_submission()->get_allocatable());
     }
 
     /**
