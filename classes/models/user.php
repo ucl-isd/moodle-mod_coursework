@@ -32,14 +32,11 @@ use AllowDynamicProperties;
 use coding_exception;
 use context_course;
 use core\exception\moodle_exception;
-use core\output\user_picture;
 use core_user;
 use core_user\fields;
 use html_writer;
-use mod_coursework\allocation\allocatable;
+use mod_coursework\allocation\allocatable_table_base;
 use mod_coursework\allocation\moderatable;
-use mod_coursework\framework\table_base;
-use mod_coursework\traits\allocatable_functions;
 use moodle_url;
 use stdClass;
 
@@ -48,9 +45,7 @@ use stdClass;
  * @package mod_coursework\models
  */
 #[AllowDynamicProperties]
-class user extends table_base implements allocatable, moderatable {
-    use allocatable_functions;
-
+class user extends allocatable_table_base implements moderatable {
     /**
      * @var string
      */
@@ -94,7 +89,7 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * @return string
      */
-    public function type() {
+    public function type(): string {
         return 'user';
     }
 
@@ -103,7 +98,7 @@ class user extends table_base implements allocatable, moderatable {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function profile_link() {
+    public function profile_link(): string {
         return html_writer::link(new moodle_url('/user/view.php', ['id' => $this->id()]), $this->name(), ['data-assessorid' => $this->id()]);
     }
 
@@ -112,7 +107,7 @@ class user extends table_base implements allocatable, moderatable {
      * @return bool
      * @throws coding_exception
      */
-    public function is_valid_for_course($course) {
+    public function is_valid_for_course($course): bool {
         $coursecontext = context_course::instance($course->id);
         return is_enrolled($coursecontext, $this->id(), 'mod/coursework:submit');
     }

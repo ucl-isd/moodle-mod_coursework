@@ -37,56 +37,56 @@ interface allocatable {
     /**
      * @return string
      */
-    public function name();
+    public function name(): string;
 
     /**
      * @return int
      */
-    public function id();
+    public function id(): int;
 
     /**
      * @return string
      */
-    public function type();
+    public function type(): string;
 
     /**
      * @return string
      */
-    public function profile_link();
+    public function profile_link(): string;
 
     /**
      * @param stdClass $course
-     * @return mixed
+     * @return bool
      */
-    public function is_valid_for_course($course);
+    public function is_valid_for_course($course): bool;
 
     /**
      * @param coursework $coursework
      * @return bool
      */
-    public function has_agreed_feedback($coursework);
+    public function has_agreed_feedback($coursework): bool;
 
     /**
      * @param coursework $coursework
-     * @return bool
+     * @return object|bool
      */
-    public function get_agreed_feedback($coursework);
+    public function get_agreed_feedback($coursework): object|bool;
 
     /**
      * @param coursework $coursework
      * @return feedback[]
      */
-    public function get_initial_feedbacks($coursework);
+    public function get_initial_feedbacks($coursework): array;
 
     /**
      * @param coursework $coursework
      * @return bool
      */
-    public function has_all_initial_feedbacks($coursework);
+    public function has_all_initial_feedbacks($coursework): bool;
 
     /**
      * @param coursework $coursework
-     * @return submission
+     * @return ?submission
      */
-    public function get_submission($coursework);
+    public function get_submission($coursework): ?submission;
 }
