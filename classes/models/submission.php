@@ -971,7 +971,11 @@ class submission extends table_base implements renderable {
          * @var table_base $classname
          */
         $classname = "\\mod_coursework\\models\\" . $this->allocatabletype;
-        return $classname::get_cached_object_from_id($this->allocatableid);
+        $retval = $classname::get_cached_object_from_id($this->allocatableid);
+        if ($retval === false) {
+            return new nullallocatable();
+        }
+        return $retval;
     }
 
     /**
