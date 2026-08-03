@@ -27,8 +27,6 @@ use cache;
 use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
 use dml_exception;
-use dml_missing_record_exception;
-use dml_multiple_records_exception;
 use stdClass;
 
 /**
@@ -636,34 +634,6 @@ abstract class table_base {
     public function get_raw_record() {
         global $DB;
         return $DB->get_record(static::get_table_name(), ['id' => $this->id]);
-    }
-
-    /**
-     * @param string $field
-     * @param mixed $value
-     */
-    protected function apply_value_if_column_exists($field, $value) {
-        if (static::column_exists($field)) {
-            $this->{$field} = $value;
-        }
-    }
-
-    /**
-     * @param string $sql The bit after WHERE
-     * @param array $params
-     * @return array
-     * @throws dml_exception
-     */
-    public static function find_by_sql($sql, $params) {
-        global $DB;
-
-        $sql = 'SELECT * FROM {' . static::get_table_name() . '} WHERE ' . $sql;
-        $records = $DB->get_record_sql($sql, $params);
-        $klass = get_called_class();
-        foreach ($records as &$record) {
-            $record = new $klass($record);
-        }
-        return $records;
     }
 
     /**
