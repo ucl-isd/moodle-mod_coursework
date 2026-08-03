@@ -145,7 +145,9 @@ class assessment_set_membership extends table_base implements moderatable {
                     'allocatabletype' => $allocatabletype,
                 ]
             );
-            $cache->set($cachekey, $cachedvalue);
+            if ($cachedvalue > 0) {
+                $cache->set($cachekey, $cachedvalue);
+            }
         }
         return $cachedvalue;
     }
