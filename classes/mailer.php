@@ -102,40 +102,6 @@ class mailer {
     }
 
     /**
-     * @param submission $submission
-     * @throws coding_exception
-     */
-    public function send_late_submission_notification($submission) {
-        global $CFG;
-
-        $coursework = $submission->get_coursework();
-        $studentorgroup = $submission->get_allocatable();
-        $recipients = $coursework->initial_assessors($studentorgroup);
-        foreach ($recipients as $recipient) {
-            // New approach.
-            $eventdata = new message();
-            $eventdata->component = 'mod_coursework';
-            $eventdata->name = 'submission_receipt';
-            $eventdata->userfrom = core_user::get_noreply_user();
-            $eventdata->userto = $recipient;
-            $eventdata->subject = 'Late submission for ' . $coursework->name;
-            $messagetext =
-                'A late submission was just submitted for ' . $studentorgroup->type() . ' ' . $studentorgroup->name();
-            $eventdata->fullmessage = $messagetext;
-            $eventdata->fullmessageformat = FORMAT_PLAIN;
-            $eventdata->fullmessagehtml = $messagetext;
-            $eventdata->smallmessage = $messagetext;
-            $eventdata->notification = 1;
-            $eventdata->contexturl =
-                $CFG->wwwroot . '/mod/coursework/view.php?id=' . $coursework->get_coursemodule_id();
-            $eventdata->contexturlname = 'View the submission here';
-            $eventdata->courseid = $this->coursework->course;
-
-            message_send($eventdata);
-        }
-    }
-
-    /**
      * Send feedback notifications to users whose feedback was released
      *
      * @param submission $submission

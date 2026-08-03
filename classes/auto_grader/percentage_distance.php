@@ -71,7 +71,7 @@ class percentage_distance implements auto_grader {
     public function create_auto_grade_if_rules_match() {
 
         // bounce out if conditions are not right/
-        $allocatable = $this->get_allocatable();
+        $allocatable = $this->allocatable;
         if (!$allocatable->has_all_initial_feedbacks($this->get_coursework())) {
             return;
         }
@@ -126,20 +126,13 @@ class percentage_distance implements auto_grader {
     }
 
     /**
-     * @return allocatable
-     */
-    private function get_allocatable() {
-        return $this->allocatable;
-    }
-
-    /**
      *
      */
     private function create_final_feedback() {
         $feedback =
             [
                 'stageidentifier' => final_agreed::STAGE_FINAL_AGREED_1,
-                'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
+                'submissionid' => $this->allocatable->get_submission($this->get_coursework())->id(),
                 'grade' => $this->automatic_grade(),
                 'lasteditedbyuser' => 0, // Grade was auto generated - zero here shows no user involved.
                 'isfinalgrade' => 1, // This is an "agreed" final grade.
@@ -174,7 +167,7 @@ class percentage_distance implements auto_grader {
      * @return array
      */
     private function grades_as_percentages() {
-        $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
+        $initialfeedbacks = $this->allocatable->get_initial_feedbacks($this->get_coursework());
         return array_map(function ($feedback) {
             return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
         },
