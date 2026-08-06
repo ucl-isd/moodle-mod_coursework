@@ -906,6 +906,18 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         return;
     }
 
+    // Link to statistics page.
+    if (has_capability('mod/coursework:moderate', $context)) {
+        $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
+        $navref->add(
+            get_string('gradingaudit', 'mod_coursework'),
+            $link,
+            navigation_node::TYPE_SETTING,
+            null,
+            'audit'
+        );
+    }
+
     // Link to marker allocation screen. No point showing it if we are not using allocation or moderation.
     if (
         has_capability('mod/coursework:allocate', $context) &&
@@ -915,6 +927,7 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $langstr = ($coursework->moderation_agreement_enabled()) ? 'markermoderatormarks' : 'allocatemarkers';
         $navref->add(get_string($langstr, 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
+
     // Link to personal deadlines screen
     if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personaldeadlines_enabled())) {
         $link = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php', ['id' => $cm->id]);
@@ -940,18 +953,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
             'generalfeedback'
         );
         $child->set_force_into_more_menu(true);
-    }
-
-    // Link to statistics page.
-    if (has_capability('mod/coursework:moderate', $context)) {
-        $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
-        $navref->add(
-            get_string('gradingaudit', 'mod_coursework'),
-            $link,
-            navigation_node::TYPE_SETTING,
-            null,
-            'audit'
-        );
     }
 }
 

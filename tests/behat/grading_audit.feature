@@ -63,9 +63,8 @@ Feature: As a moderator I should be able to see the Grading Audit report with st
   Scenario: A moderator can see the grading statistics for the activity
     Given I am on the "Coursework-A" "coursework activity" page logged in as "moderator1"
     When I follow "Grading Audit"
-    Then I should see "Course 1" in the "//table[@id='grading-audit-summary']//tbody/tr[1]/td[count(//table[@id='grading-audit-summary']//th[normalize-space()='Course']/preceding-sibling::th)+1]" "xpath_element"
-    And I should see "Coursework-A" in the "//table[@id='grading-audit-summary']//tbody/tr[1]/td[count(//table[@id='grading-audit-summary']//th[normalize-space()='Coursework title']/preceding-sibling::th)+1]" "xpath_element"
-    And I should see "Teacher One, Teacher Two" in the "//table[@id='grading-audit-summary']//tbody/tr[1]/td[count(//table[@id='grading-audit-summary']//th[normalize-space()='Markers']/preceding-sibling::th)+1]" "xpath_element"
-    And I should see "Moderator One" in the "//table[@id='grading-audit-summary']//tbody/tr[1]/td[count(//table[@id='grading-audit-summary']//th[normalize-space()='Moderators']/preceding-sibling::th)+1]" "xpath_element"
-    And I should see "3" in the "//table[@id='grading-audit-summary']//tbody/tr[1]/td[count(//table[@id='grading-audit-summary']//th[normalize-space()='Submissions']/preceding-sibling::th)+1]" "xpath_element"
+    Then I should see "Course 1" in the "//table[@id='grading-audit-info']//tbody/tr[1]/td[count(//table[@id='grading-audit-info']//th[normalize-space()='Course']/preceding-sibling::th)+1]" "xpath_element"
+    And I should see "Coursework-A" in the "//table[@id='grading-audit-info']//tbody/tr[1]/td[count(//table[@id='grading-audit-info']//th[normalize-space()='Coursework title']/preceding-sibling::th)+1]" "xpath_element"
+    And I should see "Teacher One, Teacher Two" in the "//table[@id='grading-audit-info']//tbody/tr[1]/td[count(//table[@id='grading-audit-info']//th[normalize-space()='Markers']/preceding-sibling::th)+1]" "xpath_element"
+    And I should see "Moderator One" in the "//table[@id='grading-audit-info']//tbody/tr[1]/td[count(//table[@id='grading-audit-info']//th[normalize-space()='Moderators']/preceding-sibling::th)+1]" "xpath_element"
     # The rest of the data is covered under the unit tests, that it should be calculated correctly. So we'll stop here.
