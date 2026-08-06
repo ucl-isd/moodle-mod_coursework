@@ -631,4 +631,25 @@ class feedback extends table_base {
             $this->submissionid = $submission->id;
         }
     }
+
+    /**
+     * Get the page title, depending on stage of feedback.
+     *
+     * @param submission $submission Submission object.
+     * @return string
+     */
+    public function get_page_title(submission $submission): string {
+        $studentname = $submission->get_allocatable_name();
+        if ($this->is_agreed_grade()) {
+            return get_string('finalfeedback', 'mod_coursework', $studentname);
+        } else if ($this->is_moderation()) {
+            return get_string('moderatorfeedback', 'mod_coursework', $studentname);
+        } else {
+            $stage = $this->get_assessor_stage_no();
+            return get_string('componentfeedback', 'mod_coursework', [
+                'stage' => $stage,
+                'student' => $studentname,
+            ]);
+        }
+    }
 }

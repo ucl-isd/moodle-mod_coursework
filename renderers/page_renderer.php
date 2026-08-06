@@ -46,8 +46,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws \core\exception\coding_exception
      */
     public function show_feedback_page($feedback) {
-        $html = '';
         $objectrenderer = $this->get_object_renderer();
+        $this->page->set_title($feedback->get_page_title($feedback->get_submission()));
+        $html = '';
         $html .= $this->output->header();
         $html .= $objectrenderer->render_feedback($feedback);
         $html .= $this->output->footer();
@@ -482,6 +483,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $title = $submission->get_coursework()->is_configured_to_have_group_submissions()
             ? ($isnew ? 'addgroupsubmission' : 'editgroupsubmission')
             : ($isnew ? 'addyoursubmission' : 'edityoursubmission');
+        $this->page->set_title(get_string($title, 'mod_coursework'));
         $template->title = get_string($title, 'mod_coursework');
 
         $coursework = $submission->get_coursework();
