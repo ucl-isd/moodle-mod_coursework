@@ -1,0 +1,97 @@
+# Add a link to every pushed commit that opens playground based on that commit.
+
+name: Playground preview
+
+on:
+  push:
+    # Every push.
+    branches: ["**"]
+
+    # Ignore README.md changes.
+    paths-ignore: ["**/*.md"]
+
+permissions:
+  contents: read
+
+  # Permission to create the link.
+  statuses: write
+
+  # Permission to create the PR comment.
+  pull-requests: write
+
+concurrency:
+  group: playground-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Don't run on branch deletion
+    if: github.event.deleted != true
+    steps:
+      - uses: actions/checkout@v5
+      - id: preview
+        uses: DavidUCL/githubactionsplayground/preview@main
+        with:
+          head-repo: ${{ github.repository }}
+          head-sha: ${{ github.sha }}
+          plugin-root: "."
+
+      - name: Publish the preview as a commit status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.preview.outputs.preview-url }}
+          USER_NAME: ${{ steps.preview.outputs.preview-user }}
+        run: |
+          set -euo pipefail
+          if [ -n "$URL" ]; then
+            gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+              -f state=success \
+              -f context="Moodle Playground preview" \
+              -f description="Opens this commit in a browser Moodle as $USER_NAME" \
+              -f target_url="$URL" >/dev/null
+          else
+            # No link. Report issue but don't fail the commit
+            gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+              -f state=success \
+              -f context="Moodle Playground preview" \
+              -f description="No preview — this commit cannot boot in the playground" \
+              >/dev/null
+          fi
+
+      # Pull request comment.
+      - name: Comment on any open pull request for this commit
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BODY: ${{ steps.preview.outputs.comment-body }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BODY:-}" ]; then
+            echo "::notice::no comment body was produced; the commit status stands alone"
+            exit 0
+          fi
+          # A commit can belong to more than one open PR.
+          prs=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
+                  --jq '.[] | select(.state == "open") | .number' || true)
+          [ -n "$prs" ] || { echo "::notice::no open PR contains this commit"; exit 0; }
+          for pr in $prs; do
+            # Re-check the head: a newer push may have landed while this ran,
+            # and its comment must not be overwritten by this older one.
+            head=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr" --jq .head.sha)
+            if [ "$head" != "$GITHUB_SHA" ]; then
+              echo "::notice::PR #$pr head moved to ${head:0:7}; leaving its comment alone"
+              continue
+            fi
+            found=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$pr/comments?per_page=100" \
+              --jq '.[] | select(.user.type == "Bot")
+                        | select((.body // "") | contains("<!-- moodle-playground-preview -->")) | .id')
+            id=${found%%$'\n'*}
+            if [ -n "$id" ]; then
+              gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$BODY" >/dev/null
+            else
+              gh api -X POST "repos/$GITHUB_REPOSITORY/issues/$pr/comments" -f body="$BODY" >/dev/null
+            fi
+          done
