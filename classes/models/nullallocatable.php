@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2026 onwards University College London {@link https://www.ucl.ac.uk/}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\models;
 
 use mod_coursework\allocation\allocatable;
