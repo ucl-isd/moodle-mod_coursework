@@ -56,6 +56,85 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Show all feedback for the student's submission.
+     * @param submission $submission
+     * @return string
+     */
+    public function show_all_feedback_page(submission $submission) {
+        $coursework = $submission->get_coursework();
+        $submissionfiles = $submission->get_submission_files();
+        $pagename = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
+        $this->page->set_title($pagename);
+
+        // Template.
+        $template = new stdClass();
+        $template->title = $pagename;
+
+        // PDF or not?
+        if ($submissionfiles && ($file = $submissionfiles->get_first_pdf())) {
+            $template->showpdf = true;
+            $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
+        }
+
+        // Submission metadata.
+        $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
+
+        // Advanced marking.
+        $advancedmarking = $coursework->is_using_advanced_grading();
+
+        // Is this a marking guide?
+        $isguide = $advancedmarking && $coursework->is_using_marking_guide();
+
+        // Initial assessor feedback.
+        $previousfeedbacks = $submission->get_assessor_feedbacks();
+
+        // Different final grading method?
+        $differentfinal = $coursework->finalstagegrading > 0;
+
+        // Final agreed mark.
+        $final = $submission->get_final_feedback();
+
+        $template->feedback = [];
+
+        if (!empty($previousfeedbacks)) {
+            if ($advancedmarking) {
+                // If we are not using a different method at the end, we can append the final feedback here.
+                if (!$differentfinal && $final) {
+                    $previousfeedbacks[] = $final;
+                }
+                // Advanced marking.
+                $template->feedback[] = $this->render_comparison_view(
+                    $coursework,
+                    $previousfeedbacks,
+                    $isguide
+                );
+                // If we ARE using a different method at the end, now we need to append that rendered correctly.
+                if ($differentfinal && $final) {
+                    $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
+                    $template->feedback[] = $objrenderer->render_feedback($final, true);
+                }
+            } else {
+                // Simple direct grading.
+                // Here we can always just append the final feedback.
+                if ($final) {
+                    $previousfeedbacks[] = $final;
+                }
+
+                $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
+                foreach ($previousfeedbacks as $prev) {
+                    $template->feedback[] = $objrenderer->render_feedback($prev, true);
+                }
+            }
+        }
+
+        $html = '';
+        $html .= $this->output->header();
+        $html .= $this->render_from_template('mod_coursework/feedback/all', $template);
+        $html .= $this->output->footer();
+        return $html;
+    }
+
+    /**
      * @param $submission
      * @return string
      * @throws \core\exception\coding_exception
@@ -365,6 +444,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $markerobj = new stdClass();
                 $markerobj->label = get_string('marker', 'mod_coursework') . " " . $feedback->get_assessor_stage_no();
                 $markerobj->fillings = $filling['criteria'] ?? [];
+                $markerobj->stage = $feedback->stageidentifier;
                 $markersdata[$feedback->get_assessor_stage_no()] = $markerobj;
             }
         }
@@ -382,6 +462,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             foreach ($markersdata as $markerinfo) {
                 $marker = new stdClass();
+                $marker->stage = $markerinfo->stage;
                 $marker->label = $markerinfo->label;
                 $marker->score = 0;
                 $marker->maxscore = 0;

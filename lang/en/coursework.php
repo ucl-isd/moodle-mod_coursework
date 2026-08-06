@@ -731,6 +731,7 @@ $string['usepersonaldeadline'] = 'Allow personal deadlines';
 $string['usepersonaldeadline_help'] = 'Enable if you wish to give an individual deadline to every user/group. You can\'t disable it if at least one personal deadline has already passed. ';
 $string['usernotincoursework'] = 'Student \'{$a}\' not found in this site, or student is not in this coursework';
 $string['valuenotincourseworkscale'] = "Mark value not in coursework scale.";
+$string['viewallfeedback'] = 'View all feedback';
 $string['viewinitialmarkenabled'] = 'View initial markers\' grades';
 $string['viewinitialmarkenabled_help'] = 'If selected, markers will be able to see initial marks from other markers.';
 $string['viewmembers'] = 'View members';

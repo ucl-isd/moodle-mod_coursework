@@ -34,6 +34,7 @@ use dml_multiple_records_exception;
 use exception;
 use file_storage;
 use html_writer;
+use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\candidateprovider_manager;
 use mod_coursework\event\assessable_uploaded;
@@ -1528,6 +1529,39 @@ class submission extends table_base implements renderable {
             'submissionid' => $this->id,
             'assessorid' => $assessorid,
         ]);
+    }
+
+    /**
+     * Check if the user can see all the feedback on the submission.
+     *
+     * There might be some other way to do it. But it seems with all the different rules
+     * that there are various occasions when we want to allow viewing feedback, not just based on capabilities.
+     *
+     * So this works by checking if the user can see each individual piece of feedback, instead of relying
+     * just on capabilities.
+     *
+     * @return bool
+     */
+    public function can_show_all_feedback(): bool {
+        global $USER;
+        // First can they view the submission?
+        $ability = new ability($USER->id, $this->get_coursework());
+        if (!$ability->can('show', $this)) {
+            return false;
+        }
+
+        $feedbacks = $this->get_feedbacks();
+
+        // If there is no feedback, we don't need to see anything.
+        if (!$feedbacks) {
+            return false;
+        }
+
+        $result = true;
+        foreach ($feedbacks as $feedback) {
+            $result = $result && $feedback->can_show($this->get_coursework(), $this);
+        }
+        return $result;
     }
 
     // Caching
