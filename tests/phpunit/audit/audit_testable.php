@@ -41,7 +41,7 @@ class audit_testable extends audit {
      * @return array
      */
     public function calculate_statistics_public(array $grades): array {
-        return $this->calculate_statistics($grades);
+        return $this->calculate_grade_statistics($grades);
     }
 
     /**

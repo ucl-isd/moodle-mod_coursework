@@ -52,12 +52,12 @@ final class audit_test extends \advanced_testcase {
         $audit = $this->get_testable_audit();
         $stats = $audit->calculate_statistics_public([]);
 
-        $this->assertSame(0, $stats['stats_mean']);
-        $this->assertSame(0, $stats['stats_median']);
-        $this->assertSame(0, $stats['stats_max']);
-        $this->assertSame(0, $stats['stats_min']);
-        $this->assertSame(0, $stats['stats_sd']);
-        $this->assertSame(0, $stats['stats_flagged']);
+        $this->assertSame(0, $stats['mean']);
+        $this->assertSame(0, $stats['median']);
+        $this->assertSame(0, $stats['max']);
+        $this->assertSame(0, $stats['min']);
+        $this->assertSame(0, $stats['sd']);
+        $this->assertSame(0, $stats['flagged']);
     }
 
     /**
@@ -69,12 +69,12 @@ final class audit_test extends \advanced_testcase {
 
         $stats = $audit->calculate_statistics_public([10.0, 20.0, 30.0]);
 
-        $this->assertEquals(20.0, $stats['stats_mean']);
-        $this->assertEquals(20.0, $stats['stats_median']);
-        $this->assertEquals(30.0, $stats['stats_max']);
-        $this->assertEquals(10.0, $stats['stats_min']);
-        $this->assertEquals(8.16, $stats['stats_sd']);
-        $this->assertSame(2, $stats['stats_flagged']);
+        $this->assertEquals(20.0, $stats['mean']);
+        $this->assertEquals(20.0, $stats['median']);
+        $this->assertEquals(30.0, $stats['max']);
+        $this->assertEquals(10.0, $stats['min']);
+        $this->assertEquals(8.16, $stats['sd']);
+        $this->assertSame(2, $stats['flagged']);
     }
 
     /**
@@ -85,11 +85,11 @@ final class audit_test extends \advanced_testcase {
 
         $stats = $audit->calculate_statistics_public([10.0, 20.0, 30.0, 40.0]);
 
-        $this->assertEquals(25.0, $stats['stats_mean']);
-        $this->assertEquals(25.0, $stats['stats_median']);
-        $this->assertEquals(40.0, $stats['stats_max']);
-        $this->assertEquals(10.0, $stats['stats_min']);
-        $this->assertEquals(11.18, $stats['stats_sd']);
+        $this->assertEquals(25.0, $stats['mean']);
+        $this->assertEquals(25.0, $stats['median']);
+        $this->assertEquals(40.0, $stats['max']);
+        $this->assertEquals(10.0, $stats['min']);
+        $this->assertEquals(11.18, $stats['sd']);
     }
 
     /**
