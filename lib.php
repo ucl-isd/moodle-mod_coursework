@@ -555,11 +555,6 @@ function coursework_update_instance($coursework) {
     $coursework->timemodified = time();
     $coursework->id = $coursework->instance;
 
-    if ($coursework->finalstagegrading == 1) {
-        $coursework->automaticagreementstrategy = 'none';
-        $coursework->automaticagreementrange = 10;
-    }
-
     $subnotify = '';
     $comma = '';
     if (!empty($coursework->submissionnotification)) {
