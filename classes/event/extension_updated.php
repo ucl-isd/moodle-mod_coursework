@@ -68,9 +68,37 @@ class extension_updated extends base {
      * @return string
      */
     public function get_description() {
+        $type = $this->other['allocatabletype'];
+        $method = 'get_description_' . $type;
+        if (method_exists($this, $method)) {
+            return $this->$method();
+        } else {
+            debugging("The method '{$method}' does not exist on class extension_updated.");
+            return null;
+        }
+    }
+
+    /**
+     * Get the event description for a group extension.
+     *
+     * @return string
+     */
+    private function get_description_group(): string {
         $readabledate = userdate($this->other['deadline']);
-        return "The user with ID '$this->userid' updated extension ID '$this->objectid' to '$readabledate'"
-            . " for the coursework with course module id '$this->contextinstanceid' for the user with id '{$this->relateduserid}'.";
+        return "The user with ID '{$this->userid}' updated extension ID '{$this->objectid}' to '{$readabledate}'"
+            . " for the coursework with course module id '{$this->contextinstanceid}' for the group with"
+            . " id '{$this->other['groupid']}'.";
+    }
+
+    /**
+     * Get the event description for a user extension.
+     *
+     * @return string
+     */
+    private function get_description_user(): string {
+        $readabledate = userdate($this->other['deadline']);
+        return "The user with ID '{$this->userid}' updated extension ID '{$this->objectid}' to '{$readabledate}'"
+            . " for the coursework with course module id '{$this->contextinstanceid}' for the user with id '{$this->relateduserid}'.";
     }
 
     /**
@@ -96,6 +124,9 @@ class extension_updated extends base {
         }
         if (!isset($this->other['deadline'])) {
             throw new coding_exception('The \'deadline\' value must be set in other.');
+        }
+        if (!isset($this->other['allocatabletype'])) {
+            throw new coding_exception('The \'allocatabletype\' value must be set in other.');
         }
     }
 }
