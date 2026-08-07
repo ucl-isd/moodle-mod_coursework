@@ -516,6 +516,24 @@ function xmldb_coursework_upgrade($oldversion) {
 
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2026110301, 'coursework');
+
+    }
+
+    if ($oldversion < 2026110900) {
+        // Define field internalcomment to be added to coursework_feedbacks.
+        $table = new xmldb_table('coursework_feedbacks');
+        $field = new xmldb_field('internalcomment', XMLDB_TYPE_TEXT, null, null, null, null, null, 'finalised');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('internalcommentformat', XMLDB_TYPE_INTEGER, 1, null, true, null, 1, 'internalcomment');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026110900, 'coursework');
     }
 
     // Always needs to return true.
