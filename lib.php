@@ -922,6 +922,19 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $link = new moodle_url('/mod/coursework/actions/allocate.php', ['id' => $cm->id]);
         $navref->add(get_string('allocatemarkers', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
+
+    // Link to statistics page.
+    if (has_capability('mod/coursework:moderate', $context)) {
+        $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
+        $navref->add(
+            get_string('gradingaudit', 'mod_coursework'),
+            $link,
+            navigation_node::TYPE_SETTING,
+            null,
+            'audit'
+        );
+    }
+
     // Link to personal deadlines screen
     if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personaldeadlines_enabled())) {
         $link = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php', ['id' => $cm->id]);
