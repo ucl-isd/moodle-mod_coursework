@@ -248,6 +248,11 @@ class feedback_controller extends controller_base {
             'format' => $teacherfeedback->feedbackcommentformat,
         ];
 
+        $teacherfeedback->internalcomment = [
+            'text' => $teacherfeedback->internalcomment,
+            'format' => $teacherfeedback->internalcommentformat,
+        ];
+
         // Load any files into the file manager.
         $teacherfeedback->feedback_manager = file_get_submitted_draft_itemid('feedback_manager');
         file_prepare_draft_area(

@@ -189,6 +189,12 @@ class assessor_feedback_mform extends moodleform {
             $filemanageroptions
         );
 
+        // Is this the agreement stage?
+        if ($this->feedback->get_stage()->identifier() === final_agreed::STAGE_FINAL_AGREED_1) {
+            $this->_form->addElement('editor', 'internalcomment', get_string('internalcomments', 'mod_coursework'));
+            $this->_form->setType('internalcomment', PARAM_RAW);
+        }
+
         $moderation = moderation::get_moderator_agreement($this->feedback);
         if ($moderation) {
             $ability = new ability($USER->id, $this->feedback->get_coursework());
@@ -259,6 +265,11 @@ class assessor_feedback_mform extends moodleform {
 
         $this->feedback->feedbackcomment = $formdata->feedbackcomment['text'];
         $this->feedback->feedbackcommentformat = $formdata->feedbackcomment['format'];
+
+        if (isset($formdata->internalcomment)) {
+            $this->feedback->internalcomment = $formdata->internalcomment['text'];
+            $this->feedback->internalcommentformat = $formdata->internalcomment['format'];
+        }
 
         return $this->feedback;
     }
