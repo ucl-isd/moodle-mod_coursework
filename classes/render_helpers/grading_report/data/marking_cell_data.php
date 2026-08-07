@@ -104,26 +104,30 @@ class marking_cell_data extends cell_data_base {
             if ($row->get_stage()->identifier() === 'moderator') {
                 continue;
             }
-            $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
-                || $this->coursework->viewinitialgradeenabled
-                || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
-            $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
 
             if ($feedback = $row->get_feedback()) {
+                $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission);
+                $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
-            } else if (
-                isset($submission)
-                &&
-                feedback::can_add_new($rowsbase->get_coursework(), $submission, $row->get_stage()->identifier())
-            ) {
-                $marker->addfeedback = (object)[
-                    'markurl' => $this->get_mark_url(
-                        'new',
-                        $submission,
-                        $row->get_stage()
-                    ),
-                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
-                ];
+            } else {
+                $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
+                    || $this->coursework->viewinitialgradeenabled
+                    || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
+                $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
+                if (
+                    isset($submission)
+                    &&
+                    feedback::can_add_new($rowsbase->get_coursework(), $submission, $row->get_stage()->identifier())
+                ) {
+                    $marker->addfeedback = (object)[
+                        'markurl' => $this->get_mark_url(
+                            'new',
+                            $submission,
+                            $row->get_stage()
+                        ),
+                        'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
+                    ];
+                }
             }
 
             $rowdata->markers[] = $marker;
