@@ -43,7 +43,9 @@ require_login($course, false, $coursemodule);
 $csvtype = 'markingsheetupload';
 $title = get_string($csvtype, 'mod_coursework');
 
-$PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_grading_sheet.php'));
+$PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_grading_sheet.php', [
+    'cmid' => $coursemoduleid,
+]));
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 $gradingsheetcapabilities = ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'];
@@ -51,13 +53,17 @@ $gradingsheetcapabilities = ['mod/coursework:addinitialgrade', 'mod/coursework:a
 // Bounce anyone who shouldn't be here.
 if (!has_any_capability($gradingsheetcapabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload grading sheets';
-    redirect(new moodle_url('mod/coursework/view.php'), $message);
+    redirect(new moodle_url('/mod/coursework/view.php', [
+        'id' => $coursemoduleid,
+    ]), $message);
 }
 
 $gradinguploadform = new upload_grading_sheet_form($coursemoduleid);
 
 if ($gradinguploadform->is_cancelled()) {
-    redirect("$CFG->wwwroot/mod/coursework/view.php?id=$coursemoduleid");
+    redirect(new moodle_url('/mod/coursework/view.php', [
+        'id' => $coursemoduleid,
+    ]));
 }
 
 if ($data = $gradinguploadform->get_data()) {
