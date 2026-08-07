@@ -102,6 +102,8 @@
         <FIELD NAME="markernumber" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When we have multiple markers, this is useful for making reports where we show marker1, marker2, etc. Without it, the SQL is awkward for LEFT JOIN"/>
         <FIELD NAME="stageidentifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="finalised" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="internalcomment" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Internal comment hidden from students"/>
+        <FIELD NAME="internalcommentformat" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -367,5 +369,6 @@
         <KEY NAME="fk_mbyuid" TYPE="foreign" FIELDS="modifiedbyuserid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
+
   </TABLES>
 </XMLDB>
