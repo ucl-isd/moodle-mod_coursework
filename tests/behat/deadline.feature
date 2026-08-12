@@ -96,3 +96,18 @@ Feature: Deadlines extensions for submissions
     Then I should not see "Extension" in the "student student1" "table_row"
     When I am on the "Coursework" "coursework activity" page
     Then I should not see "Extension" in the "student student1" "table_row"
+
+  @javascript
+  Scenario: The student can submit after the deadline if they have a personal deadline
+    Given the following "activity" exists:
+      | activity          | coursework    |
+      | course            | C1            |
+      | name              | Coursework2   |
+      | deadline          | ##yesterday## |
+      | extensionsenabled | 1             |
+      | personaldeadlineenabled  | 1      |
+    And the following "mod_coursework > personaldeadlines" exist:
+      | allocatable | coursework  | deadline     |
+      | student1    | Coursework2 | ##+2 weeks## |
+    When I am on the "Coursework2" "coursework activity" page logged in as "student1"
+    Then I should see "Upload your submission"
