@@ -267,7 +267,7 @@ class audit {
      * @return int
      */
     protected function count_agreements_within_boundary(array $row, array $boundary, string $type): int {
-        $agreements = $row[$type];
+        $agreements = $this->adjust_grades_to_percentages($row[$type]);
         // Filter out elements not within the boundaries.
         $min = $boundary[0];
         $max = $boundary[1];
@@ -377,6 +377,19 @@ class audit {
         $max = $boundary[1];
         $filtered = array_filter($grades, fn($grade) => $grade >= $min && $grade <= $max);
         return count($filtered);
+    }
+
+    /**
+     * Adjust grades in the array to percentages, based on maxgrade of the activity.
+     * @param array $grades
+     * @return array
+     */
+    protected function adjust_grades_to_percentages(array $grades): array {
+        $maxgrade = $this->coursework->get_max_grade();
+        if ($maxgrade === 100) {
+            return $grades;
+        }
+        return array_map(fn($grade) => round(($grade / $maxgrade) * 100), $grades);
     }
 
     /**
@@ -510,6 +523,9 @@ class audit {
 
         sort($grades);
 
+        // If the max grade on the activity is not 100, then we need to adjust the grades into correct percentages.
+        $grades = $this->adjust_grades_to_percentages($grades);
+
         return $grades;
     }
 
@@ -526,6 +542,9 @@ class audit {
               FROM {coursework_feedbacks} f
               JOIN {coursework_submissions} s ON f.submissionid = s.id
              WHERE s.courseworkid = :id
+               AND f.finalised = 1
+               AND f.stageidentifier LIKE 'assessor_%'
+               AND f.ismoderation = 0
         ";
         $params = [
             'id' => $this->coursework->id,
