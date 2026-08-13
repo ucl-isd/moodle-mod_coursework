@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/coursework/db" VERSION="20250828" COMMENT="XMLDB file for Moodle mod/coursework"
+<XMLDB PATH="mod/coursework/db" VERSION="20260807" COMMENT="XMLDB file for Moodle mod/coursework"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -102,6 +102,8 @@
         <FIELD NAME="markernumber" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When we have multiple markers, this is useful for making reports where we show marker1, marker2, etc. Without it, the SQL is awkward for LEFT JOIN"/>
         <FIELD NAME="stageidentifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="finalised" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="internalcomment" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Internal comment hidden from students"/>
+        <FIELD NAME="internalcommentformat" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -132,9 +134,9 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="courseworkid-id" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id" COMMENT="links the coursework and submission tables"/>
       </KEYS>
-        <INDEXES>
-            <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
-        </INDEXES>
+      <INDEXES>
+        <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_reminder" COMMENT="coursework reminder">
       <FIELDS>
@@ -170,8 +172,8 @@
         <KEY NAME="assessor_fk" TYPE="foreign" FIELDS="assessorid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
-          <INDEX NAME="courseworkid-ix" UNIQUE="false" FIELDS="courseworkid"/>
-          <INDEX NAME="courseworkid-allocatableid-allocatabletype-ix" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+        <INDEX NAME="courseworkid-ix" UNIQUE="false" FIELDS="courseworkid"/>
+        <INDEX NAME="courseworkid-allocatableid-allocatabletype-ix" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_mod_set_rules" COMMENT="Moderation sets for each coursework need to include certain groups e.g. all students with grades less than 40%. This allows us to keep track of which rules have been added. The order matters as some will be top-up rules.">
@@ -236,20 +238,20 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
       </KEYS>
-        <INDEXES>
-            <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
-        </INDEXES>
+      <INDEXES>
+        <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_sample_set_rules" COMMENT="Automatic sample sets for each coursework stage. This allows us to keep track of which rules have been added. The order matters as some will be top-up rules.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-        <FIELD NAME="samplesetpluginid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-        <FIELD NAME="ruleorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-        <FIELD NAME="upperlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" />
-        <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" />
-        <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-        <FIELD NAME="stageidentifier" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="samplesetpluginid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="ruleorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="upperlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="stageidentifier" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -259,8 +261,8 @@
     <TABLE NAME="coursework_sample_set_plugin" COMMENT="Sample set plugins">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="rulename" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-        <FIELD NAME="pluginorder" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="rulename" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="pluginorder" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -295,25 +297,24 @@
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="personaldeadline" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="createdbyid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"  SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="lastmodifiedbyid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
-        <INDEXES>
-            <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
-        </INDEXES>
+      <INDEXES>
+        <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+      </INDEXES>
     </TABLE>
-
     <TABLE NAME="coursework_mod_agreements" COMMENT="Stores moderation agreements.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="feedbackid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="moderatorid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="agreement" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"  SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="lasteditedby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="modcomment" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
@@ -334,7 +335,7 @@
         <FIELD NAME="comment" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="commentformat" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"  SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="lasteditedby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
@@ -344,6 +345,5 @@
         <KEY NAME="submissionid-fk" TYPE="foreign" FIELDS="submissionid" REFTABLE="coursework_submissions" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-
   </TABLES>
 </XMLDB>
