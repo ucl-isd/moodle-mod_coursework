@@ -79,7 +79,7 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
-          moodle-plugin-ci add-plugin --branch UCL_2026020300 --clone https://github.com/ucl-isd/moodle-plagiarism_turnitin.git
+          moodle-plugin-ci add-plugin --branch UCL_2026081300 --clone https://github.com/ucl-isd/moodle-plagiarism_turnitin.git
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
