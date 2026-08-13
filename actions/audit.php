@@ -23,9 +23,12 @@
  * @author     Conn Warwicker <conn.warwicker@catalyst-eu.net>
  */
 
+use mod_coursework\forms\moderator_stats_form;
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 
 $cmid = required_param('cmid', PARAM_INT);
+$confirmdelete = optional_param('confirmdelete', false, PARAM_BOOL);
 
 // Must be logged in and have access to the course.
 [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'coursework');
@@ -37,10 +40,42 @@ require_capability('mod/coursework:moderate', $context);
 
 $audit = new \mod_coursework\audit($cmid);
 $title = get_string('gradingaudit', 'coursework');
+$coursework = \mod_coursework\models\coursework::get_from_id($cm->instance, MUST_EXIST);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cmid]));
 $PAGE->set_title($title);
+
+$form = new moderator_stats_form($PAGE->url, [
+    'courseworkid' => $coursework->id,
+    'context' => $context,
+]);
+$audit->set_form($form);
+
+if ($confirmdelete && data_submitted() && confirm_sesskey()) {
+    $form->remove_appraisal();
+    redirect($PAGE->url);
+};
+
+if ($data = $form->get_data()) {
+    // Are we removing the appraisal?
+    if (isset($data->submitremove)) {
+        echo $OUTPUT->header();
+        echo $OUTPUT->confirm(
+            get_string('confirmremoveappraisal', 'mod_coursework'),
+            new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cmid, 'confirmdelete' => 1]),
+            $PAGE->url
+        );
+        echo $OUTPUT->footer();
+        exit;
+    }
+
+    $form->process_data($data);
+    // We're redirecting back here again because when you delete the appraisal, it keeps the sticky form values.
+    redirect($PAGE->url);
+} else {
+    $form->set_data($audit->get_moderator_appraisal_form_data());
+}
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($title);
