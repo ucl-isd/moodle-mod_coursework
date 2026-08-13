@@ -25,7 +25,13 @@
 
 namespace mod_coursework;
 
+use context_module;
+use core\context\module;
 use mod_coursework\auto_grader\average_grade_no_straddle;
+use mod_coursework\event\moderator_appraisal_created;
+use mod_coursework\event\moderator_appraisal_deleted;
+use mod_coursework\event\moderator_appraisal_updated;
+use mod_coursework\forms\moderator_stats_form;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use stdClass;
@@ -50,6 +56,21 @@ class audit {
     protected stdClass $course;
 
     /**
+     * @var moderator_stats_form Form object.
+     */
+    protected moderator_stats_form $form;
+
+    /**
+     * @var stdClass Appraisal record.
+     */
+    protected stdClass $appraisal;
+
+    /**
+     * @var context_module Context object.
+     */
+    protected context_module $context;
+
+    /**
      * Build the audit object from the course module id.
      * @param int $cmid
      */
@@ -59,6 +80,24 @@ class audit {
         $this->cmid = $cmid;
         $this->course = $course;
         $this->coursework = coursework::get_from_id($cm->instance, MUST_EXIST);
+        $this->context = context_module::instance($cmid);
+    }
+
+    /**
+     * Set the form object.
+     * @param moderator_stats_form $form
+     * @return void
+     */
+    public function set_form(moderator_stats_form $form): void {
+        $this->form = $form;
+    }
+
+    /**
+     * Set appraisal record.
+     * @param stdClass $data
+     */
+    public function set_appraisal(stdClass $data): void {
+        $this->appraisal = $data;
     }
 
     /**
@@ -94,6 +133,13 @@ class audit {
             $moderationsummary,
             $moderationsample
         );
+
+        if (isset($this->form)) {
+            $data->form = $this->form->render();
+        } else if (isset($this->appraisal)) {
+            $data->appraisal = $this->appraisal;
+        }
+
         return $OUTPUT->render_from_template('mod_coursework/audit/report', $data);
     }
 
@@ -354,6 +400,11 @@ class audit {
                 });
             }
 
+            // Filter by finalised only.
+            $feedback = array_filter($feedback, function ($f) {
+                return $f->finalised;
+            });
+
             // If any exist, yes this was marked.
             if ($feedback) {
                 $marked++;
@@ -553,5 +604,165 @@ class audit {
         }
 
         return $DB->get_records_sql($sql, $params);
+    }
+
+    /**
+     * Get appraisal record.
+     * @param int $courseworkid
+     * @return mixed
+     */
+    public static function get_moderator_appraisal(int $courseworkid, int $contextid) {
+        global $DB;
+        $record = $DB->get_record('coursework_moderator_appraisals', ['courseworkid' => $courseworkid]);
+        if ($record) {
+            $user = $DB->get_record('user', ['id' => $record->modifiedbyuserid]);
+            if ($user) {
+                $record->user = fullname($user);
+            }
+            $record->time = userdate($record->modifiedtime);
+            $record->markingcriteriarecommendations = format_text($record->markingcriteriarecommendations, FORMAT_HTML);
+            $record->markersmarkingrecommendations = format_text($record->markersmarkingrecommendations, FORMAT_HTML);
+            $record->feedbackrecommendations = format_text($record->feedbackrecommendations, FORMAT_HTML);
+            $record->goodpracticecomments = format_text($record->goodpracticecomments, FORMAT_HTML);
+            $record->generalcomments = format_text($record->generalcomments, FORMAT_HTML);
+
+            // Is there a file upload?
+            $fs = get_file_storage();
+            $files = $fs->get_area_files(
+                $contextid,
+                'mod_coursework',
+                'appraisal',
+                $courseworkid,
+                'itemid',
+                false
+            );
+
+            // There can only be 1 file upload.
+            $file = reset($files);
+            if ($file) {
+                $record->url = \moodle_url::make_pluginfile_url(
+                    $file->get_contextid(),
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    $file->get_itemid(),
+                    $file->get_filepath(),
+                    $file->get_filename(),
+                    true,
+                );
+                $record->filename = $file->get_filename();
+            }
+        }
+        return $record;
+    }
+
+    /**
+     * Remove appraisal.
+     * @param stdClass $appraisal
+     * @param module $context
+     */
+    public function remove_appraisal(stdClass $appraisal, module $context): void {
+        global $DB, $USER;
+
+        $DB->delete_records('coursework_moderator_appraisals', [
+            'id' => $appraisal->id,
+        ]);
+
+        get_file_storage()->delete_area_files(
+            $context->id,
+            'mod_coursework',
+            'appraisal',
+            $appraisal->courseworkid
+        );
+
+        $event = moderator_appraisal_deleted::create([
+            'objectid' => $appraisal->id,
+            'userid' => $USER->id ?? 0,
+            'context' => $context,
+            'other' => [
+                'courseworkid' => $appraisal->courseworkid,
+            ],
+        ]);
+        $event->trigger();
+    }
+
+    /**
+     * Update or insert field/value pair for this appraisal.
+     * @param array $data
+     * @return bool|int
+     */
+    protected static function upsert(array $data, module $context, int $courseworkid): bool|int {
+        global $DB, $USER;
+        $record = new stdClass();
+        $record->courseworkid = $courseworkid;
+        $record->representative = $data['representative'];
+        $record->markingcriteriaconsistent = $data['markingcriteriaconsistent'];
+        $record->markingcriteriarecommendations = $data['markingcriteriarecommendations'];
+        $record->markersmarkingconsistent = $data['markersmarkingconsistent'];
+        $record->markersmarkingrecommendations = $data['markersmarkingrecommendations'];
+        $record->feedbackappropriate = $data['feedbackappropriate'];
+        $record->feedbackrecommendations = $data['feedbackrecommendations'];
+        $record->goodpracticecomments = $data['goodpracticecomments'];
+        $record->generalcomments = $data['generalcomments'];
+        $record->modifiedtime = time();
+        $record->modifiedbyuserid = $USER->id;
+        $record->finalised = $data['finalised'];
+
+        // Does a record exist already?
+        $id = $DB->get_field('coursework_moderator_appraisals', 'id', [
+            'courseworkid' => $courseworkid,
+        ]);
+
+        if ($id) {
+            $record->id = $id;
+            $updated = $DB->update_record('coursework_moderator_appraisals', $record);
+            if ($updated) {
+                $event = moderator_appraisal_updated::create([
+                    'objectid' => $id,
+                    'userid' => $USER->id ?? 0,
+                    'context' => $context,
+                    'other' => [
+                        'courseworkid' => $courseworkid,
+                    ],
+                ]);
+                $event->trigger();
+            }
+            return $updated;
+        } else {
+            $newid = $DB->insert_record('coursework_moderator_appraisals', $record);
+            $event = moderator_appraisal_created::create([
+                'objectid' => $newid,
+                'userid' => $USER->id ?? 0,
+                'context' => $context,
+                'other' => [
+                    'courseworkid' => $courseworkid,
+                ],
+            ]);
+            $event->trigger();
+            return $newid;
+        }
+    }
+
+    /**
+     * Save the appraisal.
+     * @param array $data
+     * @param module $context
+     * @param int $courseworkid
+     */
+    public static function save_appraisal(array $data, module $context, int $courseworkid): void {
+        // Insert/Update the record.
+        static::upsert($data, $context, $courseworkid);
+
+        // Save the file if there is one.
+        file_save_draft_area_files(
+            $data['file'],
+            $context->id,
+            'mod_coursework',
+            'appraisal',
+            $courseworkid,
+            [
+                'maxfiles' => 1,
+                'accepted_types' => ['document'],
+            ]
+        );
     }
 }

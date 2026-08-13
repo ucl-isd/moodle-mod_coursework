@@ -46,7 +46,7 @@ final class audit_test extends \advanced_testcase {
     }
 
     /**
-     * @covers \mod_coursework\audit::calculate_statistics
+     * @covers \mod_coursework\audit::calculate_grade_statistics
      */
     public function test_calculate_statistics_returns_zeroes_for_empty_grades(): void {
         $audit = $this->get_testable_audit();
@@ -61,7 +61,7 @@ final class audit_test extends \advanced_testcase {
     }
 
     /**
-     * @covers \mod_coursework\audit::calculate_statistics
+     * @covers \mod_coursework\audit::calculate_grade_statistics
      */
     public function test_calculate_statistics_for_odd_grade_count(): void {
         $audit = $this->get_testable_audit();
@@ -78,7 +78,7 @@ final class audit_test extends \advanced_testcase {
     }
 
     /**
-     * @covers \mod_coursework\audit::calculate_statistics
+     * @covers \mod_coursework\audit::calculate_grade_statistics
      */
     public function test_calculate_statistics_for_even_grade_count(): void {
         $audit = $this->get_testable_audit();

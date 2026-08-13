@@ -1,0 +1,161 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/audit/readonly_form
+
+    Example context (json):
+    {
+        "appraisal": {
+            "user": "Teacher One",
+            "time": "01-01-2026 00:00",
+            "representative": 1,
+            "markingcriteriaconsistent": 1,
+            "markingcriteriarecommendations": "Some recommendations",
+            etc...
+        }
+    }
+}}
+{{#appraisal}}
+    <div id="mod_coursework_appraisal_readonly" class="fcontainer">
+        <h3>{{#str}} statsappraisal, mod_coursework {{/str}}</h3>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} user {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_user" class="form-control-static">{{user}}</div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} timemodified, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_time" class="form-control-static">{{time}}</div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:representative, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_representative" class="form-control-static">
+                    {{#representative}}
+                        {{#str}} yes {{/str}}
+                    {{/representative}}
+                    {{^representative}}
+                        {{#str}} no {{/str}}
+                    {{/representative}}
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:markingcriteriaconsistent, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_markingcriteriaconsistent" class="form-control-static">
+                    {{#markingcriteriaconsistent}}
+                        {{#str}} yes {{/str}}
+                    {{/markingcriteriaconsistent}}
+                    {{^markingcriteriaconsistent}}
+                        {{#str}} no {{/str}}
+                    {{/markingcriteriaconsistent}}
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:recommendations, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_markingcriteriarecommendations" class="form-control-static">{{{markingcriteriarecommendations}}}</div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:markersmarkingconsistent, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_markersmarkingconsistent" class="form-control-static">
+                    {{#markersmarkingconsistent}}
+                        {{#str}} yes {{/str}}
+                    {{/markersmarkingconsistent}}
+                    {{^markersmarkingconsistent}}
+                        {{#str}} no {{/str}}
+                    {{/markersmarkingconsistent}}
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:recommendations, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_markersmarkingrecommendations" class="form-control-static">{{{markersmarkingrecommendations}}}</div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:feedbackappropriate, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_feedbackappropriate" class="form-control-static">
+                    {{#feedbackappropriate}}
+                        {{#str}} yes {{/str}}
+                    {{/feedbackappropriate}}
+                    {{^feedbackappropriate}}
+                        {{#str}} no {{/str}}
+                    {{/feedbackappropriate}}
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:recommendations, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_feedbackrecommendations" class="form-control-static">{{{feedbackrecommendations}}}</div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:goodpracticecomments, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_goodpracticecomments" class="form-control-static">{{{goodpracticecomments}}}</div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:generalcomments, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_generalcomments" class="form-control-static">{{{generalcomments}}}</div>
+            </div>
+        </div>
+        {{#url}}
+            <div class="mb-4 row fitem">
+                <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                    <span class="d-inline-block">{{#str}} file {{/str}}</span>
+                </div>
+                <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                    <div id="mod_coursework_appraisal_file" class="form-control-static"><a href="{{url}}">{{filename}}</a></div>
+                </div>
+            </div>
+        {{/url}}
+    </div>
+{{/appraisal}}
