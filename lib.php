@@ -915,7 +915,12 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
     }
 
     // Link to statistics page.
-    if (has_capability('mod/coursework:moderate', $context)) {
+    // Currently this is restricted to activities using numeric grading, and only 1 marker (with moderation).
+    if (
+        has_capability('mod/coursework:moderate', $context)
+        && $coursework->uses_numeric_grade()
+        && $coursework->get_max_markers() === 1
+    ) {
         $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
         $navref->add(
             get_string('gradingaudit', 'mod_coursework'),

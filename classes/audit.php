@@ -389,7 +389,7 @@ class audit {
         if ($maxgrade === 100) {
             return $grades;
         }
-        return array_map(fn($grade) => round(($grade / $maxgrade) * 100), $grades);
+        return array_map(fn($grade) => round(($grade / $maxgrade) * 100, 2), $grades);
     }
 
     /**

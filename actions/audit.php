@@ -36,11 +36,13 @@ $context = \core\context\module::instance($cmid);
 require_capability('mod/coursework:moderate', $context);
 
 $audit = new \mod_coursework\audit($cmid);
+$title = get_string('gradingaudit', 'coursework');
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cmid]));
+$PAGE->set_title($title);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('gradingaudit', 'coursework'));
+echo $OUTPUT->heading($title);
 echo $audit->report();
 echo $OUTPUT->footer();
