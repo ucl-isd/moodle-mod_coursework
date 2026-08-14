@@ -86,7 +86,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $isguide = $advancedmarking && $coursework->is_using_marking_guide();
 
         // Initial assessor feedback.
-        $previousfeedbacks = $submission->get_assessor_feedbacks();
+        $previousfeedbacks = [];
+        foreach ($submission->get_assessor_feedbacks() as $feedback) {
+            $previousfeedbacks[$feedback->id] = $feedback;
+        }
 
         // Different final grading method?
         $differentfinal = $coursework->finalstagegrading > 0;
@@ -99,7 +102,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if ($advancedmarking) {
             // If we are not using a different method at the end, we can append the final feedback here.
             if (!$differentfinal && $final) {
-                $previousfeedbacks[] = $final;
+                $previousfeedbacks[$final->id] = $final;
             }
             // Advanced marking.
             $template->feedback[] = $this->render_comparison_view(
@@ -116,7 +119,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             // Simple direct grading.
             // Here we can always just append the final feedback.
             if ($final) {
-                $previousfeedbacks[] = $final;
+                $previousfeedbacks[$final->id] = $final;
             }
 
             $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
