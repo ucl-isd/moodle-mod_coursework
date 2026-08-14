@@ -96,34 +96,32 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $template->feedback = [];
 
-        if (!empty($previousfeedbacks)) {
-            if ($advancedmarking) {
-                // If we are not using a different method at the end, we can append the final feedback here.
-                if (!$differentfinal && $final) {
-                    $previousfeedbacks[] = $final;
-                }
-                // Advanced marking.
-                $template->feedback[] = $this->render_comparison_view(
-                    $coursework,
-                    $previousfeedbacks,
-                    $isguide
-                );
-                // If we ARE using a different method at the end, now we need to append that rendered correctly.
-                if ($differentfinal && $final) {
-                    $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-                    $template->feedback[] = $objrenderer->render_feedback($final, true);
-                }
-            } else {
-                // Simple direct grading.
-                // Here we can always just append the final feedback.
-                if ($final) {
-                    $previousfeedbacks[] = $final;
-                }
-
+        if ($advancedmarking) {
+            // If we are not using a different method at the end, we can append the final feedback here.
+            if (!$differentfinal && $final) {
+                $previousfeedbacks[] = $final;
+            }
+            // Advanced marking.
+            $template->feedback[] = $this->render_comparison_view(
+                $coursework,
+                $previousfeedbacks,
+                $isguide
+            );
+            // If we ARE using a different method at the end, now we need to append that rendered correctly.
+            if ($differentfinal && $final) {
                 $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-                foreach ($previousfeedbacks as $prev) {
-                    $template->feedback[] = $objrenderer->render_feedback($prev, true);
-                }
+                $template->feedback[] = $objrenderer->render_feedback($final, true);
+            }
+        } else {
+            // Simple direct grading.
+            // Here we can always just append the final feedback.
+            if ($final) {
+                $previousfeedbacks[] = $final;
+            }
+
+            $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
+            foreach ($previousfeedbacks as $prev) {
+                $template->feedback[] = $objrenderer->render_feedback($prev, true);
             }
         }
 
