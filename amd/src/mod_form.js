@@ -15,9 +15,9 @@
 //
 
 /**
- * Rubric labels and make radio buttons work.
+ * Toggle form fields based on grading method and final stage grading values.
  *
- * @module    mod_coursework/rubric
+ * @module    mod_coursework
  * @author    Conn Warwicker <conn.warwicker@catalyst-eu.net>
  * @copyright 2026 onwards Catalyst IT EU {@link https://catalyst-eu.net}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,7 +40,11 @@ const toggleAutomaticAgreementFields = () => {
     const shouldHide = gradingMethod.value !== '' && finalStageGrading.value === '0';
 
     [strategyEl, rangeEl, roundEl].forEach(el => {
-        el.closest('.fitem').style.display = shouldHide ? 'none' : '';
+        if (shouldHide) {
+            el.closest('.fitem').classList.add('d-none');
+        } else {
+            el.closest('.fitem').classList.remove('d-none');
+        }
     });
 };
 
