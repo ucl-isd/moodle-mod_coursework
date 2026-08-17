@@ -116,7 +116,7 @@ class deadline_extension extends table_base {
      */
     public function get_allocatable(): allocatable {
         $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
-        $retval =  $classname::get_from_id($this->allocatableid);
+        $retval = $classname::get_from_id($this->allocatableid);
         if ($retval === false) {
             return new nullallocatable();
         }
