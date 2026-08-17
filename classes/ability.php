@@ -1076,7 +1076,7 @@ class ability extends framework\ability {
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 // Can only edit own feedback.
-                if (!$feedback->assessorid == $this->userid) {
+                if ((int)$feedback->assessorid !== $this->userid) {
                     return false;
                 }
 
