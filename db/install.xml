@@ -364,7 +364,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="presetid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework_sampling_presets id."/>
         <FIELD NAME="samplesetpluginid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework_sample_set_plugin id"/>
-        <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Rule type: percent or grade."/>
+        <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Rule type: percentage or scale; empty for total rules."/>
         <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Lower bound of the range this rule selects."/>
         <FIELD NAME="upperlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Upper bound of the range this rule selects."/>
         <FIELD NAME="ruleorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Rule order."/>
@@ -376,7 +376,7 @@
         <KEY NAME="samplesetpluginid-fk" TYPE="foreign" FIELDS="samplesetpluginid" REFTABLE="coursework_sample_set_plugin" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="coursework_stage_strategies" COMMENT="Stores the allocation strategy. One row per marker per coursework.">
+    <TABLE NAME="coursework_stage_strategies" COMMENT="Stores the allocation strategy. One row per marking stage per coursework.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework id."/>

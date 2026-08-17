@@ -1596,14 +1596,21 @@ function mod_coursework_user_preferences(): array {
 function coursework_populate_sampling_presets(): void {
     global $DB;
 
-    if ($DB->record_exists('coursework_sampling_presets', [])) {
+    if ($DB->count_records('coursework_sampling_presets') > 0) {
         return;
     }
 
     $admin = get_admin();
-    $adminid = $admin ? $admin->id : 0;
+    if (!$admin) {
+        return;
+    }
+    $adminid = $admin->id;
 
-    // 1 = range_sample_type, 2 = total_sample_type.
+    $rangepluginid = $DB->get_field('coursework_sample_set_plugin', 'id', ['rulename' => 'range_sample_type']);
+    $totalpluginid = $DB->get_field('coursework_sample_set_plugin', 'id', ['rulename' => 'total_sample_type']);
+    if (!$rangepluginid || !$totalpluginid) {
+        return;
+    }
 
     // All Fails sample.
     $preset = new stdClass();
@@ -1615,7 +1622,7 @@ function coursework_populate_sampling_presets(): void {
 
     $rule = new stdClass();
     $rule->presetid          = $presetid;
-    $rule->samplesetpluginid = 1;
+    $rule->samplesetpluginid = $rangepluginid;
     $rule->ruletype          = 'percentage';
     $rule->lowerlimit        = 0;
     $rule->upperlimit        = 39;
@@ -1634,7 +1641,7 @@ function coursework_populate_sampling_presets(): void {
     foreach ([[44, 45], [54, 55], [64, 65], [70, 100]] as $i => [$min, $max]) {
         $rule = new stdClass();
         $rule->presetid          = $presetid;
-        $rule->samplesetpluginid = 1;
+        $rule->samplesetpluginid = $rangepluginid;
         $rule->ruletype          = 'percentage';
         $rule->lowerlimit        = $min;
         $rule->upperlimit        = $max;
@@ -1654,7 +1661,7 @@ function coursework_populate_sampling_presets(): void {
     foreach ([[37, 39], [47, 49], [57, 59], [67, 69]] as $i => [$min, $max]) {
         $rule = new stdClass();
         $rule->presetid          = $presetid;
-        $rule->samplesetpluginid = 1;
+        $rule->samplesetpluginid = $rangepluginid;
         $rule->ruletype          = 'percentage';
         $rule->lowerlimit        = $min;
         $rule->upperlimit        = $max;
@@ -1673,7 +1680,7 @@ function coursework_populate_sampling_presets(): void {
 
     $rule = new stdClass();
     $rule->presetid          = $presetid;
-    $rule->samplesetpluginid = 2;
+    $rule->samplesetpluginid = $totalpluginid;
     $rule->ruletype          = '';
     $rule->lowerlimit        = 0;
     $rule->upperlimit        = 10;
