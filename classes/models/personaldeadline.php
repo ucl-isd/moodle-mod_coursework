@@ -66,9 +66,17 @@ class personaldeadline extends table_base {
         return $this->coursework;
     }
 
-    public function get_allocatable() {
+    /**
+     *  Get the user name who is granted/holds the extension.
+     * @return allocatable
+     */
+    public function get_allocatable(): allocatable {
         $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
-        return $classname::get_from_id($this->allocatableid);
+        $retval =  $classname::get_from_id($this->allocatableid);
+        if ($retval === false) {
+            return new nullallocatable();
+        }
+        return $retval;
     }
 
     /**
