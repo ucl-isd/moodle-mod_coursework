@@ -123,15 +123,6 @@ class deadline_extension extends table_base {
         return $retval;
     }
 
-    /**
-     * Get the user name who is granted/holds the extension.
-     * @return mixed
-     */
-    public function get_grantee_user_name() {
-        $allocatable = self::get_allocatable();
-        return $allocatable->name();
-    }
-
     protected function pre_save_hook() {
         global $USER;
 
