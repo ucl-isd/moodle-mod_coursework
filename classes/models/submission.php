@@ -984,20 +984,24 @@ class submission extends table_base implements renderable {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_students() {
-        $allocatables = [];
-        if ($this->get_coursework()->is_configured_to_have_group_submissions() && $this->allocatabletype == 'group') {
-            /**
-             * @var group $group
-             */
-            $group = $this->get_allocatable();
-            $cm = $this->coursework->get_course_module();
-            $allocatables = $group->get_members($this->coursework->get_context(), $cm);
-        } else if (!$this->get_coursework()->is_configured_to_have_group_submissions() && $this->allocatabletype == 'user') {
-            $allocatables = [$this->get_allocatable()];
-        } // If neither, the settings have been changed when they shouldn't have been.
-
-        return $allocatables;
+    public function get_students(): array {
+        $coursework = $this->get_coursework();
+        $allocatable = $this->get_allocatable();
+        if (
+            $coursework->is_configured_to_have_group_submissions()
+            &&
+            $allocatable instanceof group
+        ) {
+            return $allocatable->get_members($coursework->get_context(), $coursework->get_course_module());
+        } else if (
+            !$coursework->is_configured_to_have_group_submissions()
+            &&
+            $allocatable instanceof user
+        ) {
+            return [$allocatable];
+        } else {
+            return [];
+        }
     }
 
     /**
