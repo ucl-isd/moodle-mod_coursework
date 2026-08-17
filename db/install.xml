@@ -250,6 +250,7 @@
         <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" />
         <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
         <FIELD NAME="stageidentifier" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="minimumsamplesize" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="For total rules: minimum number of students to include regardless of percentage calculation."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -345,5 +346,67 @@
       </KEYS>
     </TABLE>
 
+    <TABLE NAME="coursework_sampling_presets" COMMENT="Named global sampling rule presets that can be applied to any coursework stage.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Display name for the preset."/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Optional longer description."/>
+        <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references user id."/>
+        <FIELD NAME="deleted" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Soft delete flag. 1 = deleted."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="createdby-fk" TYPE="foreign" FIELDS="createdby" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_sampling_preset_rules" COMMENT="Individual rules within a sampling preset.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="presetid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework_sampling_presets id."/>
+        <FIELD NAME="samplesetpluginid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework_sample_set_plugin id"/>
+        <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Rule type: percentage or scale; empty for total rules."/>
+        <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Lower bound of the range this rule selects."/>
+        <FIELD NAME="upperlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Upper bound of the range this rule selects."/>
+        <FIELD NAME="ruleorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Rule order."/>
+        <FIELD NAME="minimumsamplesize" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Total rules. Minimum number of students to include"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="presetid-fk" TYPE="foreign" FIELDS="presetid" REFTABLE="coursework_sampling_presets" REFFIELDS="id"/>
+        <KEY NAME="samplesetpluginid-fk" TYPE="foreign" FIELDS="samplesetpluginid" REFTABLE="coursework_sample_set_plugin" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_stage_strategies" COMMENT="Stores the allocation strategy. One row per marking stage per coursework.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework id."/>
+        <FIELD NAME="stageidentifier" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Marking stage, e.g. assessor_1, assessor_2, moderator."/>
+        <FIELD NAME="strategy" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="Strategy name: equal, percentages, group_assessor, or manual."/>
+        <FIELD NAME="autorun" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If 1 this strategy fires automatically on allocation events."/>
+        <FIELD NAME="groupingid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Grouping used for group_assessor strategy. 0 means all."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseworkid-stageidentifier-uix" UNIQUE="true" FIELDS="courseworkid, stageidentifier"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="coursework_stage_strategy_options" COMMENT="Options for a saved allocation strategy.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="strategyid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework_stage_strategies id."/>
+        <FIELD NAME="assessorid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references user id."/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Foreign key references groups id."/>
+        <FIELD NAME="value" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Integer percentage weight assigned to this assessor."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="strategyid-fk" TYPE="foreign" FIELDS="strategyid" REFTABLE="coursework_stage_strategies" REFFIELDS="id"/>
+        <KEY NAME="assessorid-fk" TYPE="foreign" FIELDS="assessorid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="groupid-fk" TYPE="foreign" FIELDS="groupid" REFTABLE="groups" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>

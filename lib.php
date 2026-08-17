@@ -1585,3 +1585,106 @@ function mod_coursework_user_preferences(): array {
         ],
     ];
 }
+
+/**
+ * Populate the sampling presets if none exist yet.
+ *
+ * Called from both db/install.php and db/upgrade.php
+ *
+ * @return void
+ */
+function coursework_populate_sampling_presets(): void {
+    global $DB;
+
+    if ($DB->count_records('coursework_sampling_presets') > 0) {
+        return;
+    }
+
+    $admin = get_admin();
+    if (!$admin) {
+        return;
+    }
+    $adminid = $admin->id;
+
+    $rangepluginid = $DB->get_field('coursework_sample_set_plugin', 'id', ['rulename' => 'range_sample_type']);
+    $totalpluginid = $DB->get_field('coursework_sample_set_plugin', 'id', ['rulename' => 'total_sample_type']);
+    if (!$rangepluginid || !$totalpluginid) {
+        return;
+    }
+
+    // All Fails sample.
+    $preset = new stdClass();
+    $preset->name        = 'All Fails';
+    $preset->description = 'Includes all students graded below 40%.';
+    $preset->createdby   = $adminid;
+    $preset->deleted     = 0;
+    $presetid = $DB->insert_record('coursework_sampling_presets', $preset);
+
+    $rule = new stdClass();
+    $rule->presetid          = $presetid;
+    $rule->samplesetpluginid = $rangepluginid;
+    $rule->ruletype          = 'percentage';
+    $rule->lowerlimit        = 0;
+    $rule->upperlimit        = 39;
+    $rule->ruleorder         = 0;
+    $rule->minimumsamplesize = 0;
+    $DB->insert_record('coursework_sampling_preset_rules', $rule);
+
+    // Mid class sample.
+    $preset = new stdClass();
+    $preset->name        = 'Mid-class sample';
+    $preset->description = 'One or two grades at the midpoint of each class (excluding Fails).';
+    $preset->createdby   = $adminid;
+    $preset->deleted     = 0;
+    $presetid = $DB->insert_record('coursework_sampling_presets', $preset);
+
+    foreach ([[44, 45], [54, 55], [64, 65], [70, 100]] as $i => [$min, $max]) {
+        $rule = new stdClass();
+        $rule->presetid          = $presetid;
+        $rule->samplesetpluginid = $rangepluginid;
+        $rule->ruletype          = 'percentage';
+        $rule->lowerlimit        = $min;
+        $rule->upperlimit        = $max;
+        $rule->ruleorder         = $i;
+        $rule->minimumsamplesize = 0;
+        $DB->insert_record('coursework_sampling_preset_rules', $rule);
+    }
+
+    // Upper borderlines.
+    $preset = new stdClass();
+    $preset->name        = 'Upper Borderlines';
+    $preset->description = 'Students just below each class boundary (37-39, 47-49, 57-59, 67-69).';
+    $preset->createdby   = $adminid;
+    $preset->deleted     = 0;
+    $presetid = $DB->insert_record('coursework_sampling_presets', $preset);
+
+    foreach ([[37, 39], [47, 49], [57, 59], [67, 69]] as $i => [$min, $max]) {
+        $rule = new stdClass();
+        $rule->presetid          = $presetid;
+        $rule->samplesetpluginid = $rangepluginid;
+        $rule->ruletype          = 'percentage';
+        $rule->lowerlimit        = $min;
+        $rule->upperlimit        = $max;
+        $rule->ruleorder         = $i;
+        $rule->minimumsamplesize = 0;
+        $DB->insert_record('coursework_sampling_preset_rules', $rule);
+    }
+
+    // Higher of 10% or 5.
+    $preset = new stdClass();
+    $preset->name        = 'Higher of 10% or 5';
+    $preset->description = 'At least 10% of the cohort or 5 students, whichever is greater.';
+    $preset->createdby   = $adminid;
+    $preset->deleted     = 0;
+    $presetid = $DB->insert_record('coursework_sampling_presets', $preset);
+
+    $rule = new stdClass();
+    $rule->presetid          = $presetid;
+    $rule->samplesetpluginid = $totalpluginid;
+    $rule->ruletype          = '';
+    $rule->lowerlimit        = 0;
+    $rule->upperlimit        = 10;
+    $rule->ruleorder         = 0;
+    $rule->minimumsamplesize = 5;
+    $DB->insert_record('coursework_sampling_preset_rules', $rule);
+}

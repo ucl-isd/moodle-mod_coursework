@@ -37,4 +37,8 @@ function xmldb_coursework_install() {
         $DB->insert_record('coursework_sample_set_plugin', $dbrecord);
         $i++;
     }
+
+    // Populate the example presets.
+    require_once(__DIR__ . '/../lib.php');
+    coursework_populate_sampling_presets();
 }
