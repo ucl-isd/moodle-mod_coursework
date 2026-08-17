@@ -587,16 +587,50 @@ class submission extends table_base implements renderable {
             return null;
         }
 
-        // Temp - will be replaced with asking the appropriate stage for the feedback.
-        if ($this->has_multiple_markers() && ($this->get_coursework()->sampling_enabled() == 0) || $this->sampled_feedback_exists()) {
-            $identifier = 'final_agreed_1';
-        } else {
-            $identifier = 'assessor_1';
-        }
         return feedback::get_cached_object(
             $this->courseworkid,
-            ['submissionid' => $this->id, 'stageidentifier' => $identifier]
-        ) ?: null;
+            ['submissionid' => $this->id, 'stageidentifier' => $this->get_final_stage_identifier()]
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function get_final_stage_identifier(): string {
+        $coursework = $this->get_coursework();
+
+        // If there's only one marking stage then it's assessor 1
+        if (!$coursework->has_multiple_markers()) {
+            return 'assessor_1';
+        }
+
+        // If there are multiple markers and no sampling then it's always final_agreed_1.
+        if ($coursework->has_multiple_markers() && !$coursework->sampling_enabled()) {
+            return 'final_agreed_1';
+        }
+
+        // If multiple markers, sampling is enabled and the submission allocatable is included in any sample stage
+        // then it's final_agreed_1.
+        if (
+            $coursework->has_multiple_markers()
+            &&
+            $coursework->sampling_enabled()
+        ) {
+            $allocatable = $this->get_allocatable();
+            $includedinsample = assessment_set_membership::cached_objects_exist(
+                $coursework->id,
+                ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
+            );
+
+            if ($includedinsample) {
+                return 'final_agreed_1';
+            } else {
+                return 'assessor_1';
+            }
+        }
+
+        debugging('Unable to identify final stage identifier, defaulting to assessor_1', DEBUG_DEVELOPER);
+        return 'assessor_1';
     }
 
     /**
@@ -613,6 +647,19 @@ class submission extends table_base implements renderable {
         }
 
         return false;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function get_grade_capped_by_submission_time() {
+        $gradebookfeedback = $this->get_final_feedback();
+
+        if ($gradebookfeedback && ($this->ready_to_publish()) || $this->already_published()) {
+            return $gradebookfeedback->get_grade();
+        }
+
+        return null;
     }
 
     /**
@@ -749,16 +796,6 @@ class submission extends table_base implements renderable {
         } else {
             return get_string('hidden', 'mod_coursework');
         }
-    }
-
-    /**
-     * Tells us whether this has been given its final grade
-     *
-     * @return bool
-     */
-    public function has_final_agreed_grade() {
-        $stage = $this->coursework->get_final_agreed_marking_stage();
-        return $stage->has_feedback($this->get_allocatable());
     }
 
     /**
@@ -1026,8 +1063,7 @@ class submission extends table_base implements renderable {
             return false;
         }
 
-        $gradejudge = new grade_judge($this->get_coursework());
-        if ($gradejudge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
+        if (!empty($this->get_final_feedback()) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
             return true;
         }
 
@@ -1056,8 +1092,7 @@ class submission extends table_base implements renderable {
             // Not sure why it needs both.
             $grade->grade = $cappedgrade;
             $grade->rawgrade = $cappedgrade;
-
-            $grade->dategraded = $judge->get_time_graded($this);
+            $grade->dategraded = $this->get_final_feedback()->timemodified ?? null;
         }
 
         if (coursework_grade_item_update($this->get_coursework(), $studentgradestoupdate) == GRADE_UPDATE_OK) {

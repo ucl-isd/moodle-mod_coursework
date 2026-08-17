@@ -52,19 +52,6 @@ class grade_judge {
     }
 
     /**
-     * @param submission $submission
-     * @return int|null
-     */
-    public function get_grade_capped_by_submission_time($submission) {
-
-        if (empty($submission)) {
-            return null;
-        }
-
-        return $this->get_submission_grade_to_use($submission);
-    }
-
-    /**
      * @param int|float $grade
      * @return float
      */
@@ -105,81 +92,7 @@ class grade_judge {
      * @return float
      */
     public function get_grade_for_gradebook($submission) {
-        return $this->round_grade_decimals($this->get_grade_capped_by_submission_time($submission));
-    }
-
-    /**
-     * @param submission $submission
-     * @return int|null
-     */
-    private function get_submission_grade_to_use($submission): int|null {
-        $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($submission);
-
-        if ($gradebookfeedback && ($submission->ready_to_publish()) || $submission->already_published()) {
-            return $gradebookfeedback->get_grade();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param submission $submission
-     * @return feedback|bool
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function get_feedback_that_is_promoted_to_gradebook($submission): feedback|bool {
-        if (!$submission->id()) {
-            return false;
-        }
-
-        $stageidentifier = 'assessor_1';
-
-        if ($this->coursework->has_multiple_markers()) {
-            $stageidentifier = 'final_agreed_1';
-        }
-
-        if (
-            $this->coursework->sampling_enabled()
-            &&
-            $allocatable = $submission->get_allocatable()
-        ) {
-            if (
-                assessment_set_membership::cached_objects_exist(
-                    $this->coursework->id,
-                    ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
-                )
-            ) {
-                $stageidentifier = 'final_agreed_1';
-            }
-        }
-
-        return feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => $stageidentifier]);
-    }
-
-    /**
-     * @param submission $submission
-     * @return bool
-     */
-    public function has_feedback_that_is_promoted_to_gradebook($submission): bool {
-        return !empty($this->get_feedback_that_is_promoted_to_gradebook($submission));
-    }
-
-    /**
-     * @param submission $submission
-     * @return int|null
-     */
-    public function get_time_graded($submission): int|null {
-        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->timemodified ?? null;
-    }
-
-    /**
-     * @param feedback $feedback
-     * @return bool
-     */
-    public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback): bool {
-        $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
-        return $gradebookfeedback && $gradebookfeedback->id() == $feedback->id;
+        return $this->round_grade_decimals($submission->get_grade_capped_by_submission_time());
     }
 
     public function grade_in_scale($value) {

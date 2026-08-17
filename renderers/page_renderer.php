@@ -453,7 +453,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Mark.
         if ($submission->is_published()) {
             $judge = new grade_judge($coursework);
-            $gradeforgradebook = $judge->get_grade_capped_by_submission_time($submission);
+            $gradeforgradebook = $submission->get_grade_capped_by_submission_time();
             $template->mark = $judge->grade_to_display($gradeforgradebook);
         }
 

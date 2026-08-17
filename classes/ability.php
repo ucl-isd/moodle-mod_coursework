@@ -1194,7 +1194,7 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $judge = new grade_judge($feedback->get_coursework());
                 return $feedback->get_submission()->is_published() &&
-                $judge->is_feedback_that_is_promoted_to_gradebook($feedback) &&
+                $feedback->is_agreed_grade() &&
                 $feedback->get_submission()->belongs_to_user($this->userid);
             }
         );
