@@ -149,12 +149,11 @@ class audit {
      * @return array
      */
     protected function get_moderation_summary(array $moderatorstats): array {
-        $data = [];
-        $data['moderation_stats'] = [
+        $data = ['moderation_stats' => [
             'total' => 0,
             'total_agreed' => 0,
             'total_disagreed' => 0,
-        ];
+        ]];
 
         // Loop through each moderator's stats to count up how many have been moderated.
         if (isset($moderatorstats['moderator_stats'])) {
@@ -195,7 +194,7 @@ class audit {
     protected function get_moderation_data(): array {
         global $DB;
 
-        $data = [];
+        $data = ['moderator_stats' => []];
 
         // First, count how many submissions have been moderated.
         $feedbacks = $this->get_feedback();
@@ -234,13 +233,13 @@ class audit {
             // We need to go through the grade boundaries and work out how many they disagreed with for each.
             $boundaries = $this->get_boundaries();
 
-            $data['moderator_stats'] = [];
             foreach ($permoderator as $row) {
-                $mdata = [];
-                $mdata['name'] = $row['name'];
-                $mdata['boundaries'] = [];
-                $mdata['agreed'] = 0;
-                $mdata['disagreed'] = 0;
+                $mdata = [
+                    'name' => $row['name'],
+                    'boundaries' => [],
+                    'agreed' => 0,
+                    'disagreed' => 0,
+                ];
                 foreach ($boundaries as $boundary) {
                     $agreed = $this->count_agreements_within_boundary($row, $boundary, 'agreed');
                     $disagreed = $this->count_agreements_within_boundary($row, $boundary, 'disagreed');
@@ -280,10 +279,7 @@ class audit {
      * @return array
      */
     protected function get_boundaries(): array {
-        $boundaries = average_grade_no_straddle::get_config_setting('autogradeclassboundaries');
-        if (!is_array($boundaries)) {
-            $boundaries = [];
-        }
+        $boundaries = average_grade_no_straddle::get_config_setting('autogradeclassboundaries') ?? [];
         // Reverse the array so it's lowest to highest (probably - if the config setting is correctly formatted).
         $boundaries = array_reverse($boundaries);
         return $boundaries;
@@ -297,42 +293,43 @@ class audit {
     protected function get_marker_statistics(array $submissions): array {
         $boundaries = $this->get_boundaries();
 
-        $data = [];
-        $data['marker_stats_headers'] = [];
+        $data = [
+            'marker_stats_headers' => [],
+            'marker_stats_data' => [],
+        ];
         foreach ($boundaries as $boundary) {
             $data['marker_stats_headers'][] = $boundary[0] . ' - ' . $boundary[1];
         }
 
         // Now let's calculate everything per marker.
-        $data['marker_stats_data'] = [];
         $assessors = $this->coursework->get_all_assessors();
         foreach ($assessors as $assessor) {
             // Get the grade data for just this assessor.
             $grades = $this->get_grades($assessor->id);
 
-            $assdata = [];
-            $assdata['name'] = fullname($assessor);
+            $assessordata = [];
+            $assessordata['name'] = fullname($assessor);
 
             // Boundary statistics.
-            $assdata['boundaries'] = [];
+            $assessordata['boundaries'] = [];
             foreach ($boundaries as $boundary) {
-                $assdata['boundaries'][] = $this->count_grades_within_boundary($grades, $boundary);
+                $assessordata['boundaries'][] = $this->count_grades_within_boundary($grades, $boundary);
             }
 
             // Calculate their overall grade statistics.
             $stats = $this->calculate_grade_statistics($grades);
-            $assdata['mean'] = $stats['mean'];
-            $assdata['median'] = $stats['median'];
-            $assdata['sd'] = $stats['sd'];
+            $assessordata['mean'] = $stats['mean'];
+            $assessordata['median'] = $stats['median'];
+            $assessordata['sd'] = $stats['sd'];
 
             // How many of the submissions did this assessor mark?
             $marked = $this->count_marked_submissions($submissions, $assessor->id);
             $unmarked = count($submissions) - $marked;
 
-            $assdata['marked'] = $marked;
-            $assdata['unmarked'] = $unmarked;
+            $assessordata['marked'] = $marked;
+            $assessordata['unmarked'] = $unmarked;
 
-            $data['marker_stats_data'][] = $assdata;
+            $data['marker_stats_data'][] = $assessordata;
         }
 
         return $data;
@@ -344,7 +341,7 @@ class audit {
      * @param int|null $assessorid If this is set, only count those marked by this user.
      * @return int
      */
-    protected function count_marked_submissions(array $submissions, int $assessorid = null): int {
+    protected function count_marked_submissions(array $submissions, ?int $assessorid = null): int {
         $marked = 0;
         foreach ($submissions as $submission) {
             // Get all assessor stage feedbacks for this submission.
@@ -507,7 +504,7 @@ class audit {
      * @param int|null $assessorid Assessor ID (if null, it will get everyone).
      * @return array
      */
-    protected function get_grades(int $assessorid = null): array {
+    protected function get_grades(?int $assessorid = null): array {
         $feedbacks = $this->get_feedback($assessorid);
         $grades = [];
         foreach ($feedbacks as $feedback) {
@@ -538,7 +535,7 @@ class audit {
     protected function get_feedback(int $assessorid = null): array {
         global $DB;
         $sql = "
-            SELECT f.*
+            SELECT f.id, f.stageidentifier, f.submissionid, f.grade
               FROM {coursework_feedbacks} f
               JOIN {coursework_submissions} s ON f.submissionid = s.id
              WHERE s.courseworkid = :id
