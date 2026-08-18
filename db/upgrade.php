@@ -408,6 +408,40 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026070600, 'coursework');
     }
 
+    if ($oldversion < 2026070606) {
+        // Define table coursework_moderator_appraisals to be created.
+        $table = new xmldb_table('coursework_moderator_appraisals');
+
+        // Adding fields to table coursework_moderator_appraisals.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseworkid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('representative', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('markingcriteriaconsistent', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('markingcriteriarecommendations', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('markersmarkingconsistent', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('markersmarkingrecommendations', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('feedbackappropriate', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('feedbackrecommendations', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('goodpracticecomments', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('generalcomments', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('finalised', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('modifiedtime', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('modifiedbyuserid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table coursework_moderator_appraisals.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fk_cwid', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+        $table->add_key('fk_mbyuid', XMLDB_KEY_FOREIGN, ['modifiedbyuserid'], 'user', ['id']);
+
+        // Conditionally launch create table for coursework_moderator_appraisals.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026070606, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

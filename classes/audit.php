@@ -26,6 +26,7 @@
 namespace mod_coursework;
 
 use mod_coursework\auto_grader\average_grade_no_straddle;
+use mod_coursework\forms\moderator_stats_form;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use stdClass;
@@ -50,6 +51,11 @@ class audit {
     protected stdClass $course;
 
     /**
+     * @var moderator_stats_form Form object.
+     */
+    protected moderator_stats_form $form;
+
+    /**
      * Build the audit object from the course module id.
      * @param int $cmid
      */
@@ -62,11 +68,20 @@ class audit {
     }
 
     /**
+     * Set the form object.
+     * @param moderator_stats_form $form
+     * @return void
+     */
+    public function set_form(moderator_stats_form $form) {
+        $this->form = $form;
+    }
+
+    /**
      * Get the HTML to print from the template.
      * @return string
      */
     public function report(): string {
-        global $OUTPUT;
+        global $OUTPUT, $PAGE;
         // Information about the assessment.
         $assessmentinfo = $this->get_assessment_information_data();
 
@@ -94,6 +109,11 @@ class audit {
             $moderationsummary,
             $moderationsample
         );
+
+        if (isset($this->form)) {
+            $data->form = $this->form->render();
+        }
+
         return $OUTPUT->render_from_template('mod_coursework/audit/report', $data);
     }
 
@@ -553,5 +573,53 @@ class audit {
         }
 
         return $DB->get_records_sql($sql, $params);
+    }
+
+    /**
+     * Get appraisal record.
+     * @param int $courseworkid
+     * @return mixed
+     */
+    public static function get_moderator_appraisal(int $courseworkid) {
+        global $DB;
+        return $DB->get_record('coursework_moderator_appraisals', ['courseworkid' => $courseworkid]);
+    }
+
+    /**
+     * Get the moderator appraisal record for this audit.
+     * @return array
+     */
+    public function get_moderator_appraisal_form_data(): array {
+        $data = static::get_moderator_appraisal($this->coursework->id);
+        if (!$data) {
+            return [];
+        }
+        if (!is_null($data->markingcriteriarecommendations)) {
+            $data->markingcriteriarecommendations = ['text' => $data->markingcriteriarecommendations];
+        }
+        if (!is_null($data->markersmarkingrecommendations)) {
+            $data->markersmarkingrecommendations = ['text' => $data->markersmarkingrecommendations];
+        }
+        if (!is_null($data->feedbackrecommendations)) {
+            $data->feedbackrecommendations = ['text' => $data->feedbackrecommendations];
+        }
+        if (!is_null($data->goodpracticecomments)) {
+            $data->goodpracticecomments = ['text' => $data->goodpracticecomments];
+        }
+        if (!is_null($data->generalcomments)) {
+            $data->generalcomments = ['text' => $data->generalcomments];
+        }
+        // Get the file is there is one.
+        $draftitemid = file_get_submitted_draft_itemid('file');
+        $context = \core\context\module::instance($this->cmid);
+        file_prepare_draft_area(
+            $draftitemid,
+            $context->id,
+            'mod_coursework',
+            'appraisal',
+            $this->coursework->id,
+        );
+        $data->file = $draftitemid;
+        return (array)$data;
     }
 }
