@@ -917,6 +917,23 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         return;
     }
 
+    // Link to statistics page.
+    // Currently this is restricted to activities using numeric grading, and only 1 marker (with moderation).
+    if (
+        has_capability('mod/coursework:moderate', $context)
+        && $coursework->uses_numeric_grade()
+        && $coursework->get_max_markers() === 1
+    ) {
+        $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
+        $navref->add(
+            get_string('gradingaudit', 'mod_coursework'),
+            $link,
+            navigation_node::TYPE_SETTING,
+            null,
+            'audit'
+        );
+    }
+
     // Link to marker allocation screen. No point showing it if we are not using allocation or moderation.
     if (
         has_capability('mod/coursework:allocate', $context) &&
@@ -925,6 +942,7 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $link = new moodle_url('/mod/coursework/actions/allocate.php', ['id' => $cm->id]);
         $navref->add(get_string('allocatemarkers', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
+
     // Link to personal deadlines screen
     if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personaldeadlines_enabled())) {
         $link = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php', ['id' => $cm->id]);

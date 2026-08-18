@@ -1216,6 +1216,26 @@ class coursework extends table_base {
         return $DB->get_record('coursework_allocation_pairs', $params);
     }
 
+    /**
+     * Get a unique array of all the assessors who have given (finalised) feedback to anyone on this activity.
+     * @return array
+     */
+    public function get_all_assessors(): array {
+        global $DB;
+        return $DB->get_records_sql("
+            SELECT DISTINCT u.id, u.firstname, u.lastname, u.lastnamephonetic, u.firstnamephonetic, u.middlename, u.alternatename
+              FROM {coursework_feedbacks} f
+              JOIN {coursework_submissions} s ON s.id = f.submissionid
+              JOIN {user} u ON u.id = f.assessorid
+             WHERE s.courseworkid = :courseworkid
+               AND f.finalised = 1
+               AND f.stageidentifier LIKE 'assessor_%'
+               AND f.ismoderation = 0
+          ORDER BY u.lastname, u.firstname", [
+              'courseworkid' => $this->id,
+        ]);
+    }
+
     public function get_assessors_stageidentifier($allocatableid, $assessorid) {
         global $DB;
 
