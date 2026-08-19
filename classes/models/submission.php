@@ -1291,6 +1291,21 @@ class submission extends table_base implements renderable {
         return false;
     }
 
+    public function all_marking_is_complete(): bool {
+        $feedbacks = $this->get_assessor_feedbacks();
+        if (count($feedbacks) < $this->max_number_of_feedbacks()) {
+            return false;
+        }
+
+        foreach ($feedbacks as $feedback) {
+            if (!$feedback->is_finalised()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * How many feedbacks do we expect for this submission?
      * @return int
