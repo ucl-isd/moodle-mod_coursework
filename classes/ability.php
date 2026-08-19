@@ -1289,10 +1289,8 @@ class ability extends framework\ability {
                 // of those stages, then we assume the sampling feedback has been given. I don't think it matters
                 // which one specifically it is.
                 if (
-                    $this->get_coursework()->sampling_enabled() && $feedback->get_submission()->stage_feedback_exists([
-                        'assessor_2',
-                        'assessor_3',
-                        ])
+                    $feedback->is_finalised() &&
+                    $this->get_coursework()->sampling_enabled() && $feedback->get_submission()->all_marking_is_complete()
                 ) {
                     return true;
                 }
