@@ -99,3 +99,14 @@ Feature: Multiple assessors simple grading form
     And I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should see "45" in the "#region-main" "css_element"
     And I should see "Final comment"
+
+  @javascript
+  Scenario: Teachers cannot edit each others feedback
+    Given the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  | finalised |
+      | student1    | Coursework | teacher1 | assessor_1      | 66    | New comment here | 1         |
+      | student1    | Coursework | teacher2 | assessor_2      | 67    | New comment here | 1         |
+    And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
+    And I click on "66" "link" in the "student1" "table_row"
+    Then I should not see "Save as draft"
+    And I should not see "Save and finalise"

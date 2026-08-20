@@ -594,4 +594,12 @@ class feedback extends table_base {
             ]);
         }
     }
+
+    /**
+     * Is the feedback finalised?
+     * @return bool
+     */
+    public function is_finalised(): bool {
+        return (int) $this->finalised === 1;
+    }
 }
