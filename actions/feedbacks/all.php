@@ -20,14 +20,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once(dirname(__FILE__) . '/../../../../config.php');
 
-$plugin->component = 'mod_coursework';
 
-$plugin->version = 2026070605;
-$plugin->requires = 2024100700;
-
-$plugin->cron = 300; // Period for cron to check this module (secs).
-
-$plugin->release = "5.0.0";
-$plugin->maturity = MATURITY_STABLE;
+$controller = new mod_coursework\controllers\feedback_controller([
+    'submissionid' => required_param('submissionid', PARAM_INT),
+]);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
+$controller->show_all();

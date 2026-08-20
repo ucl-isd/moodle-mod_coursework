@@ -22,11 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {getString} from 'core/str';
 /**
  * Initialize the mark syncing logic.
  * @param {object} args - Additional arguments.
  */
-export const init = (args) => {
+export const init = async(args) => {
     // If have a different final grading method, we want to see the original marks always regardless of type.
     if (args.differentfinalgradingmethod) {
         document.getElementById('review-source-wrapper').classList.remove('d-none');
@@ -52,4 +53,14 @@ export const init = (args) => {
             targetCells[index].appendChild(block);
         }
     });
+
+    // If we are including the final agreed mark in with the others, change the label from "marker" to "agreed mark".
+    var title = await getString('agreedmark', 'mod_coursework');
+    var els = document.querySelectorAll(
+        '.review-marks [class*="mod_coursework-stage-final_agreed_"] div.coursework-progress-container strong'
+    );
+    els.forEach(el => {
+        el.textContent = title + ': ';
+    });
+
 };
