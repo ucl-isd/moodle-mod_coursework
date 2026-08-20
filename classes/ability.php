@@ -80,6 +80,7 @@ class ability extends framework\ability {
         $this->allow_new_submissions_when_deadline_has_not_passed();
         $this->allow_new_submissions_if_late_submissions_allowed();
         $this->allow_new_submissions_if_there_is_an_active_extension();
+        $this->allow_new_submissions_if_there_is_a_personal_deadline();
 
         // Create submission
         $this->allow_create_submission_if_can_new_submission();
@@ -323,6 +324,44 @@ class ability extends framework\ability {
                     $submittingallocatable,
                     $coursework
                 );
+            }
+        );
+    }
+
+    /**
+     * Allow submissions if the user has a personal deadline which has not yet passed.
+     * @return void
+     */
+    protected function allow_new_submissions_if_there_is_a_personal_deadline() {
+        $this->allow(
+            'new',
+            'mod_coursework\models\submission',
+            function (submission $submission) {
+                $coursework = $submission->get_coursework();
+
+                // Make sure that personal deadlines are enabled.
+                if (!$coursework->personaldeadlines_enabled()) {
+                    return false;
+                }
+
+                // Get the right user or group, depending on group submissions.
+                $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
+                if (!$submittingallocatable) {
+                    return false;
+                }
+
+                // Find the personal deadline for this user/group.
+                $personaldeadline = personaldeadline::get_cached_object(
+                    $coursework->id(),
+                    ['allocatableid' => $submittingallocatable->id(), 'allocatabletype' => $submittingallocatable->type()]
+                );
+
+                // If it's set and the deadline hasn't passed, we can create a new submission.
+                if ($personaldeadline && $personaldeadline->personaldeadline > time()) {
+                    return true;
+                }
+
+                return false;
             }
         );
     }
