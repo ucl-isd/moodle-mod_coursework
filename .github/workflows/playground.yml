@@ -118,7 +118,8 @@ jobs:
       - uses: actions/checkout@v5
       - id: preview
         # Pinned deliberately: @main would let a pushed commit build its own link.
-        uses: DavidUCL/githubactionsplayground/preview@77aea9a
+        # Must be the FULL 40-character SHA — Actions rejects a short one.
+        uses: DavidUCL/githubactionsplayground/preview@77aea9adf476caccb1a8d4c3fe51c1f856bbec1c
         with:
           head-repo: ${{ github.repository }}
           head-sha: ${{ github.sha }}
