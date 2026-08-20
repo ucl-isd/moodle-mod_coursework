@@ -182,7 +182,6 @@ class ability extends framework\ability {
         $this->allow_show_feedback_promoted_to_gradebook_when_grades_have_been_released();
         $this->allow_show_feedback_when_grades_released_and_students_can_view_all_feedbacks();
         $this->allow_show_feedback_if_user_can_view_grades_at_all_times_or_administer();
-        $this->allow_show_feedback_if_sampling_enabled_and_sample_marked();
 
         // Allocation rules
 
@@ -1165,7 +1164,7 @@ class ability extends framework\ability {
                             'mod/coursework:addallocatedagreedgrade',
                             'mod/coursework:addinitialgrade',
                             'mod/coursework:viewallgradesatalltimes',
-                            'mod/coursework:administergrades'
+                            'mod/coursework:administergrades',
                         ],
                         $feedback->get_coursework()->get_context()
                     )
@@ -1248,39 +1247,6 @@ class ability extends framework\ability {
                     ['mod/coursework:viewallgradesatalltimes', 'mod/coursework:administergrades'],
                     $feedback->get_coursework()->get_context()
                 );
-            }
-        );
-    }
-
-    /**
-     * If sampling is enabled, and the student is in the selected sample, and both the initial mark and the sample
-     * mark are completed, then we should be able to see it and the marker's details.
-     */
-    private function allow_show_feedback_if_sampling_enabled_and_sample_marked(): void {
-        $this->allow(
-            'show',
-            'mod_coursework\models\feedback',
-            function (feedback $feedback) {
-                if (
-                        !has_any_capability(
-                            ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade'],
-                            $feedback->get_coursework()->get_context()
-                        )
-                ) {
-                    return false;
-                }
-
-                // If we're using sampling, and some sampled feedback has been given.
-                // This might be assessor_2 or assessor_3. If sampling is enabled and there exists feedback for either
-                // of those stages, then we assume the sampling feedback has been given. I don't think it matters
-                // which one specifically it is.
-                if (
-                    $feedback->is_finalised() &&
-                    $this->get_coursework()->sampling_enabled() && $feedback->get_submission()->all_marking_is_complete()
-                ) {
-                    return true;
-                }
-                return false;
             }
         );
     }

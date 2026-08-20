@@ -1276,21 +1276,9 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * Check that feedback exists on this submission for a named stage.
-     * @param array $stageidentifiers Array of stages to check for feedback
-     * @param bool $finalised (default: true) Whether or not to only check for finalised ones.
+     * Has all required marking been completed and finalised?
      * @return bool
      */
-    public function stage_feedback_exists(array $stageidentifiers, bool $finalised = true): bool {
-        $feedback = $this->get_feedbacks();
-        foreach ($feedback as $f) {
-            if (in_array($f->stageidentifier, $stageidentifiers) && (!$finalised || $f->finalised)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function all_marking_is_complete(): bool {
         $feedbacks = $this->get_assessor_feedbacks();
         if (count($feedbacks) < $this->max_number_of_feedbacks()) {
