@@ -105,7 +105,7 @@ class marking_cell_data extends cell_data_base {
         $rowdata->countinitialfeedbacks = count(array_filter(
             $tablerows,
             function ($row) {
-                return $row->get_feedback() && !$row->get_feedback()->is_agreed_grade();
+                return $row->get_feedback() && !$row->get_feedback()->is_agreed_grade() && $row->get_feedback()->is_finalised();
             }
         ));
         $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks >= $this->coursework->get_max_markers();
@@ -115,26 +115,30 @@ class marking_cell_data extends cell_data_base {
             if ($row->get_stage()->identifier() === 'moderator') {
                 continue;
             }
-            $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
-                || $this->coursework->viewinitialgradeenabled
-                || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
-            $marker = $this->create_marker_data($row->get_assessorid(), $markernumber, $canseeothermarkerdetails);
 
             if ($feedback = $row->get_feedback()) {
+                $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission);
+                $marker = $this->create_marker_data($row->get_assessorid(), $markernumber, $canseeothermarkerdetails);
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
-            } else if (
-                isset($submission)
-                &&
-                feedback::can_add_new($rowsbase->get_coursework(), $submission, $row->get_stage()->identifier())
-            ) {
-                $marker->addfeedback = (object)[
-                    'markurl' => $this->get_mark_url(
-                        'new',
-                        $submission,
-                        $row->get_stage()
-                    ),
-                    'allocatablehash' => $this->get_allocatable_hash($allocatable),
-                ];
+            } else {
+                $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
+                    || $this->coursework->viewinitialgradeenabled
+                    || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
+                $marker = $this->create_marker_data($row->get_assessorid(), $markernumber, $canseeothermarkerdetails);
+                if (
+                    isset($submission)
+                    &&
+                    feedback::can_add_new($rowsbase->get_coursework(), $submission, $row->get_stage()->identifier())
+                ) {
+                    $marker->addfeedback = (object)[
+                        'markurl' => $this->get_mark_url(
+                            'new',
+                            $submission,
+                            $row->get_stage()
+                        ),
+                        'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
+                    ];
+                }
             }
 
             $rowdata->markers[] = $marker;
