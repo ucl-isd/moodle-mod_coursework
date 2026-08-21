@@ -124,22 +124,22 @@ jobs:
           head-repo: ${{ github.repository }}
           head-sha: ${{ github.sha }}
           plugin-root: "."
-          moodle-branch: ${{ inputs.moodle-branch }}
-          restore-database-url: ${{ inputs.restore-database-url }}
-          restore-database-sha256: ${{ inputs.restore-database-sha256 }}
+          moodle-branch: ${{ inputs.moodle-branch || 'MOODLE_405_STABLE' }}
+          restore-database-url: ${{ inputs.restore-database-url || 'https://raw.githubusercontent.com/DavidUCL/mchef-urls/c6c6d35d7c2658e438e2a786f83690fbe66b97f3/data/coursework-demo-MOODLE_405_STABLE.sq3' }}
+          restore-database-sha256: ${{ inputs.restore-database-sha256 || '5d4c78b628deac8959e69a5f7ee767fc2d275c33c80fa019f2706e3060545d70' }}
           teachers: ${{ inputs.teachers }}
           students: ${{ inputs.students }}
           courses: ${{ inputs.courses }}
           sections: ${{ inputs.sections }}
           course-format: ${{ inputs.course-format }}
-          login-as: ${{ inputs.login-as }}
+          login-as: ${{ inputs.login-as || 'admin' }}
           theme: ${{ inputs.theme }}
           extra-plugins: ${{ inputs.extra-plugins }}
           language-packs: ${{ inputs.language-packs }}
           sample-content: ${{ inputs.sample-content }}
           restore-course-url: ${{ inputs.restore-course-url }}
           php-version: ${{ inputs.php-version }}
-          landing-path: ${{ inputs.landing-path }}
+          landing-path: ${{ inputs.landing-path || '/course/view.php?name=cwdemo' }}
           plugin-component: ${{ inputs.plugin-component }}
           data-hosts: ${{ inputs.data-hosts }}
 
