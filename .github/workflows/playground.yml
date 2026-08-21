@@ -14,84 +14,84 @@ on:
   workflow_dispatch:
     inputs:
       moodle-branch:
-        description: "Moodle version to boot"
+        description: "Which Moodle version to boot."
         type: choice
         default: MOODLE_500_STABLE
         options: [MOODLE_500_STABLE, MOODLE_405_STABLE, MOODLE_404_STABLE]
       restore-database-url:
-        description: "Restore a whole database first — URL of a .sq3 snapshot (blank = an empty Moodle)"
+        description: "URL of a .sq3 snapshot - restores a full site. Blank = empty Moodle"
         type: string
         default: ""
       restore-database-sha256:
-        description: "Optional. sha256 of that snapshot, if you want it checked (curl -sL <url> | sha256sum)"
+        description: "Optional sha256 checksum of restore database."
         type: string
         default: ""
       teachers:
-        description: "Teacher accounts"
+        description: "Num editing teachers in REVIEW course. 0 = admin sign-in."
         type: choice
         default: "1"
         options: ["1", "0", "2"]
       students:
-        description: "Student accounts"
+        description: "Num students in REVIEW course"
         type: choice
         default: "1"
         options: ["1", "2", "3", "5", "10", "20"]
       courses:
-        description: "How many courses to build"
+        description: "Num courses to build. You are enrolled in the 2, not 3"
         type: choice
         default: "1"
         options: ["1", "2", "3"]
       sections:
-        description: "Sections in the review course"
+        description: "Num sections in REVIEW course"
         type: choice
         default: "3"
         options: ["1", "3", "5", "10"]
       course-format:
-        description: "Course format"
+        description: "Course format for REVIEW course. (default) = topics."
         type: choice
         default: "(default)"
         options: ["(default)", topics, weeks, social, singleactivity]
       login-as:
-        description: "Arrive signed in as"
+        description: "Sign-in user. (default) = derived from the landing page."
         type: choice
         default: "(default)"
         options: ["(default)", admin, teacher, teacher2, student1, student2, student3]
       theme:
-        description: "Theme, as owner/repo@ref#theme_name (blank = Boost)"
+        description: "Theme. Blank = boost. owner/repo@ref#component e.g. moodle-an-hochschulen/moodle-theme_boost_union@MOODLE_405_STABLE#theme_boost_union"
         type: string
         default: ""
       extra-plugins:
-        description: "Other plugins coursework needs, comma separated, each owner/repo@ref#type_name"
+        description: "Extra plugins. Up to 5, comma separated. owner/repo@ref#component e.g. ucl-isd/moodle-local_sitsgradepush@main#local_sitsgradepush"
         type: string
         default: ""
       language-packs:
-        description: "Language packs, comma separated. The first becomes the site language"
+        description: "Language packs. Max 3, comma separated. e.g. en,fr,es"
         type: string
         default: ""
       sample-content:
-        description: "Fill the review course with sample content instead of leaving it empty"
+        description: "Select review-course for a ready-made course with ten activities."
         type: choice
         default: "(default)"
         options: ["(default)", review-course]
       restore-course-url:
-        description: "Address of a course backup (.mbz) to restore instead — overrides the menu above"
+        description: "URL of a Moodle course backup (.mbz) to restore, e.g. https://example.ac.uk/course.mbz. Blank = an empty course."
         type: string
         default: ""
       php-version:
-        description: "PHP version"
+        description: "PHP version. (default) = decided by the Moodle branch."
         type: choice
         default: "(default)"
         options: ["(default)", "8.1", "8.2", "8.3", "8.4"]
       landing-path:
-        description: "Page to land on, e.g. /mod/coursework/view.php?id=2 (blank = the type default)"
+        description: "Landing page. e.g. /course/view.php?name=cwdemo. Blank = default for the plugin type."
         type: string
         default: ""
       plugin-component:
-        description: "Frankenstyle component, if version.php cannot be read (blank = read it)"
+        description: "Component name. e.g. mod_coursework. Blank = read from version.php."
         type: string
         default: ""
       data-hosts:
-        description: "Extra hosts the preview may download from (blank = github.com,raw.githubusercontent.com)"
+        description: "Additional permitted hosts, comma separated. Blank = github.com,raw.githubusercontent.com"
         type: string
         default: ""
 
@@ -125,8 +125,8 @@ jobs:
           head-sha: ${{ github.sha }}
           plugin-root: "."
           moodle-branch: ${{ inputs.moodle-branch || 'MOODLE_405_STABLE' }}
-          restore-database-url: ${{ inputs.restore-database-url || 'https://raw.githubusercontent.com/DavidUCL/mchef-urls/c6c6d35d7c2658e438e2a786f83690fbe66b97f3/data/coursework-demo-MOODLE_405_STABLE.sq3' }}
-          restore-database-sha256: ${{ inputs.restore-database-sha256 || '5d4c78b628deac8959e69a5f7ee767fc2d275c33c80fa019f2706e3060545d70' }}
+          restore-database-url: ${{ inputs.restore-database-url || 'https://raw.githubusercontent.com/DavidUCL/mchef-urls/7ee431a4cd78f5f44c75d8f5fc07d3a668fe2b5f/data/coursework-demo-MOODLE_405_STABLE.sq3' }}
+          restore-database-sha256: ${{ inputs.restore-database-sha256 || 'e73479e590aab30c3a3abc8eed07398f615ca2574e2cf4d052f3bf563ac8409c' }}
           teachers: ${{ inputs.teachers }}
           students: ${{ inputs.students }}
           courses: ${{ inputs.courses }}
