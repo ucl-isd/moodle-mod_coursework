@@ -37,7 +37,7 @@ class submissionfileid_cell extends cell_base {
      */
     public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
         if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
-            return $this->get_candidate_number($student->id) ?? get_string('hidden');
+            return $this->get_candidate_number($student->id) ?? get_string('hidden', 'mod_coursework');
         }
         return $this->coursework->get_username_hash($submission->allocatableid);
     }
@@ -58,7 +58,7 @@ class submissionfileid_cell extends cell_base {
         $submission = submission::get_from_id($submissionid);
 
         if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
-            $expected = $this->get_candidate_number($submission->allocatableid) ?? get_string('hidden');
+            $expected = $this->get_candidate_number($submission->allocatableid) ?? get_string('hidden', 'mod_coursework');
         } else {
             $expected = $this->coursework->get_username_hash($submission->allocatableid);
         }
