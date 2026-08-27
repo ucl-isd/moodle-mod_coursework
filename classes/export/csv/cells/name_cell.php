@@ -40,7 +40,7 @@ class name_cell extends cell_base {
         if (!$this->coursework->hide_student_identities()) {
             return $student->lastname . ' ' . $student->firstname;
         } else if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
-            return $this->get_candidate_number($student->id) ?? get_string('hidden');
+            return $this->get_candidate_number($student->id) ?? get_string('hidden', 'mod_coursework');
         }
         return get_string('hidden', 'coursework');
     }
