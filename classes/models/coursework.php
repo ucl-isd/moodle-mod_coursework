@@ -464,7 +464,6 @@ class coursework extends table_base {
         static $enabled;
 
         if (!isset($enabled)) {
-
             if (\core\plugin_manager::instance()->get_plugin_info('local_pdfjs') === null) {
                 $enabled = false;
             } else {
