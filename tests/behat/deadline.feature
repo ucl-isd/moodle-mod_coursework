@@ -97,7 +97,6 @@ Feature: Deadlines extensions for submissions
     When I am on the "Coursework" "coursework activity" page
     Then I should not see "Extension" in the "student student1" "table_row"
 
-  @javascript
   Scenario: The student can submit after the deadline if they have a personal deadline
     Given the following "activity" exists:
       | activity          | coursework    |
