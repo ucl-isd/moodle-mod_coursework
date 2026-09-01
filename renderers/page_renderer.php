@@ -128,6 +128,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
         }
 
+        // If there is an internal comment add that as well.
+        if ($final && $final->internalcomment) {
+            $template->feedback[] = $objrenderer->render_internal_comment($final->internalcomment);
+        }
+
         $html = '';
         $html .= $this->output->header();
         $html .= $this->render_from_template('mod_coursework/feedback/all', $template);
