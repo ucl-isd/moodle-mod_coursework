@@ -620,6 +620,12 @@ function coursework_update_instance($coursework) {
         $event->trigger();
     }
 
+    $result = $DB->update_record('coursework', $coursework);
+
+    if ($result) {
+        coursework_grade_item_update($coursework);
+    }
+
     // Update event for calendar(cw name/deadline) if a coursework has a deadline
     if ($coursework->deadline) {
         coursework_update_events($coursework, 'due'); // Cw deadline
@@ -628,24 +634,18 @@ function coursework_update_instance($coursework) {
             coursework_update_events($coursework, 'initialgradingdue'); // Cw initial grading deadine
         } else {
             // Remove it
-             calendar::remove_event($coursework, 'initialgradingdue');
+            calendar::remove_event($coursework, 'initialgradingdue');
         }
         if ($coursework->agreedgrademarkingdeadline && $coursework->numberofmarkers > 1) {
             // Update
             coursework_update_events($coursework, 'agreedgradingdue'); // Cw agreed grade deadine
         } else {
             // Remove it
-             calendar::remove_event($coursework, 'agreedgradingdue');
+            calendar::remove_event($coursework, 'agreedgradingdue');
         }
     } else {
         // Remove all deadline events for this coursework regardless the type
-         calendar::remove_event($coursework);
-    }
-
-    $result = $DB->update_record('coursework', $coursework);
-
-    if ($result) {
-        coursework_grade_item_update($coursework);
+        calendar::remove_event($coursework);
     }
 
     return $result;
