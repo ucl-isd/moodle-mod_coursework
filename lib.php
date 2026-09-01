@@ -622,10 +622,11 @@ function coursework_update_instance($coursework) {
 
     $result = $DB->update_record('coursework', $coursework);
 
-    if ($result) {
-        coursework_grade_item_update($coursework);
+    if (!$result) {
+        return $result;
     }
 
+    coursework_grade_item_update($coursework);
     // Update event for calendar(cw name/deadline) if a coursework has a deadline
     if ($coursework->deadline) {
         coursework_update_events($coursework, 'due'); // Cw deadline
