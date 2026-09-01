@@ -359,6 +359,7 @@ $string['initialmark'] = 'Initial mark';
 $string['initialmarker'] = 'Initial marker';
 $string['initialmarkingdeadline'] = 'Initial marking deadline';
 $string['initialmarkingdeadline_help'] = 'Set the date that initial marking should be completed by';
+$string['internalcomments'] = 'Marker notes (Not visible to students)';
 $string['invalidsubmissionids'] = 'Invalid submission IDs: {$a}';
 $string['lastedited'] = 'Last edited by \'{$a->name}\' on {$a->time}';
 $string['lasteditedby'] = 'Last edited by';
