@@ -33,6 +33,7 @@ use mod_coursework\forms\assessor_feedback_mform;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\render_helpers\grading_report\data\grading_report_notifier;
+use mod_coursework\stages\final_agreed;
 use moodle_url;
 
 defined('MOODLE_INTERNAL' || die());
@@ -248,10 +249,12 @@ class feedback_controller extends controller_base {
             'format' => $teacherfeedback->feedbackcommentformat,
         ];
 
-        $teacherfeedback->internalcomment = [
-            'text' => $teacherfeedback->internalcomment,
-            'format' => $teacherfeedback->internalcommentformat,
-        ];
+        if ($teacherfeedback->get_stage()->identifier() === final_agreed::STAGE_FINAL_AGREED_1) {
+            $teacherfeedback->internalcomment = [
+                'text' => $teacherfeedback->internalcomment,
+                'format' => $teacherfeedback->internalcommentformat,
+            ];
+        }
 
         // Load any files into the file manager.
         $teacherfeedback->feedback_manager = file_get_submitted_draft_itemid('feedback_manager');
