@@ -79,7 +79,7 @@ class ability extends framework\ability {
         $this->prevent_new_submissions_if_no_capability();
         $this->allow_new_submissions_when_deadline_has_not_passed();
         $this->allow_new_submissions_if_late_submissions_allowed();
-        $this->allow_new_submissions_if_there_is_an_active_extension();
+        $this->allow_new_submissions_if_there_is_a_different_deadline();
 
         // Create submission
         $this->allow_create_submission_if_can_new_submission();
@@ -312,17 +312,31 @@ class ability extends framework\ability {
         );
     }
 
-    protected function allow_new_submissions_if_there_is_an_active_extension() {
+    /**
+     * Allow submissions if the user has a personal deadline or extension which has not yet passed.
+     * @return void
+     */
+    protected function allow_new_submissions_if_there_is_a_different_deadline() {
         $this->allow(
             'new',
             'mod_coursework\models\submission',
             function (submission $submission) {
                 $coursework = $submission->get_coursework();
+
+                // Get the right user or group, depending on group submissions.
                 $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
-                return deadline_extension::allocatable_extension_allows_submission(
-                    $submittingallocatable,
-                    $coursework
-                );
+                if (!$submittingallocatable) {
+                    return false;
+                }
+
+                $deadline = $coursework->get_allocatable_deadline($submittingallocatable->id());
+
+                // If it's set and the deadline hasn't passed, we can create a new submission.
+                if ($deadline && $deadline > time()) {
+                    return true;
+                }
+
+                return false;
             }
         );
     }
