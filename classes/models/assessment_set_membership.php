@@ -87,16 +87,7 @@ class assessment_set_membership extends table_base implements moderatable {
      */
     protected function post_save_hook() {
         self::remove_cache($this->courseworkid);
-    }
-
-    /**
-     * Allows subclasses to alter data before it hits the DB.
-     * @return void
-     * @throws \dml_exception
-     */
-    protected function pre_save_hook() {
         $this->membership_count_clear_cache_for_coursework();
-        parent::pre_save_hook();
     }
 
     /**
