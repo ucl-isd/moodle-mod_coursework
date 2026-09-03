@@ -195,3 +195,10 @@
         {{/moderator_stats}}
     </tbody>
 </table>
+
+{{#form}}
+    {{{form}}}
+{{/form}}
+{{^form}}
+    {{> mod_coursework/audit/readonly_form }}
+{{/form}}

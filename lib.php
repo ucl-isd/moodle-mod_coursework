@@ -174,6 +174,16 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
             }
             send_stored_file($file, 0, 0, true);
             return true;
+        } else if ($filearea === 'appraisal') {
+            if (!has_capability('mod/coursework:moderate', $context)) {
+                send_file_not_found();
+            }
+            $fs = get_file_storage();
+            $file = $fs->get_file($context->id, 'mod_coursework', $filearea, $args[0], '/', $args[1]);
+            if (!$file || (is_object($file) && $file->is_directory())) {
+                send_file_not_found();
+            }
+            send_stored_file($file, 0, 0, $forcedownload);
         }
     }
 
