@@ -446,6 +446,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $markerobj->label = get_string('marker', 'mod_coursework') . " " . $feedback->get_assessor_stage_no();
                 $markerobj->fillings = $filling['criteria'] ?? [];
                 $markerobj->stage = $feedback->stageidentifier;
+                if ($files = $feedback->get_feedback_files()) {
+                    $objrenderer = $this->get_object_renderer();
+                    $markerobj->feedbackfileshtml = $objrenderer->render_feedback_files(new mod_coursework_feedback_files($files));
+                }
                 $markersdata[$feedback->get_assessor_stage_no()] = $markerobj;
             }
         }
@@ -455,6 +459,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->reviewcriteria = [];
         // "0" in this context means the same through all stages. So anything higher means use a different one.
         $template->differentfinalgradingmethod = ($coursework->finalstagegrading > 0);
+        $alreadygotfile = [];
 
         foreach ($criteria as $criterion) {
             $criterionitem = new stdClass();
@@ -496,6 +501,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
                 $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
                 $marker->percent = (int)round($percentraw);
+
+                if (!in_array($marker->stage, $alreadygotfile) && isset($markerinfo->feedbackfileshtml)) {
+                    $marker->feedbackfileshtml = $markerinfo->feedbackfileshtml;
+                    $alreadygotfile[] = $marker->stage;
+                }
 
                 $criterionitem->markers[] = $marker;
             }
