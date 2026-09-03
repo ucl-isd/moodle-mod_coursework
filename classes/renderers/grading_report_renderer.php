@@ -327,7 +327,6 @@ class grading_report_renderer extends plugin_renderer_base {
         $trdata->markers = $markingcelldata->markers;
         $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
         $trdata->moderation = !empty($markingcelldata->moderation) ? $markingcelldata->moderation : null;
-        $trdata->viewallfeedback = $markingcelldata->viewallfeedback ?? null;
     }
 
     /**
