@@ -370,7 +370,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
 
-    private function render_feedback_files(mod_coursework_feedback_files $files) {
+    public function render_feedback_files(mod_coursework_feedback_files $files) {
 
         $filesarray = [];
         $feedbackfiles = $files->get_files();
