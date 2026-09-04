@@ -82,18 +82,6 @@ class marking_cell_data extends cell_data_base {
 
         if ($this->coursework->has_multiple_markers()) {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
-
-            // Can the user view all the feedback in one place?
-            $submission = $rowsbase->get_submission();
-            if ($submission) {
-                $rowdata->viewallfeedback = $submission->can_show_all_feedback() ? [
-                    'url' => $this->get_mark_url(
-                        'all',
-                        $submission,
-                        null,
-                    ),
-                ] : false;
-            }
         }
 
         if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
@@ -341,16 +329,31 @@ class marking_cell_data extends cell_data_base {
         } else {
             $assessorname = null;
         }
+
+        $url = $this->get_mark_url(
+            $canedit ? 'edit' : 'show',
+            $rowsbase->get_submission(),
+            $finalstage,
+            $finalfeedback,
+        );
+
+        // If the agreed mark is finalised but we're not a manager, we should see the view only page.
+        if (
+            $finalfeedback->finalised
+            && !has_capability('mod/coursework:administergrades', $this->coursework->get_context())
+            && $rowsbase->get_submission()->can_show_all_feedback()
+        ) {
+            $url = $this->get_mark_url(
+                'all',
+                $rowsbase->get_submission(),
+            );
+        }
+
         return (object)[
             'mark' => (object)[
                 'markvalue' => $finalgrade,
                 'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
-                'url' => $this->get_mark_url(
-                    $canedit ? 'edit' : 'show',
-                    $rowsbase->get_submission(),
-                    $finalstage,
-                    $finalfeedback,
-                ),
+                'url' => $url,
                 // Only show draft label if final feedback is not finalised and submission is not ready for release.
                 // Final feedback is still unfinalised if it is agreed automatically.
                 'draft' => !$finalfeedback->finalised,
