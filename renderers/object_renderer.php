@@ -278,6 +278,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->customgrading[] = $item;
         }
 
+        $options = $gradingcontroller->get_options();
+        $template->showscorestudent = $options['showscorestudent'];
         return $this->render_from_template('mod_coursework/feedback/advanced_grading', $template);
     }
 
