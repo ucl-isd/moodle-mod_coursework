@@ -163,10 +163,13 @@ class assessor_feedback_mform extends moodleform {
 
         // Advanced grading total mark. This gets updated by js, so passing 0 vars to template.
         if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
-            $mform->addElement(
-                'html',
-                $OUTPUT->render_from_template('mod_coursework/marking/totalmark', ['score' => 0, 'maxscore' => 0, 'percent' => 0])
-            );
+            $options = $this->gradingcontroller->get_options();
+            if ($options['showscoreteacher']) {
+                $mform->addElement(
+                    'html',
+                    $OUTPUT->render_from_template('mod_coursework/marking/totalmark', ['score' => 0, 'maxscore' => 0, 'percent' => 0])
+                );
+            }
         }
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
