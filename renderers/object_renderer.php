@@ -278,6 +278,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->customgrading[] = $item;
         }
 
+        $options = $gradingcontroller->get_options();
+        if (in_array(get_class($gradingcontroller), ['gradingform_rubric_controller', 'gradingform_rubric_ranges_controller'])) {
+            $key = 'showscorestudent';
+        } else if (get_class($gradingcontroller) === 'gradingform_guide_controller') {
+            $key = 'showmarkspercriterionstudents';
+        } else {
+            $key = null;
+        }
+
+        $template->showscorestudent = $options[$key] ?? false;
         return $this->render_from_template('mod_coursework/feedback/advanced_grading', $template);
     }
 
