@@ -475,6 +475,15 @@ class feedback extends table_base {
         if ($submission && $submission->courseworkid ?? false) {
             self::remove_cache($submission->courseworkid);
         }
+
+        if (class_exists('local_pdfjs\local\lib')) {
+            \local_pdfjs\local\lib::reallocate_annotations(
+                $this->get_coursework()->get_context(),
+                $this->submissionid,
+                $this->id(),
+                $this->assessorid
+            );
+        }
     }
 
     /**
@@ -483,6 +492,13 @@ class feedback extends table_base {
     protected function after_destroy() {
         $courseworkid = $this->get_submission()->courseworkid;
         self::remove_cache($courseworkid);
+
+        if (class_exists('local_pdfjs\local\lib')) {
+            \local_pdfjs\local\lib::remove_annotations(
+                $this->get_coursework()->get_context(),
+                $this->id
+            );
+        }
     }
 
     /**
