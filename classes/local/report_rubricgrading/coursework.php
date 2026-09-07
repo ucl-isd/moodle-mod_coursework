@@ -46,14 +46,19 @@ class coursework extends \report_rubricgrading\local\plugin_base {
 
     #[\Override]
     protected function get_sql_rubric(): string {
-        return "SELECT grf.id,
-                      cws.authorid as userid,
+        global $DB;
+        $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
+            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gstu.id')) .
+            " ELSE " . $DB->sql_cast_to_char('grf.id') . " END AS id";
+        return "SELECT
+                      {$id},
                       cwf.grade,
                       cw.grade               AS gradeoutof,
                       cwf.feedbackcomment    AS overallfeedback,
                       cwf.markernumber,
                       cwf.stageidentifier,
                       cwf.timemodified       AS timegraded,
+                      stu.id                 AS userid,
                       stu.firstname,
                       stu.lastname,
                       stu.email,
@@ -63,6 +68,18 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       stu.lastnamephonetic,
                       stu.middlename,
                       stu.alternatename,
+                      cws.allocatabletype,
+                      grp.name               AS group_name,
+                      gstu.id                AS group_member_id,
+                      gstu.firstname         AS group_member_firstname,
+                      gstu.lastname          AS group_member_lastname,
+                      gstu.email             AS group_member_email,
+                      gstu.username          AS group_member_username,
+                      gstu.idnumber          AS group_member_idnumber,
+                      gstu.firstnamephonetic AS group_member_firstnamephonetic,
+                      gstu.lastnamephonetic  AS group_member_lastnamephonetic,
+                      gstu.middlename        AS group_member_middlename,
+                      gstu.alternatename     AS group_member_alternatename,
                       grdr.firstname         AS grader_firstname,
                       grdr.lastname          AS grader_lastname,
                       grdr.firstnamephonetic AS grader_firstnamephonetic,
@@ -84,21 +101,29 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {context}                      ctx  ON ctx.id  = ga.contextid
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
-                 JOIN {user}                         stu  ON stu.id  = cws.authorid AND stu.deleted = 0
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-             ORDER BY stu.lastname, stu.firstname, cwf.stageidentifier, grc.sortorder";
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0
+                 LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
+                 LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
+                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
+                 ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
     #[\Override]
     protected function get_sql_rubric_ranges(): string {
-        return "SELECT grf.id,
-                      cws.authorid as userid,
+        global $DB;
+        $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
+            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gstu.id')) .
+            " ELSE " . $DB->sql_cast_to_char('grf.id') . " END AS id";
+        return "SELECT
+                      {$id},
                       cwf.grade,
                       cw.grade               AS gradeoutof,
                       cwf.feedbackcomment    AS overallfeedback,
                       cwf.markernumber,
                       cwf.stageidentifier,
                       cwf.timemodified       AS timegraded,
+                      stu.id                 AS userid,
                       stu.firstname,
                       stu.lastname,
                       stu.email,
@@ -108,6 +133,18 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       stu.lastnamephonetic,
                       stu.middlename,
                       stu.alternatename,
+                      cws.allocatabletype,
+                      grp.name               AS group_name,
+                      gstu.id                AS group_member_id,
+                      gstu.firstname         AS group_member_firstname,
+                      gstu.lastname          AS group_member_lastname,
+                      gstu.email             AS group_member_email,
+                      gstu.username          AS group_member_username,
+                      gstu.idnumber          AS group_member_idnumber,
+                      gstu.firstnamephonetic AS group_member_firstnamephonetic,
+                      gstu.lastnamephonetic  AS group_member_lastnamephonetic,
+                      gstu.middlename        AS group_member_middlename,
+                      gstu.alternatename     AS group_member_alternatename,
                       grdr.firstname         AS grader_firstname,
                       grdr.lastname          AS grader_lastname,
                       grdr.firstnamephonetic AS grader_firstnamephonetic,
@@ -129,20 +166,28 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {context}                      ctx  ON ctx.id  = ga.contextid
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
-                 JOIN {user}                         stu  ON stu.id  = cws.authorid AND stu.deleted = 0
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-             ORDER BY stu.lastname, stu.firstname, cwf.stageidentifier, grc.sortorder";
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0
+                 LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
+                 LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
+                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
+                 ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
     protected function get_sql_guide(): string {
-        return "SELECT grf.id,
-                      cws.authorid as userid,
+        global $DB;
+        $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
+            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gstu.id')) .
+            " ELSE " . $DB->sql_cast_to_char('grf.id') . " END AS id";
+        return "SELECT
+                      {$id},
                       cwf.grade,
                       cw.grade               AS gradeoutof,
                       cwf.feedbackcomment    AS overallfeedback,
                       cwf.markernumber,
                       cwf.stageidentifier,
                       cwf.timemodified       AS timegraded,
+                      stu.id                 AS userid,
                       stu.firstname,
                       stu.lastname,
                       stu.email,
@@ -152,6 +197,18 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       stu.lastnamephonetic,
                       stu.middlename,
                       stu.alternatename,
+                      cws.allocatabletype,
+                      grp.name               AS group_name,
+                      gstu.id                AS group_member_id,
+                      gstu.firstname         AS group_member_firstname,
+                      gstu.lastname          AS group_member_lastname,
+                      gstu.email             AS group_member_email,
+                      gstu.username          AS group_member_username,
+                      gstu.idnumber          AS group_member_idnumber,
+                      gstu.firstnamephonetic AS group_member_firstnamephonetic,
+                      gstu.lastnamephonetic  AS group_member_lastnamephonetic,
+                      gstu.middlename        AS group_member_middlename,
+                      gstu.alternatename     AS group_member_alternatename,
                       grdr.firstname         AS grader_firstname,
                       grdr.lastname          AS grader_lastname,
                       grdr.firstnamephonetic AS grader_firstnamephonetic,
@@ -171,9 +228,12 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {context}                      ctx  ON ctx.id  = ga.contextid
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
-                 JOIN {user}                         stu  ON stu.id  = cws.authorid AND stu.deleted = 0
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-             ORDER BY stu.lastname, stu.firstname, cwf.stageidentifier, grc.sortorder";
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0
+                 LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
+                 LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
+                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
+                 ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
     #[\Override]
@@ -206,5 +266,21 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                 column::TYPE_TEXT,
             ],
         ];
+    }
+
+    #[\Override]
+    public function fiddle(stdClass &$row): void {
+        if ($row->allocatabletype === 'group') {
+            $row->userid = $row->group_member_id;
+            $row->firstname = $row->group_member_firstname;
+            $row->lastname = $row->group_member_lastname;
+            $row->email = $row->group_member_email;
+            $row->username = $row->group_member_username;
+            $row->idnumber = $row->group_member_idnumber;
+            $row->firstnamephonetic = $row->group_member_firstnamephonetic;
+            $row->lastnamephonetic = $row->group_member_lastnamephonetic;
+            $row->middlename = $row->group_member_middlename;
+            $row->alternatename = $row->group_member_alternatename;
+        }
     }
 }
