@@ -32,14 +32,21 @@ use cm_info;
 use core\lang_string;
 use core_reportbuilder\local\report\column;
 use mod_coursework\local\report_rubricgrading\coursework;
-use ReflectionMethod;
 use stdClass;
 use xmldb_table;
 
 final class report_rubricgrading_test extends advanced_testcase {
     use test_helpers\factory_mixin;
 
+    private function check_report_rubricgrading_installed(): bool {
+        $path = \core_component::get_component_directory('report_rubricgrading');
+        return !is_null($path);
+    }
+
     public function test_get_row_key_uses_userid_and_markernumber(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -53,6 +60,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_add_report_fields_adds_stageidentifier_field(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -67,6 +77,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_add_report_columns_returns_stageidentifier_column(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -80,6 +93,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_add_row_data_formats_assessor_stageidentifier(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -91,6 +107,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_add_row_data_formats_final_agreed_stageidentifier(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -102,6 +121,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_add_row_data_preserves_other_stageidentifier(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -113,6 +135,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_fiddle_maps_group_member_fields_to_student_fields(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -155,6 +180,9 @@ final class report_rubricgrading_test extends advanced_testcase {
     }
 
     public function test_fiddle_leaves_user_rows_unchanged(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
         $this->resetAfterTest();
 
         $plugin = new coursework($this->get_coursework_cm_info());
@@ -198,7 +226,6 @@ final class report_rubricgrading_test extends advanced_testcase {
 
     private function get_coursework_cm_info(): cm_info {
         $this->setAdminUser();
-        $this->resetAfterTest(false);
         $generator = $this->get_coursework_generator();
         $params['course'] = $this->get_course()->id;
         $module = $generator->create_instance($params);
