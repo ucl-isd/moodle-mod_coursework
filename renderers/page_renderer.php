@@ -155,7 +155,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $submission->get_submission_files()->get_files(),
             $submission->get_context(),
             'mod_coursework',
-            $submission->id()
+            $submission->id(),
+            '',
+            true
         ));
 
         $html .= $this->output->footer();
@@ -364,11 +366,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->showpdf = true;
 
             if ($coursework->enablepdfjs()) {
+                // Annotations files will be put under the submissionid until the feedback record exists.
+                // See
                 $template->pdfannotator = $this->output->render(new \local_pdfjs\output\pdf(
                     $submission->get_submission_files()->get_files(),
                     $submission->get_context(),
                     'mod_coursework',
-                    $submission->id(),
+                    $feedback->persisted() ? $feedback->id() : $submission->id(),
                     'coursework-markingform'
                 ));
             } else {
