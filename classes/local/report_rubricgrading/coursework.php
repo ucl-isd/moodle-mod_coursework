@@ -48,7 +48,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     protected function get_sql_rubric(): string {
         global $DB;
         $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
-            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gstu.id')) .
+            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gmem.userid')) .
             " ELSE " . $DB->sql_cast_to_char('grf.id') . " END AS id";
         return "SELECT
                       {$id},
@@ -113,7 +113,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     protected function get_sql_rubric_ranges(): string {
         global $DB;
         $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
-            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gstu.id')) .
+            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gmem.userid')) .
             " ELSE " . $DB->sql_cast_to_char('grf.id') . " END AS id";
         return "SELECT
                       {$id},
@@ -177,7 +177,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     protected function get_sql_guide(): string {
         global $DB;
         $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
-            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gstu.id')) .
+            $DB->sql_concat($DB->sql_cast_to_char('grf.id'), "'_'", $DB->sql_cast_to_char('gmem.userid')) .
             " ELSE " . $DB->sql_cast_to_char('grf.id') . " END AS id";
         return "SELECT
                       {$id},
