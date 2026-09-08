@@ -53,7 +53,7 @@ Feature: visibility of agreed graders without blind marking
     And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     Then I should see "63" in the "student student1" "table_row"
     And I should not see "67" in the "student student1" "table_row"
-    Then I should see "teacher teacher1" in the "student student1" "table_row"
+    Then I should not see "teacher teacher1" in the "student student1" "table_row"
     And I should see "teacher teacher2" in the "student student1" "table_row"
     Then I click on "63" "link" in the "student student1" "table_row"
     And I should see "New comment here"

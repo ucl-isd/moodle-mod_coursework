@@ -58,7 +58,7 @@ Feature: visibility for teachers without blind marking
       | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here | 0         |
       | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here | 0         |
     When I am on the "Coursework" "coursework activity" page logged in as "teacher2"
-    Then I should see "teacher teacher1" in the "student student1" "table_row"
+    Then I should not see "teacher teacher1" in the "student student1" "table_row"
     And I should see "teacher teacher2" in the "student student1" "table_row"
     And I should see "63" in the "student student1" "table_row"
     And I should not see "67" in the "student student1" "table_row"

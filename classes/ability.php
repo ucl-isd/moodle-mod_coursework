@@ -177,7 +177,7 @@ class ability extends framework\ability {
         $this->allow_show_feedback_for_the_user_who_created_it();
         $this->allow_show_feedback_for_the_assessor_who_is_allocated_to_the_user();
         $this->allow_show_feedback_to_other_assessors_when_view_initial_grade_is_enabled();
-        $this->allow_show_feedback_to_agreed_graders_once_all_initial_grades_are_done();
+        $this->allow_show_feedback_once_all_initial_grades_are_done();
         $this->allow_show_feedback_once_agreed_grade_is_done();
         $this->allow_show_feedback_promoted_to_gradebook_when_grades_have_been_released();
         $this->allow_show_feedback_when_grades_released_and_students_can_view_all_feedbacks();
@@ -1166,14 +1166,20 @@ class ability extends framework\ability {
         );
     }
 
-    protected function allow_show_feedback_to_agreed_graders_once_all_initial_grades_are_done() {
+    protected function allow_show_feedback_once_all_initial_grades_are_done() {
         $this->allow(
             'show',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 return
                     has_any_capability(
-                        ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
+                        [
+                            'mod/coursework:addagreedgrade',
+                            'mod/coursework:addallocatedagreedgrade',
+                            'mod/coursework:addinitialgrade',
+                            'mod/coursework:viewallgradesatalltimes',
+                            'mod/coursework:administergrades',
+                        ],
                         $feedback->get_coursework()->get_context()
                     )
                     &&

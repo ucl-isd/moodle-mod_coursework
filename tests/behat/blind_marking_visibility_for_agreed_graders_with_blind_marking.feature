@@ -69,7 +69,7 @@ Feature: visibility of agreed graders with blind marking
     But I should see "Marked" in the "Hidden" "table_row"
     And I should see "67" in the "Hidden" "table_row"
     And I should see "teacher teacher1" in the "Hidden" "table_row"
-    And I should see "teacher teacher2" in the "Hidden" "table_row"
+    And I should not see "teacher teacher2" in the "Hidden" "table_row"
     When I click on "67" "link" in the "Hidden" "table_row"
     And I should see "New comment here"
 
@@ -78,7 +78,7 @@ Feature: visibility of agreed graders with blind marking
     And I should see "63" in the "Hidden" "table_row"
     But I should see "Marked" in the "Hidden" "table_row"
     And I should not see "67" in the "Hidden" "table_row"
-    And I should see "teacher teacher1" in the "Hidden" "table_row"
+    And I should not see "teacher teacher1" in the "Hidden" "table_row"
     And I should see "teacher teacher2" in the "Hidden" "table_row"
     When I click on "63" "link" in the "Hidden" "table_row"
     And I should see "New comment here"
