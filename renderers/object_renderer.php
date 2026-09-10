@@ -87,12 +87,19 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         ) {
             $template->date = $feedback->timemodified;
 
-            if (!$feedback->is_assessor_anonymity_enabled()) {
+            $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission)
+            && (
+                has_capability('mod/coursework:administergrades', $coursework->get_context())
+                || has_capability('mod/coursework:moderate', $coursework->get_context())
+            );
+            if (!$feedback->is_assessor_anonymity_enabled() || $canseeothermarkerdetails) {
                 $template->markername = $assessor->name();
             } else if ($feedback->is_moderation()) {
                 $template->markername = get_string('moderator', 'mod_coursework');
             } else if ($stage = $feedback->get_assessor_stage_no()) {
                 $template->markername = get_string('markerheading', 'mod_coursework', $stage);
+            } else {
+                $template->markername = get_string('marker', 'mod_coursework');
             }
 
             if ($feedback->is_assessor_anonymity_enabled()) {
