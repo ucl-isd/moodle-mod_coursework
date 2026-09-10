@@ -1,0 +1,14 @@
+fail_on:
+  severity: high        # the check fails on high and critical
+on-error: open          # an errored review never blocks a merge
+
+moodle:
+  versions: ["4.5"]
+
+trusted_users: ["aspark21", "andrewhancox", "cwarwicker", "leonstr", "DavidUCL", "stuartlamour"]
+
+include:
+  branches: ["main", "CTP-*"]
+exclude:
+  paths: ["lang/**", "vendor/**"]
+  authors: ["dependabot[bot]"]
