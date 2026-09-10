@@ -83,10 +83,12 @@ class average_grade implements auto_grader {
             return;
         }
 
-        if ($this->get_coursework()->is_using_advanced_grading()) {
-            // If the coursework uses advanced grading (rubric/guide) there will be a detailed marks breakdown.
-            // For now, we don't want to automatically "agree" a final grade without a breakdown to match.
-            // It is planned to implement something more complex to cover that requirement separately.
+        // If we are using an advanced method throughout, don't try to calculate.
+        // But if we're using an advanced method at first, then simple for final grade - do calculate.
+        if (
+            $this->get_coursework()->is_using_advanced_grading()
+            && $this->get_coursework()->finalstagegrading == 0
+        ) {
             return;
         }
 
