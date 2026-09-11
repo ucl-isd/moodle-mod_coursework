@@ -45,6 +45,7 @@ use mod_coursework\allocation\auto_allocator;
 use mod_coursework\allocation\manager;
 use mod_coursework\allocation\strategy\base as allocation_strategy_base;
 use mod_coursework\auto_grader\auto_grader;
+use mod_coursework\auto_grader\average_grade_no_straddle;
 use mod_coursework\cron;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
@@ -2708,5 +2709,15 @@ class coursework extends table_base {
         }
 
         return false;
+    }
+
+    /**
+     * Get the grade boundaries in an array.
+     * @return array
+     */
+    public static function get_grade_boundaries(): array {
+        $boundaries = average_grade_no_straddle::get_config_setting('autogradeclassboundaries') ?? [];
+        // Reverse the array so it's lowest to highest (probably - if the config setting is correctly formatted).
+        return array_reverse($boundaries);
     }
 }

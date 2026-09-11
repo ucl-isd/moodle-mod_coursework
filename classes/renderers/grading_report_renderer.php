@@ -166,6 +166,15 @@ class grading_report_renderer extends plugin_renderer_base {
         // Add marking summary data to template.
         $template->markingsummary = $markingsummary;
 
+        // Get grade boundaries for the mark filters.
+        $template->gradeboundaries = coursework::get_grade_boundaries();
+        foreach ($template->gradeboundaries as $key => &$gradeboundary) {
+            $gradeboundary['low'] = $gradeboundary[0];
+            $gradeboundary['high'] = $gradeboundary[1];
+            $gradeboundary['key'] = $key;
+            unset($gradeboundary[0], $gradeboundary[1]);
+        }
+
         return $template;
     }
 
@@ -326,6 +335,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
         $trdata->markers = $markingcelldata->markers;
         $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
+        $trdata->singlemark = $markingcelldata->singlemark ?? null;
         $trdata->moderation = !empty($markingcelldata->moderation) ? $markingcelldata->moderation : null;
         $trdata->viewallfeedback = $markingcelldata->viewallfeedback ?? null;
     }
@@ -415,6 +425,23 @@ class grading_report_renderer extends plugin_renderer_base {
         foreach ($trdata->markers as $marker) {
             if (!empty($marker->addfeedback)) {
                 $status[] = 'need-marking';
+            }
+        }
+
+        // Grade boundaries.
+        $mark = null;
+        if (!is_null($trdata->agreedmark) && isset($trdata->agreedmark->mark) && !is_null($trdata->agreedmark->mark)) {
+            $mark = $trdata->agreedmark->mark->markvalue;
+        } else if (!is_null($trdata->singlemark)) {
+            $mark = $trdata->singlemark;
+        }
+
+        if (!is_null($mark)) {
+            $boundaries = coursework::get_grade_boundaries();
+            foreach ($boundaries as $key => $boundary) {
+                if ($mark >= $boundary[0] && $mark <= $boundary[1]) {
+                    $status[] = 'boundary-' . $key;
+                }
             }
         }
 

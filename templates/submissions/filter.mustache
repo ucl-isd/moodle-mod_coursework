@@ -67,6 +67,13 @@
                             <input type="checkbox" class="custom-control-input" id="filter-ready-for-release" data-filter-type="status" data-filter-value="ready-for-release">
                             <label class="custom-control-label" for="filter-ready-for-release">{{#str}}ready_release, mod_coursework{{/str}}</label>
                         </div>
+                        <h4 class="badge badge-dark">{{#str}}agreedmark, mod_coursework{{/str}}</h4>
+                        {{#gradeboundaries}}
+                            <div class="pb-1 custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="filter-boundary-{{key}}" data-filter-type="status" data-filter-value="boundary-{{key}}">
+                                <label class="custom-control-label" for="filter-boundary-{{key}}">{{low}} - {{high}}%</label>
+                            </div>
+                        {{/gradeboundaries}}
 
                         <h4 class="badge badge-dark">{{#str}}submission, mod_coursework{{/str}}</h4>
                         <div class="pb-1 custom-control custom-checkbox">

@@ -325,10 +325,7 @@ class audit {
      * @return array
      */
     protected function get_boundaries(): array {
-        $boundaries = average_grade_no_straddle::get_config_setting('autogradeclassboundaries') ?? [];
-        // Reverse the array so it's lowest to highest (probably - if the config setting is correctly formatted).
-        $boundaries = array_reverse($boundaries);
-        return $boundaries;
+        return coursework::get_grade_boundaries();
     }
 
     /**

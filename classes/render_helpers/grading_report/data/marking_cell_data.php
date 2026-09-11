@@ -94,6 +94,12 @@ class marking_cell_data extends cell_data_base {
                     ),
                 ] : false;
             }
+        } else {
+            $submission = $rowsbase->get_submission();
+            if ($submission) {
+                $finalfeedback = $submission->get_final_feedback();
+                $rowdata->singlemark = $finalfeedback->grade ?? null;
+            }
         }
 
         if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
@@ -144,7 +150,6 @@ class marking_cell_data extends cell_data_base {
             $rowdata->markers[] = $marker;
             $markernumber++;
         }
-
         return $rowdata;
     }
 
