@@ -3,7 +3,7 @@ Coursework Activity
 Copyright 2011-2019 University of London.  
 Copyright 2024-2026 University College London
 
-Part of the [Double Marking Project led by UCL](https://www.catalyst-eu.net/blog/2025/04/29/enhancing-assessment-in-moodle-the-double-marking-project)
+Part of the [Double Marking Project led by UCL](https://github.com/ucl-isd/moodle-mod_coursework/wiki/Joining-the-Multiple-Marking-project)
 This is allowing us to take a blank slate approach about what the ideal marker experience should look like.
 We are also contributing some of this functionality into core Moodle Assignment, see:
 - https://moodle.atlassian.net/browse/MDL-86005
