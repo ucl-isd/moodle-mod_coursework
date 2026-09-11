@@ -1,0 +1,15 @@
+# Example .camp/listing.yml — lives in the PLUGIN's repository, not the index
+# (RFC §4.1). Authors update their listing with an ordinary commit; camp
+# ingests and hash-pins it at each tagged release. This example is what the
+# release tooling would scaffold for mod_cmi5launch.
+
+name: Coursework
+summary: Double Blind Marking and other advanced marking processes 
+description: |
+  Supports Double Blind Marking, Sample Marking, Open Double Marking and other Higher Education specific marking processes
+labels:
+  - fully-free
+category: activity
+links:
+  docs: https://github.com/ucl-isd/moodle-mod_coursework/blob/main/README.md
+  issues: https://github.com/ucl-isd/moodle-mod_coursework/issues
