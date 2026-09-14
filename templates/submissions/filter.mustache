@@ -151,6 +151,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const filter_form = document.getElementById('filter-form');
     const filter_dropdown_button = document.getElementById('filter-submissions'); // Changed ID to match HTML
+    const filter_dropdown_menu = document.querySelector('#filter-submissions + .dropdown-menu');
     const filter_button_text_display = document.getElementById('filter-button-text-display');
     const filter_checkboxes = document.querySelectorAll('.custom-control-input[type="checkbox"][data-filter-type]'); // Updated selector
     const record_count_display = document.getElementById('record-count-display').querySelector('strong');
@@ -368,6 +369,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // --- Event Listeners ---
+
+    if (filter_dropdown_menu) {
+        filter_dropdown_menu.addEventListener('click', function(event) {
+            if (event.target.closest('input[type="checkbox"], label')) {
+                event.stopPropagation();
+            }
+        });
+    }
 
     // Listen for 'change' event on checkboxes instead of 'click' on buttons
     filter_checkboxes.forEach(checkbox => {
