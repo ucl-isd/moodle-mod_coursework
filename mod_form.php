@@ -589,6 +589,8 @@ class mod_coursework_mod_form extends moodleform_mod {
         if (!empty($CFG->coursework_agreed_marking_deadline)) {
             $moodleform->setDefault('agreedgrademarkingdeadline', $defaulttimestamp);
         }
+
+        $moodleform->disabledIf('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
         $moodleform->addHelpButton('agreedgrademarkingdeadline', 'agreedmarkmarkingdeadline', 'mod_coursework');
     }
 
