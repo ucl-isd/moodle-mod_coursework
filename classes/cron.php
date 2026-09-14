@@ -210,25 +210,28 @@ class cron {
 
         foreach ($users as $user) {
             $courseworkinstance = coursework::get_from_id($user->courseworkid);
-
-            $mailer = new mailer($courseworkinstance);
-
-            if ($mailer->send_student_deadline_reminder($user)) {
-                $emailcounter++;
-                if (!isset($usercounter[$user->id])) {
-                    $usercounter[$user->id] = 1;
-                } else {
-                    $usercounter[$user->id]++;
-                }
-
-                $extension = isset($user->extension) ? $user->extension : 0;
-                $emailreminder = new stdClass();
-                $emailreminder->userid = $user->id;
-                $emailreminder->courseworkid = $user->courseworkid;
-                $emailreminder->remindernumber = $user->nextremindernumber;
-                $emailreminder->extension = $extension;
-                $DB->insert_record('coursework_reminder', $emailreminder);
+            mailer::queue(
+                'deadline_reminder',
+                $courseworkinstance->id(),
+                null,
+                $user->id,
+                null,
+                ['deadline' => $user->deadline]
+            );
+            $emailcounter++;
+            if (!isset($usercounter[$user->id])) {
+                $usercounter[$user->id] = 1;
+            } else {
+                $usercounter[$user->id]++;
             }
+
+            $extension = isset($user->extension) ? $user->extension : 0;
+            $emailreminder = new stdClass();
+            $emailreminder->userid = $user->id;
+            $emailreminder->courseworkid = $user->courseworkid;
+            $emailreminder->remindernumber = $user->nextremindernumber;
+            $emailreminder->extension = $extension;
+            $DB->insert_record('coursework_reminder', $emailreminder);
         }
 
         $counts['emails'] += $emailcounter;
@@ -247,9 +250,8 @@ class cron {
             $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_FINALISED);
             submission::remove_cache($submission->courseworkid);
             // Slightly wasteful to keep re-fetching the coursework :-/
-            $mailer = new mailer($submission->get_coursework());
             foreach ($submission->get_students() as $student) {
-                $mailer->send_submission_receipt($student, true);
+                mailer::queue('submission_receipt', $submission->get_coursework()->id(), $submission->id(), $student->id(), true);
             }
         }
     }

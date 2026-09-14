@@ -1107,8 +1107,7 @@ class submission extends table_base implements renderable {
                 }
                 $this->update_attribute('firstpublished', time());
                 // Send feedback released notification only when first published.
-                $mailer = new mailer($this->get_coursework());
-                $mailer->send_feedback_notification($this);
+                mailer::queue('feedback', $this->get_coursework()->id(), $this->id(), null);
             }
             $this->update_attribute('lastpublished', time());
         }

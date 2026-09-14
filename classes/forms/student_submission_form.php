@@ -174,9 +174,8 @@ class student_submission_form extends moodleform {
 
                         if (!empty($useridcommaseparatedlist)) {
                             $userids = explode(',', $useridcommaseparatedlist);
-                            $mailer = new mailer($coursework);
                             foreach ($userids as $u) {
-                                $mailer->send_submission_notification(trim($u));
+                                mailer::queue('submission_notification', $coursework->id(), null, trim($u));
                             }
                         }
                     }
@@ -199,10 +198,8 @@ class student_submission_form extends moodleform {
             if ($CFG->coursework_allsubmissionreceipt || $data->finalisebutton) {
                 // send the receipts to students
                 $studentswhoneedareceipt = $submission->get_students();
-                $mailer = new mailer($coursework);
-
                 foreach ($studentswhoneedareceipt as $student) {
-                    $mailer->send_submission_receipt($student, $data->finalisebutton);
+                    mailer::queue('submission_receipt', $coursework->id(), $submission->id(), $student->id(), $data->finalisebutton);
                 }
             }
         } else { // Feedback already exists, or already finalised - allow no changes.

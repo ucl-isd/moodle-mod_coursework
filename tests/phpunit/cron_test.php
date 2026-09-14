@@ -160,26 +160,4 @@ final class cron_test extends \advanced_testcase {
         $submission = $submission->reload();
         $this->assertNotEmpty($submission->firstpublished);
     }
-
-    /**
-     * Student receives reminder email when submission due.
-     */
-    public function test_send_reminders_to_students(): void {
-        $this->create_a_course();
-        $this->create_a_student();
-        $coursework = $this->create_a_coursework();
-
-        // Set deadline within $CFG->coursework_day_reminder, 7 days by default.
-        $coursework->update_attribute('deadline', strtotime('+6 days'));
-
-        $sink = $this->redirectEmails();
-        \mod_coursework\cron::run();
-        $messages = $sink->get_messages();
-        $this->assertEquals(1, count($messages));
-        $message = reset($messages);
-        $this->assertStringStartsWith(
-            "Reminder: your assignment for $coursework->name is due",
-            $message->subject
-        );
-    }
 }

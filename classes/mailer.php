@@ -28,6 +28,7 @@ use html_writer;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\task\mail_task;
 use stdClass;
 
 /**
@@ -53,16 +54,15 @@ class mailer {
      * This ought to only be triggered when the submission is finalised, not when the draft is uploaded.
      *
      * @param user $user
+     * @param submission $submission
      * @param bool $finalised
      * @throws \dml_exception
      * @throws \moodle_exception
      * @throws coding_exception
      */
 
-    public function send_submission_receipt($user, $finalised = false) {
+    public function send_submission_receipt($user, submission $submission, $finalised = false) {
         global $CFG;
-
-        $submission = $this->coursework->get_user_submission($user);
 
         if ($this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
             $emaildata = new stdClass();
@@ -247,5 +247,36 @@ class mailer {
 
             message_send($eventdata);
         }
+    }
+
+    /**
+     * Queue an adhoc task to send the relevant email notification.
+     * @param string $type
+     * @param int $courseworkid
+     * @param int|null $submissionid
+     * @param int|null $userid
+     * @param bool|null $notify
+     */
+    public static function queue(
+        string $type,
+        int $courseworkid,
+        ?int $submissionid = null,
+        ?int $userid = null,
+        ?bool $notify = null,
+        ?array $extra = null,
+    ): void {
+        global $USER;
+        $task = new mail_task();
+        $task->set_userid($USER->id);
+        $task->set_component('mod_coursework');
+        $task->set_custom_data([
+            'type' => $type,
+            'coursework' => $courseworkid,
+            'submission' => $submissionid,
+            'user' => $userid,
+            'notify' => $notify,
+            'extra' => $extra,
+        ]);
+        \core\task\manager::reschedule_or_queue_adhoc_task($task);
     }
 }
