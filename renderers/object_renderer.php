@@ -111,6 +111,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->feedbackfileshtml = $this->render_feedback_files(new mod_coursework_feedback_files($files));
         }
 
+        if (
+            $coursework->enablepdfjs()
+            &&
+            \local_pdfjs\local\lib::fetch_annotations($coursework->get_context(), $feedback->id())
+        ) {
+            $template->annotatedfeedbackid = $feedback->id();
+        }
+
         // Rubric/Advanced grading stuff if it's there.
         if (feedback::is_stage_using_advanced_grading($coursework, $feedback)) {
             $template->advancedgradinghtml = $this->render_advanced_grading($coursework, $feedback);

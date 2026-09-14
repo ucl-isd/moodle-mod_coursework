@@ -76,6 +76,12 @@
             </div>
             {{/feedbackfileshtml}}
 
+            {{#annotatedfeedbackid}}
+                <a id="feedbackannotator_notationbutton_{{{annotatedfeedbackid}}}" class="btn btn-secondary"
+                   data-toggle="tab" role="tab" href="#feedbackannotator_{{{annotatedfeedbackid}}}">View
+                    annotations</a>
+            {{/annotatedfeedbackid}}
+
             {{#separator}}
                 <hr>
             {{/separator}}
@@ -95,3 +101,23 @@
         {{> mod_coursework/feedback/viewmoderation}}
     {{/moderation}}
 </div>
+{{#js}}
+    var notationbutton = document.getElementById("feedbackannotator_notationbutton_{{{annotatedfeedbackid}}}");
+
+    if (notationbutton) {
+        notationbutton.addEventListener("click", () => {
+            document.querySelectorAll('.feedbackannotator_tabbutton').forEach(elem => {
+                elem.setAttribute('aria-selected', false);
+                elem.classList.remove("active");
+            });
+            document.querySelectorAll('.tab-pane').forEach(elem => {
+                elem.classList.remove("active");
+            });
+
+            var elem = document.getElementById("feedbackannotator_tabbutton_{{annotatedfeedbackid}}");
+            elem.setAttribute('aria-selected', true);
+            elem.classList.add("active");
+            document.getElementById("feedbackannotator_{{annotatedfeedbackid}}").classList.add("active");
+        });
+    }
+{{/js}}

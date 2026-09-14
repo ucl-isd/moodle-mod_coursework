@@ -23,10 +23,38 @@
 }}
 
 <div id="mod-coursework-pdf-container" class="mx-auto sticky-top">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active feedbackannotator_tabbutton" data-toggle="tab" role="tab" aria-selected="true" href="#submission">
+                Original
+            </a>
+        </li>
 
-    {{#pdfannotator}}
-        {{{pdfannotator}}}
-    {{/pdfannotator}}
+        {{#feedbackannotators}}
+            <li class="nav-item">
+                <a id="feedbackannotator_tabbutton_{{feedbackid}}" class="nav-link feedbackannotator_tabbutton" data-toggle="tab" role="tab" aria-selected="false" href="#feedbackannotator_{{feedbackid}}">
+                    {{{label}}}
+                </a>
+            </li>
+        {{/feedbackannotators}}
+    </ul>
+
+
+    <div class="tab-content">
+        {{#pdfannotator}}
+            <div class="tab-pane active" id="submission" role="tabpanel">
+                {{{pdfannotator}}}
+            </div>
+        {{/pdfannotator}}
+        {{#feedbackannotators}}
+            <div class="tab-pane" id="feedbackannotator_{{feedbackid}}" role="tabpanel">
+                {{{annotator}}}
+            </div>
+        {{/feedbackannotators}}
+    </div>
+
+
+
 
     {{! Pdf iframe. }}
     {{#pdfurl}}
