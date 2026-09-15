@@ -455,6 +455,12 @@ function xmldb_coursework_upgrade($oldversion) {
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2026101300, 'coursework');
     }
+    if ($oldversion < 2026101300) {
+        // Make plugin config settings consistent with the plugin name.
+        $DB->execute("UPDATE {config_plugins} SET plugin = 'mod_coursework' WHERE plugin = 'coursework'");
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026101300, 'coursework');
+    }
 
     // Always needs to return true.
     return true;

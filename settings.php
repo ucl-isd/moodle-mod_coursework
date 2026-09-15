@@ -327,7 +327,7 @@ if ($ADMIN->fulltree) {
     $settings->add($settingsheader);
     $settings->add(
         new admin_setting_autogradeboundaries(
-            'coursework/autogradeclassboundaries',
+            'mod_coursework/autogradeclassboundaries',
             get_string('automaticagreementaveragegradenostraddling', 'mod_coursework'),
             get_string(
                 'gradeboundarysettingdesc',

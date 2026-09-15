@@ -147,7 +147,7 @@ class average_grade_no_straddle extends average_grade {
      * @return ?array
      */
     public static function get_config_setting(string $settingname): ?array {
-        $setting = get_config('coursework', $settingname);
+        $setting = get_config('mod_coursework', $settingname);
         if (!$setting) {
             return null;
         }
