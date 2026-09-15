@@ -169,7 +169,7 @@ final class cron_test extends \advanced_testcase {
         $this->create_a_student();
         $coursework = $this->create_a_coursework();
 
-        // Set deadline within $CFG->coursework_day_reminder, 7 days by default.
+        // Set deadline within day_reminder, 7 days by default.
         $coursework->update_attribute('deadline', strtotime('+6 days'));
 
         $sink = $this->redirectEmails();
