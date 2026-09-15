@@ -49,8 +49,7 @@ if ($ADMIN->fulltree) {
     ));
 
     // Set site-wide limit on submissions sizes.
-    $maxbytes = get_config('mod_coursework', 'maxbytes');
-    if ($maxbytes) {
+    if (isset($CFG->maxbytes)) {
         $submissionsheader = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'), '');
         $settings->add($submissionsheader);
         $configmaxbytesstring = get_string('configmaxbytes', 'coursework');
@@ -60,7 +59,7 @@ if ($ADMIN->fulltree) {
             $maximumsizestring,
             $configmaxbytesstring,
             1048576,
-            get_max_upload_sizes($maxbytes)
+            get_max_upload_sizes($CFG->maxbytes)
         );
         $settings->add($maxbytessetting);
     }
