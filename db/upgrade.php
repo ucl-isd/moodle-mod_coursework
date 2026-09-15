@@ -447,7 +447,9 @@ function xmldb_coursework_upgrade($oldversion) {
         $DB->execute("UPDATE {config_plugins} SET plugin = 'mod_coursework' WHERE plugin = 'coursework'");
         // Move core settings to plugin settings table.
         $likesql = $DB->sql_like('name', ':plugin', false);
-        $settings = $DB->get_records_sql("SELECT * FROM {config} WHERE {$likesql}", ['plugin' => 'coursework_%']);
+        $settings = $DB->get_records_sql("SELECT * FROM {config} WHERE {$likesql}", [
+            'plugin' => $DB->sql_like_escape('coursework_') . '%',
+        ]);
         foreach ($settings as $setting) {
             $name = str_replace('coursework_', '', $setting->name);
             set_config($name, $setting->value, 'mod_coursework');
