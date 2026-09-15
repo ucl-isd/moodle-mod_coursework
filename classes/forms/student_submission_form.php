@@ -196,7 +196,7 @@ class student_submission_form extends moodleform {
                 }
             }
 
-            if ($CFG->coursework_allsubmissionreceipt || $data->finalisebutton) {
+            if (get_config('mod_coursework', 'allsubmissionreceipt') || $data->finalisebutton) {
                 // send the receipts to students
                 $studentswhoneedareceipt = $submission->get_students();
                 $mailer = new mailer($coursework);
@@ -274,7 +274,7 @@ class student_submission_form extends moodleform {
         $termshtml = html_writer::start_tag('h4');
         $termshtml .= get_string('youmustagreetotheterms', 'mod_coursework');
         $termshtml .= html_writer::end_tag('h4');
-        $termshtml .= $CFG->coursework_agree_terms_text;
+        $termshtml .= get_config('mod_coursework', 'agree_terms_text');
         $this->_form->addElement('html', $termshtml);
         $this->_form->addElement('checkbox', 'termsagreed', get_string('iagreetotheterms', 'mod_coursework'));
         $this->_form->setType('termsagreed', PARAM_INT);
@@ -312,8 +312,7 @@ class student_submission_form extends moodleform {
      * @return bool
      */
     protected function students_are_required_to_agree_to_terms() {
-        global $CFG;
-        return !empty($CFG->coursework_agree_terms);
+        return !empty(get_config('mod_coursework', 'agree_terms'));
     }
 
     /**
