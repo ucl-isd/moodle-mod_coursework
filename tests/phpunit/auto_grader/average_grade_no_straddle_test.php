@@ -41,7 +41,7 @@ final class average_grade_no_straddle_test extends \advanced_testcase {
         $coursework->update_attribute('automaticagreementstrategy', 'average_grade_no_straddle');
         // Grades within 5 percent of eachother.
         $coursework->update_attribute('automaticagreementrange', 5);
-        set_config('autogradeclassboundaries', average_grade_no_straddle::get_example_setting(), 'coursework');
+        set_config('autogradeclassboundaries', average_grade_no_straddle::get_example_setting(), 'mod_coursework');
         $this->resetAfterTest();
     }
 
