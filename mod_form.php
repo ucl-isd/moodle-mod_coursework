@@ -1356,7 +1356,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
             'average_grade' => get_string('automaticagreementaveragegrade', 'coursework'),
         ];
-        if (get_config('coursework', 'autogradeclassboundaries')) {
+        if (get_config('mod_coursework', 'autogradeclassboundaries')) {
             $options['average_grade_no_straddle'] = get_string('automaticagreementaveragegradenostraddling', 'coursework');
         }
 
