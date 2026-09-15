@@ -456,7 +456,7 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026101300, 'coursework');
     }
 
-    if ($oldversion < 2026101302) {
+    if ($oldversion < 2026101303) {
         // Make plugin config settings consistent with the plugin name.
         $DB->execute("UPDATE {config_plugins} SET plugin = 'mod_coursework' WHERE plugin = 'coursework'");
         // Move core settings to plugin settings table.
@@ -468,7 +468,7 @@ function xmldb_coursework_upgrade($oldversion) {
             unset_config($setting->name);
         }
         // Coursework savepoint reached.
-        upgrade_mod_savepoint(true, 2026101302, 'coursework');
+        upgrade_mod_savepoint(true, 2026101303, 'coursework');
     }
 
     // Always needs to return true.
