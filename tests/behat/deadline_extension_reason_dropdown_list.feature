@@ -24,8 +24,8 @@ Feature: Deadline extension reasons dropdown list
       | student1 | C1     | student |
       | manager1 | C1     | manager        |
     And the following config values are set as admin:
-      | config                            | value                       |
-      | coursework_extension_reasons_list | first reason\nsecond reason |
+      | config                            | value                       | plugin         |
+      | extension_reasons_list            | first reason\nsecond reason | mod_coursework |
 
   @javascript
   Scenario: The teacher can add a reason for the deadline extension to an individual submission
