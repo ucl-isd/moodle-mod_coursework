@@ -1314,8 +1314,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function forceblindmarking() {
-        global $CFG;
-        return get_config('mod_coursework', 'blindmarking');
+        return get_config('mod_coursework', 'forceblindmarking');
     }
 
     private function forceautorelease() {
