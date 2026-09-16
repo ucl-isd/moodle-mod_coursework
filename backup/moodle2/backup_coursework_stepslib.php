@@ -22,21 +22,6 @@
 
 class backup_coursework_activity_structure_step extends backup_activity_structure_step {
     protected function define_structure() {
-        global $DB;
-
-        foreach (
-            ['coursework_submissions',
-                      'coursework_allocation_pairs',
-                      'coursework_mod_set_members',
-                      'coursework_sample_set_mbrs',
-                      'coursework_extensions',
-                      'coursework_person_deadlines'] as $tablename
-        ) {
-            $DB->execute("update {{$tablename}} set allocatableuser=0, allocatablegroup=0");
-            $DB->execute("update {{$tablename}} set allocatableuser=allocatableid where allocatabletype='user'");
-            $DB->execute("update {{$tablename}} set allocatablegroup=allocatableid where allocatabletype='group'");
-        }
-
         $userinfo = $this->get_setting_value('userinfo');
 
         $coursework = new backup_nested_element(
@@ -210,8 +195,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                       "lastupdatedby",
                                                       "allocatableid",
                                                       "allocatabletype",
-                                                      'allocatableuser',
-                                                      'allocatablegroup',
                                                       "firstpublished",
                                                       "lastpublished",
                                                       "timesubmitted",
@@ -244,8 +227,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                 "stageidentifier",
                                                 "allocatableid",
                                                 "allocatabletype",
-                                                'allocatableuser',
-                                                'allocatablegroup',
                 ]
             );
 
@@ -287,8 +268,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "courseworkid",
                                                         "allocatableid",
                                                         "allocatabletype",
-                                                        'allocatableuser',
-                                                        'allocatablegroup',
                                                         "stageidentifier",
                 ]
             );
@@ -301,8 +280,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                 [
                                                      "allocatableid",
                                                      "allocatabletype",
-                                                     'allocatableuser',
-                                                     'allocatablegroup',
                                                      "courseworkid",
                                                      "extended_deadline",
                                                      "pre_defined_reason",
@@ -319,8 +296,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                 ['id'],
                 [
                                                     "allocatableid",
-                                                    'allocatableuser',
-                                                    'allocatablegroup',
                                                     "allocatabletype",
                                                     "courseworkid",
                                                     "personaldeadline",
@@ -340,8 +315,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "courseworkid",
                                                         "allocatableid",
                                                         "allocatabletype",
-                                                        'allocatableuser',
-                                                        'allocatablegroup',
                                                         "stageidentifier",
                                                         "selectiontype",
                 ]
@@ -459,28 +432,11 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $submission->annotate_ids('user', 'userid');
             $submission->annotate_ids('user', 'createdby');
             $submission->annotate_ids('user', 'lastupdatedby');
-            $submission->annotate_ids('user', 'allocatableuser');
-            $submission->annotate_ids('group', 'allocatablegroup');
-
             $reminder->annotate_ids('user', 'userid');
 
             $pair->annotate_ids('user', 'assessorid');
-            $pair->annotate_ids('user', 'allocatableuser');
-            $pair->annotate_ids('group', 'allocatablegroup');
 
             $allocationconfig->annotate_ids('user', 'assessorid');
-
-            $modsetmember->annotate_ids('user', 'allocatableuser');
-            $modsetmember->annotate_ids('group', 'allocatablegroup');
-
-            $extension->annotate_ids('user', 'allocatableuser');
-            $extension->annotate_ids('group', 'allocatablegroup');
-
-            $personaldeadline->annotate_ids('user', 'allocatableuser');
-            $personaldeadline->annotate_ids('group', 'allocatablegroup');
-
-            $samplemember->annotate_ids('user', 'allocatableuser');
-            $samplemember->annotate_ids('group', 'allocatablegroup');
 
             $moderationagreement->annotate_ids('user', 'moderatorid');
             $moderationagreement->annotate_ids('user', 'lasteditedby');
