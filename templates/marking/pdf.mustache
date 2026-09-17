@@ -25,14 +25,24 @@
 <div id="mod-coursework-pdf-container" class="mx-auto sticky-top">
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active feedbackannotator_tabbutton" data-toggle="tab" role="tab" aria-selected="true" href="#submission">
-                Original
+            <a class="nav-link active feedbackannotator_tabbutton"
+               data-toggle="tab"
+               data-feedbackid="original"
+               role="tab"
+               aria-selected="true"
+               href="#feedbackannotator_original">
+                {{#str}} submission, mod_coursework {{/str}}
             </a>
         </li>
 
         {{#feedbackannotators}}
             <li class="nav-item">
-                <a id="feedbackannotator_tabbutton_{{feedbackid}}" class="nav-link feedbackannotator_tabbutton" data-toggle="tab" role="tab" aria-selected="false" href="#feedbackannotator_{{feedbackid}}">
+                <a class="nav-link feedbackannotator_tabbutton"
+                   data-toggle="tab"
+                   data-feedbackid="{{feedbackid}}"
+                   role="tab"
+                   aria-selected="false"
+                   href="#feedbackannotator_{{feedbackid}}">
                     {{{label}}}
                 </a>
             </li>
@@ -42,19 +52,20 @@
 
     <div class="tab-content">
         {{#pdfannotator}}
-            <div class="tab-pane active" id="submission" role="tabpanel">
+            <div class="tab-pane active" id="feedbackannotator_original" role="tabpanel">
                 {{{pdfannotator}}}
             </div>
         {{/pdfannotator}}
         {{#feedbackannotators}}
             <div class="tab-pane" id="feedbackannotator_{{feedbackid}}" role="tabpanel">
+                <button data-feedbackid="{{feedbackid}}"
+                        class="btn btn-secondary copy_feedbackannotator">
+                    {{#str}} copytosubmission, mod_coursework {{/str}}
+                </button>
                 {{{annotator}}}
             </div>
         {{/feedbackannotators}}
     </div>
-
-
-
 
     {{! Pdf iframe. }}
     {{#pdfurl}}
@@ -71,3 +82,19 @@
         </div>
     {{/pdfurl}}
 </div>
+<script>
+    document.querySelectorAll(".copy_feedbackannotator").forEach(elem => {
+        elem.addEventListener("click", () => {
+            var pdfjsinstanceid = document.querySelector('#feedbackannotator_original iframe').getAttribute('data-pdfjsinstanceid');
+            var controller = window.viewerLib[pdfjsinstanceid];
+            controller.PDFViewerApplication.open({
+                        url: document.querySelectorAll("#feedbackannotator_" + elem.getAttribute('data-feedbackid') + ' [data-action="localpdfjs_viewfile"]')[0].dataset.annotatedfileurl
+                    }
+            );
+
+            require(['mod_coursework/feedbacktabcontroller'], function (feedbacktabcontroller) {
+                feedbacktabcontroller.setactivetab('original');
+            });
+        });
+    });
+</script>

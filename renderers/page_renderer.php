@@ -163,7 +163,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             // If we ARE using a different method at the end, now we need to append that rendered correctly.
             if ($differentfinal && $final) {
                 $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-                $template->feedback[] = $objrenderer->render_feedback($final, true);
+                $template->feedback[] = $objrenderer->render_feedback($final, true, true);
             }
         } else {
             // Simple direct grading.
@@ -174,7 +174,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
             foreach ($previousfeedbacks as $prev) {
-                $template->feedback[] = $objrenderer->render_feedback($prev, true);
+                $template->feedback[] = $objrenderer->render_feedback($prev, true, true);
             }
         }
 
@@ -249,7 +249,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $model->submission = $this->get_object_renderer()->submission_metadata($submission, $moderatoragreement->get_coursework(), $submissionfiles);
 
         foreach ($submission->get_assessor_feedbacks() as $feedback) {
-            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback);
+            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, true);
         }
 
         if ($moderatoragreement->moderatorid !== $USER->id) {
@@ -438,7 +438,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     $renderedlist = [];
                     $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
                     foreach ($previousfeedbacks as $prev) {
-                        $renderedlist[] = $objrenderer->render_feedback($prev, false);
+                        $renderedlist[] = $objrenderer->render_feedback($prev, false, true);
                     }
                     $template->previousfeedback = implode('', $renderedlist);
                 }
