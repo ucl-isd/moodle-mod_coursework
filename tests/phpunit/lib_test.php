@@ -25,6 +25,9 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\personaldeadline;
+use stdClass;
+
 /**
  * Unit tests for mod/coursework/lib.php.
  *
@@ -92,6 +95,57 @@ final class lib_test extends \advanced_testcase {
         $cm = get_coursemodule_from_instance('coursework', $coursework->id);
         $result = coursework_get_coursemodule_info($cm);
 
+        $this->assertNotFalse($result);
+        $this->assertEquals($coursework->name, $result->name);
+        $this->assertTrue(isset($result->customdata['duedate']));
+        $this->assertEquals($now + DAYSECS, $result->customdata['duedate']);
+    }
+
+    /**
+     * Test coursework_get_coursemodule_info with personal deadline.
+     */
+    public function test_coursework_get_coursemodule_info_with_personal_deadline(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $now = time();
+        $course = $this->getDataGenerator()->create_course();
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'deadline' => $now + DAYSECS,
+        ]);
+
+        // Set personal deadlines enabled.
+        $DB->set_field('coursework', 'personaldeadlineenabled', 1, ['id' => $coursework->id]);
+
+        $user = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($user->id, $course->id);
+        $this->getDataGenerator()->enrol_user($user2->id, $course->id);
+
+        $data = new stdClass();
+        $data->allocatabletype = 'user';
+        $data->allocatableid = $user->id;
+        $data->courseworkid = $coursework->id;
+        $data->personaldeadline = $now + WEEKSECS;
+        $data->createdbyid = 1;
+        personaldeadline::build($data)->save();
+
+        $this->setUser($user);
+
+        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $result = coursework_get_coursemodule_info($cm);
+
+        $this->assertNotFalse($result);
+        $this->assertEquals($coursework->name, $result->name);
+        $this->assertTrue(isset($result->customdata['duedate']));
+        $this->assertEquals($now + WEEKSECS, $result->customdata['duedate']);
+
+        $this->setUser($user2);
+
+        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $result = coursework_get_coursemodule_info($cm);
         $this->assertNotFalse($result);
         $this->assertEquals($coursework->name, $result->name);
         $this->assertTrue(isset($result->customdata['duedate']));
