@@ -57,10 +57,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    public function get_feedback_model(feedback $feedback): object {
+    public function get_feedback_model(feedback $feedback, $showannotationtabs = false): object {
         $template = new stdClass();
 
         $template->markingstage = $feedback->stageidentifier;
+        $template->feedbackid = $feedback->id();
 
         $submission = $feedback->get_submission();
         $coursework = $feedback->get_coursework();
@@ -112,7 +113,20 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             &&
             \local_pdfjs\local\lib::fetch_annotations($coursework->get_context(), $feedback->id())
         ) {
-            $template->annotatedfeedbackid = $feedback->id();
+            if ($showannotationtabs) {
+                $template->showannotationtabs = true;
+            } else {
+                $pdfannotator = new \local_pdfjs\output\pdf(
+                    $submission->get_submission_files()->get_files(),
+                    $submission->get_context(),
+                    'mod_coursework',
+                    $feedback->id()
+                );
+
+                if ($pdfjs_file_viewers = $pdfannotator->get_pdfjs_file_viewers()) {
+                    $template->annotationslink = $pdfjs_file_viewers[0];
+                }
+            }
         }
 
         // Rubric/Advanced grading stuff if it's there.
@@ -182,10 +196,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $template;
     }
 
-    public function render_feedback(feedback $feedback, $showtitle = true): string {
+    public function render_feedback(feedback $feedback, $showtitle = true, $showannotationtabs = false): string {
         global $USER;
 
-        $template = $this->get_feedback_model($feedback);
+        $template = $this->get_feedback_model($feedback, $showannotationtabs);
 
         if ($showtitle) {
             $template->title = $feedback->get_page_title();
