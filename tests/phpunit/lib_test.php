@@ -76,6 +76,118 @@ final class lib_test extends \advanced_testcase {
     }
 
     /**
+     * Test coursework_get_coursemodule_info with positive deadline.
+     */
+    public function test_coursework_get_coursemodule_info_with_deadline(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $now = time();
+        $course = $this->getDataGenerator()->create_course();
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+           'course' => $course->id,
+           'deadline' => $now + DAYSECS,
+        ]);
+
+        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $result = coursework_get_coursemodule_info($cm);
+
+        $this->assertNotFalse($result);
+        $this->assertEquals($coursework->name, $result->name);
+        $this->assertTrue(isset($result->customdata['duedate']));
+        $this->assertEquals($now + DAYSECS, $result->customdata['duedate']);
+    }
+
+    /**
+     * Test coursework_get_coursemodule_info with empty/zero deadline.
+     */
+    public function test_coursework_get_coursemodule_info_with_empty_deadline(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+           'course' => $course->id,
+           'deadline' => 0,
+        ]);
+
+        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $result = coursework_get_coursemodule_info($cm);
+
+        $this->assertNotFalse($result);
+        $this->assertEquals($coursework->name, $result->name);
+        $this->assertFalse(isset($result->customdata['duedate']));
+    }
+
+    /**
+     * Test coursework_get_coursemodule_info with description shown.
+     */
+    public function test_coursework_get_coursemodule_info_with_description(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $now = time();
+        $course = $this->getDataGenerator()->create_course();
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+           'course' => $course->id,
+           'deadline' => $now + DAYSECS,
+           'intro' => 'Test coursework intro',
+           'introformat' => FORMAT_HTML,
+        ]);
+
+        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $cm->showdescription = 1;
+
+        $result = coursework_get_coursemodule_info($cm);
+
+        $this->assertNotFalse($result);
+        $this->assertEquals($coursework->name, $result->name);
+        $this->assertNotEmpty($result->content);
+        $this->assertTrue(isset($result->customdata['duedate']));
+    }
+
+    /**
+     * Test coursework_get_coursemodule_info with description hidden.
+     */
+    public function test_coursework_get_coursemodule_info_without_description(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $now = time();
+        $course = $this->getDataGenerator()->create_course();
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+           'course' => $course->id,
+           'deadline' => $now + DAYSECS,
+           'intro' => 'Test coursework intro',
+           'introformat' => FORMAT_HTML,
+        ]);
+
+        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $cm->showdescription = 0;
+
+        $result = coursework_get_coursemodule_info($cm);
+
+        $this->assertNotFalse($result);
+        $this->assertEquals($coursework->name, $result->name);
+        $this->assertFalse(isset($result->content) && !empty($result->content));
+    }
+
+    /**
+     * Test coursework_get_coursemodule_info with invalid instance.
+     */
+    public function test_coursework_get_coursemodule_info_invalid_instance(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $cm = new \stdClass();
+        $cm->instance = 99999;
+
+        $result = coursework_get_coursemodule_info($cm);
+
+        $this->assertFalse($result);
+    }
+
+    /**
      * Creates an action event.
      *
      * @param int $courseid The course id.

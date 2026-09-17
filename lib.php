@@ -1617,3 +1617,24 @@ function mod_coursework_user_preferences(): array {
         ],
     ];
 }
+
+/**
+ * Add extra information to the course module info object.
+ * @param stdClass $coursemodule
+ * @return cached_cm_info|bool
+ */
+function coursework_get_coursemodule_info(stdClass $coursemodule): cached_cm_info|bool {
+    $coursework = coursework::get_from_id($coursemodule->instance);
+    if (!$coursework) {
+        return false;
+    }
+    $result = new cached_cm_info();
+    $result->name = $coursework->name;
+    if ($coursemodule->showdescription) {
+        $result->content = format_module_intro('coursework', $coursework, $coursemodule->id, false);
+    }
+    if ($coursework->get_deadline() > 0) {
+        $result->customdata['duedate'] = $coursework->get_deadline();
+    }
+    return $result;
+}
