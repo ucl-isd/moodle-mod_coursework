@@ -47,7 +47,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function show_feedback_page($feedback) {
         $objectrenderer = $this->get_object_renderer();
-        $this->page->set_title($feedback->get_page_title($feedback->get_submission()));
+        $this->page->set_title($feedback->get_page_title());
         $html = '';
         $html .= $this->output->header();
         $html .= $objectrenderer->render_feedback($feedback);
@@ -249,7 +249,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $model->submission = $this->get_object_renderer()->submission_metadata($submission, $moderatoragreement->get_coursework(), $submissionfiles);
 
         foreach ($submission->get_assessor_feedbacks() as $feedback) {
-            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, false);
+            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback);
         }
 
         if ($moderatoragreement->moderatorid !== $USER->id) {

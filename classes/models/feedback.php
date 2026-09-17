@@ -596,8 +596,8 @@ class feedback extends table_base {
      * @param submission $submission Submission object.
      * @return string
      */
-    public function get_page_title(submission $submission): string {
-        $studentname = $submission->get_allocatable_name();
+    public function get_page_title(): string {
+        $studentname = $this->get_submission()->get_allocatable_name();
         if ($this->is_agreed_grade()) {
             return get_string('finalfeedback', 'mod_coursework', $studentname);
         } else if ($this->is_moderation()) {

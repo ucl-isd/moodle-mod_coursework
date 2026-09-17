@@ -57,17 +57,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    public function get_feedback_model(feedback $feedback, $showtitle = true): object {
+    public function get_feedback_model(feedback $feedback): object {
         $template = new stdClass();
 
         $template->markingstage = $feedback->stageidentifier;
 
         $submission = $feedback->get_submission();
         $coursework = $feedback->get_coursework();
-
-        if ($showtitle) {
-            $template->title = $feedback->get_page_title($submission);
-        }
 
         $gradejudge = new grade_judge($coursework);
         $template->mark = $gradejudge->grade_to_display($feedback->get_grade());
@@ -189,7 +185,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     public function render_feedback(feedback $feedback, $showtitle = true): string {
         global $USER;
 
-        $template = $this->get_feedback_model($feedback, $showtitle);
+        $template = $this->get_feedback_model($feedback);
+
+        if ($showtitle) {
+            $template->title = $feedback->get_page_title();
+        }
 
         $moderation = moderation::get_moderator_agreement($feedback);
         if ($moderation) {
