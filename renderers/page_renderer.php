@@ -96,7 +96,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if (\local_pdfjs\local\lib::fetch_annotations($submission->get_context(), $feedback->id())) {
                 $template->feedbackannotators[] = (object)[
                     'feedbackid' => $feedback->id,
-                    'label' => $feedback->stageidentifier,
+                    'label' => $feedback->get_annotationtab_title(),
                     'annotator' => $this->output->render(new \local_pdfjs\output\pdf(
                         $submission->get_submission_files()->get_files(),
                         $submission->get_context(),
@@ -442,6 +442,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     }
                     $template->previousfeedback = implode('', $renderedlist);
                 }
+
+                $template->mainanootatoreditable = true;
 
                 $this->add_feedback_annotations($template, $submission, $previousfeedbacks);
             }
