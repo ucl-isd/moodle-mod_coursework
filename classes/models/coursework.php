@@ -1582,11 +1582,7 @@ class coursework extends table_base {
      * @throws coding_exception
      */
     public function hide_student_identities(): bool {
-        return $this->blindmarking_enabled()
-        && !has_any_capability(
-            ['mod/coursework:viewanonymous', 'mod/coursework:canexportfinalgrades'],
-            $this->get_context()
-        );
+        return $this->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->get_context());
     }
 
     /**
