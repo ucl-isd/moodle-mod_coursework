@@ -58,10 +58,12 @@
         {{/pdfannotator}}
         {{#feedbackannotators}}
             <div class="tab-pane" id="feedbackannotator_{{feedbackid}}" role="tabpanel">
+                {{#mainanootatoreditable}}
                 <button data-feedbackid="{{feedbackid}}"
                         class="btn btn-secondary copy_feedbackannotator">
                     {{#str}} copytosubmission, mod_coursework {{/str}}
                 </button>
+                {{/mainanootatoreditable}}
                 {{{annotator}}}
             </div>
         {{/feedbackannotators}}

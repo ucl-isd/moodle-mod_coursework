@@ -618,4 +618,22 @@ class feedback extends table_base {
     public function is_finalised(): bool {
         return (int) $this->finalised === 1;
     }
+
+    /**
+     * Get the annotation tab title, depending on stage of feedback.
+     *
+     * @return string
+     */
+    public function get_annotationtab_title(): string {
+        if ($this->is_agreed_grade()) {
+            return get_string('annotationsfinalfeedback', 'mod_coursework');
+        } else if ($this->is_moderation()) {
+            return get_string('annotationsmoderatorfeedback', 'mod_coursework');
+        } else {
+            $stage = $this->get_assessor_stage_no();
+            return get_string('annotationscomponentfeedback', 'mod_coursework', [
+                'stage' => $stage,
+            ]);
+        }
+    }
 }
