@@ -85,7 +85,8 @@ final class renderer_test extends \advanced_testcase {
      * @return array
      */
     public static function student_intro_provider(): array {
-        $due = time();
+        $clock = \core\di::get(\core\clock::class);
+        $due = $clock->time();
         $formatteddue = userdate($due, get_string('strftimedatetime', 'langconfig'));
         $extension = strtotime('+1 week', $due);
         $formattedextension = userdate($extension, get_string('strftimedatetime', 'langconfig'));
@@ -171,7 +172,8 @@ final class renderer_test extends \advanced_testcase {
      * @return array
      */
     public static function teacher_intro_provider(): array {
-        $due = time();
+        $clock = \core\di::get(\core\clock::class);
+        $due = $clock->time();
         $formatteddue = userdate($due, get_string('strftimedatetime', 'langconfig'));
         $individualfeedback = strtotime('+2 week', $due);
         $formattedindividualfeedback = userdate($individualfeedback, get_string('strftimedatetime', 'langconfig'));

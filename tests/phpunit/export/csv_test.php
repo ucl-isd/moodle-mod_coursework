@@ -52,11 +52,12 @@ final class csv_test extends \advanced_testcase {
     public function test_one_stage(): void {
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => $clock->time(),
             'extensionsenabled' => 1,
         ];
         $coursework = $this->create_a_coursework($params);
@@ -75,7 +76,8 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata->stageidentifier = 'assessor_1';
         $feedback = $generator->create_feedback($feedbackdata);
 
-        $extendiondeadline = time();
+        $clock = $this->mock_clock_with_frozen();
+        $extendiondeadline = $clock->time();
         $params = [
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
@@ -116,11 +118,11 @@ final class csv_test extends \advanced_testcase {
         $studentname = $student->lastname . ' ' . $student->firstname;
         $assessorname = $assessor->lastname . ' ' . $assessor->firstname;
         $assessorusername = $assessor->username;
-
+        $clock = $this->mock_clock_with_frozen();
         $oneassessorgrades = [
             '0' => $studentname,
             '1' => $student->username,
-            '2' => userdate(time(), $dateformat),
+            '2' => userdate($clock->time(), $dateformat),
             '3' => 'On time',
             '4' => $coursework->get_username_hash($submission->allocatableid),
             '5' => userdate($extension->extended_deadline, $dateformat),
@@ -129,7 +131,7 @@ final class csv_test extends \advanced_testcase {
             '8' => $feedback->grade,
             '9' => $assessorname,
             '10' => $assessorusername,
-            '11' => userdate(time(), $dateformat),
+            '11' => userdate($clock->time(), $dateformat),
             '12' => $feedback->grade,
         ];
 
@@ -140,7 +142,8 @@ final class csv_test extends \advanced_testcase {
      * Two stages with final agreed grade, extension not enabled
      */
     public function test_two_stages(): void {
-        $timenow = time();
+        $clock = $this->mock_clock_with_frozen();
+        $timenow = $clock->time();
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
@@ -239,12 +242,13 @@ final class csv_test extends \advanced_testcase {
 
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 2,
             'samplingenabled' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => $clock->time(),
         ];
         $coursework = $this->create_a_coursework($params);
         $submission = new \stdClass();
@@ -284,17 +288,17 @@ final class csv_test extends \advanced_testcase {
         $assessorname1 = $assessor1->lastname . ' ' . $assessor1->firstname;
 
         $assessorusername1 = $assessor1->username;
-
+        $clock = $this->mock_clock_with_frozen();
         $grades = [
             '0' => $studentname,
             '1' => $student->username,
-            '2' => userdate(time(), $dateformat),
+            '2' => userdate($clock->time(), $dateformat),
             '3' => 'On time',
             '4' => $coursework->get_username_hash($submission->allocatableid),
             '5' => $feedback->grade,
             '6' => $assessorname1,
             '7' => $assessorusername1,
-            '8' => userdate(time(), $dateformat),
+            '8' => userdate($clock->time(), $dateformat),
             '9' => '',
             '10' => '',
             '11' => '',
@@ -316,12 +320,13 @@ final class csv_test extends \advanced_testcase {
         global $DB;
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 2,
             'samplingenabled' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => $clock->time(),
         ];
         $coursework = $this->create_a_coursework($params);
         $student1 = $this->student;
@@ -408,16 +413,17 @@ final class csv_test extends \advanced_testcase {
         $assessorusername1 = $assessor1->username;
         $assessorusername2 = $assessor2->username;
 
+        $clock = $this->mock_clock_with_frozen();
         $assessorsgrades = [
             '0' => $studentname1,
             '1' => $student1->username,
-            '2' => userdate(time(), $dateformat),
+            '2' => userdate($clock->time(), $dateformat),
             '3' => 'On time',
             '4' => $coursework->get_username_hash($submission1->allocatableid),
             '5' => $feedback1->grade,
             '6' => $assessorname1,
             '7' => $assessorusername1,
-            '8' => userdate(time(), $dateformat),
+            '8' => userdate($clock->time(), $dateformat),
             '9' => '',
             '10' => '',
             '11' => '',
@@ -429,21 +435,21 @@ final class csv_test extends \advanced_testcase {
             '17' => $feedback1->grade,
             '18' => $studentname2,
             '19' => $student2->username,
-            '20' => userdate(time(), $dateformat),
+            '20' => userdate($clock->time(), $dateformat),
             '21' => 'On time',
             '22' => $coursework->get_username_hash($submission2->allocatableid),
             '23' => $feedback2->grade,
             '24' => $assessorname1,
             '25' => $assessorusername1,
-            '26' => userdate(time(), $dateformat),
+            '26' => userdate($clock->time(), $dateformat),
             '27' => $feedback3->grade,
             '28' => $assessorname2,
             '29' => $assessorusername2,
-            '30' => userdate(time(), $dateformat),
+            '30' => userdate($clock->time(), $dateformat),
             '31' => $feedback4->grade,
             '32' => $assessorname2,
             '33' => $assessorusername2,
-            '34' => userdate(time(), $dateformat),
+            '34' => userdate($clock->time(), $dateformat),
             '35' => $feedback4->grade,
         ];
         $this->assertEquals($assessorsgrades, $csvgrades);
@@ -456,11 +462,12 @@ final class csv_test extends \advanced_testcase {
     public function test_plagiarism_flagging_enabled(): void {
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => $clock->time(),
             'plagiarismflagenabled' => 1,
         ];
         $coursework = $this->create_a_coursework($params);

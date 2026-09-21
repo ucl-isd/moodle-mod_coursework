@@ -264,7 +264,8 @@ final class submission_test extends \advanced_testcase {
         $this->create_an_assessor_feedback_for_the_submission($this->otherteacher);
         $this->create_a_final_feedback_for_the_submission();
 
-        $submission->update_attribute('firstpublished', time());
+        $clock = $this->mock_clock_with_frozen();
+        $submission->update_attribute('firstpublished', $clock->time());
 
         return [$submission, $student, $teacher, $manager];
     }

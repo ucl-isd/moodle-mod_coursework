@@ -48,11 +48,13 @@ final class sampling_test extends \advanced_testcase {
         $this->course = $generator->create_course();
 
         // NB: deadline in the future to test draft submissions, as draft submissions are auto-finalised past deadline.
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 3,
             'samplingenabled' => 1,
-            'deadline' => time() + DAYSECS,
+            'deadline' => $clock->time(),
             'allocationenabled' => 1,
             'assessorallocationstrategy' => 'equal',
         ];

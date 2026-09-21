@@ -58,10 +58,12 @@ final class grading_sheet_download_test extends \advanced_testcase {
     public function test_one_stage_no_allocations(): void {
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
              'grade' => 100,
              'numberofmarkers' => 1,
-             'deadline' => time() + 86400,
+             'deadline' => $clock->time(),
         ];
         $coursework = $this->create_a_coursework($params);
         $submission = new stdClass();
@@ -101,11 +103,13 @@ final class grading_sheet_download_test extends \advanced_testcase {
      */
     public function test_two_stages_with_allocations(): void {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 2,
             'allocationenabled' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => $clock->time(),
         ];
         $coursework = $this->create_a_coursework($params);
 

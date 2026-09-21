@@ -49,6 +49,8 @@ final class sampling_agree_test extends \advanced_testcase {
         parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
 
         $this->course = $this->getDataGenerator()->create_course();
 
@@ -56,7 +58,7 @@ final class sampling_agree_test extends \advanced_testcase {
             'numberofmarkers'   => 3,
             'samplingenabled'   => 1,
             'allocationenabled' => 0,
-            'deadline'          => time() + DAYSECS,
+            'deadline'          => $clock->time(),
             'grade'             => 100,
         ]);
 
@@ -239,12 +241,14 @@ final class sampling_agree_test extends \advanced_testcase {
      * Create 2 markers with sampling, allocation and blind marking, future dated.
      */
     private function create_coursework_with_two_markers_and_sampling(): void {
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $this->create_a_coursework([
             'numberofmarkers'   => 2,
             'samplingenabled'   => 1,
             'allocationenabled' => 1,
             'blindmarking'      => 1,
-            'deadline'          => time() + DAYSECS,
+            'deadline'          => $clock->time(),
             'grade'             => 100,
         ]);
     }

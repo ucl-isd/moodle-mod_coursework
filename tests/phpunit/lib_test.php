@@ -39,7 +39,8 @@ final class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $now = time();
+        $clock = $this->mock_clock_with_frozen();
+        $now = $clock->time();
         $course = $this->getDataGenerator()->create_course();
         $coursework = $this->getDataGenerator()->create_module('coursework', [
             'course' => $course->id,
@@ -60,7 +61,8 @@ final class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $now = time();
+        $clock = $this->mock_clock_with_frozen();
+        $now = $clock->time();
         $course = $this->getDataGenerator()->create_course();
         $coursework = $this->getDataGenerator()->create_module('coursework', ['course' => $course->id,
             'numberofmarkers' => 2,
@@ -84,6 +86,7 @@ final class lib_test extends \advanced_testcase {
      * @return bool|calendar_event
      */
     private function create_action_event($courseid, $instanceid, $eventtype) {
+        $clock = $this->mock_clock_with_frozen();
         $event = new \stdClass();
         $event->name = 'Calendar event';
         $event->modulename = 'coursework';
@@ -91,7 +94,7 @@ final class lib_test extends \advanced_testcase {
         $event->instance = $instanceid;
         $event->type = CALENDAR_EVENT_TYPE_ACTION;
         $event->eventtype = $eventtype;
-        $event->timestart = time();
+        $event->timestart = $clock->time();
 
         return \calendar_event::create($event);
     }
