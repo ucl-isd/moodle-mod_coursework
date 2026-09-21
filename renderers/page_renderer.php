@@ -443,7 +443,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     $template->previousfeedback = implode('', $renderedlist);
                 }
 
-                $template->mainanootatoreditable = true;
+                $template->mainanotatoreditable = true;
 
                 $this->add_feedback_annotations($template, $submission, $previousfeedbacks);
             }
