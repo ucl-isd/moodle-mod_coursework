@@ -88,11 +88,12 @@
     document.querySelectorAll(".copy_feedbackannotator").forEach(elem => {
         elem.addEventListener("click", () => {
             var pdfjsinstanceid = document.querySelector('#feedbackannotator_original iframe').getAttribute('data-pdfjsinstanceid');
-            var controller = window.viewerLib[pdfjsinstanceid];
-            controller.PDFViewerApplication.open({
+            var pdfjsinstance = window.viewerLib[pdfjsinstanceid];
+            pdfjsinstance.PDFViewerApplication.open({
                         url: document.querySelectorAll("#feedbackannotator_" + elem.getAttribute('data-feedbackid') + ' [data-action="localpdfjs_viewfile"]')[0].dataset.annotatedfileurl
                     }
             );
+            pdfjsinstance.PDFViewerApplication._hasChanges = function() {return true;};
 
             require(['mod_coursework/feedbacktabcontroller'], function (feedbacktabcontroller) {
                 feedbacktabcontroller.setactivetab('original');
