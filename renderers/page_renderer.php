@@ -102,7 +102,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                         $submission->get_context(),
                         'mod_coursework',
                         $feedback->id()
-                    ))
+                    )),
                 ];
             }
         }
