@@ -954,12 +954,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $navref->add(get_string('allocatemarkers', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
 
-    // Link to personal deadlines screen
-    if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personaldeadlines_enabled())) {
-        $link = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php', ['id' => $cm->id]);
-        $navref->add(get_string('setpersonaldeadlines', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
-    }
-
     // Link to the locally assigned roles screen.
     if (has_all_capabilities(['moodle/role:assign', 'mod/coursework:allocate'], $context)) {
         $link = new moodle_url('/admin/roles/assign.php', ['contextid' => $context->id]);
