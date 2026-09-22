@@ -44,12 +44,13 @@ final class assessment_set_membership_test extends \advanced_testcase {
     public function test_create_and_count(): void {
         $this->setAdminUser();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
+        $clock = $this->mock_clock_with_frozen();
+        $clock->bump(DAYSECS);
         $params = [
             'grade' => 100,
             'numberofmarkers' => 2,
             'samplingenabled' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => $clock->time(),
         ];
         $coursework = $this->create_a_coursework($params);
         $student1 = $this->create_a_student();

@@ -39,10 +39,11 @@ final class deadline_extension_test extends \advanced_testcase {
     }
 
     public function test_create(): void {
+        $clock = $this->mock_clock_with_frozen();
         $params = ['allocatableid' => 3,
                         'allocatabletype' => 'user',
                         'courseworkid' => 4,
-                        'extended_deadline' => time()];
+                        'extended_deadline' => $clock->time()];
         $newthing = deadline_extension::create($params);
         $this->assertInstanceOf('mod_coursework\models\deadline_extension', $newthing);
         $this->assertTrue($newthing->persisted());
