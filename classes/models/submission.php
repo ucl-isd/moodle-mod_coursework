@@ -1227,15 +1227,16 @@ class submission extends table_base implements renderable {
     }
 
     public function rename_files() {
-        if (empty($this->coursework->renamefiles)) {
+        // We rename files if flag is set or blind marking is enabled.
+        if (empty($this->coursework->renamefiles) && empty($this->coursework->blindmarking_enabled())) {
             return;
-        }
-        if ($this->coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
-            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
         }
 
         $userid = $this->is_submission_on_behalf() ? $this->allocatableid : $this->userid;
-        if ($this->coursework->usecandidate && !$this->coursework->blindmarking_enabled()) {
+
+        if ($this->coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
+            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
+        } else if ($this->coursework->usecandidate) {
             $filenamestem = candidateprovider_manager::instance()->get_candidate_number($this->get_course_id(), $userid);
         } else {
             $filenamestem = $this->coursework->get_username_hash($userid);
