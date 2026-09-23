@@ -35,55 +35,90 @@ class mail_task extends \core\task\adhoc_task {
     public function execute(): void {
         $data = $this->get_custom_data();
         if (!isset($data->type, $data->coursework)) {
-            throw new \coding_exception('Task is missing required custom data');
+            mtrace('Task is missing required custom data');
+            return;
+        }
+        $coursework = coursework::get_from_id($data->coursework);
+        if (!$coursework) {
+            mtrace("Coursework {$data->coursework} no longer exists, skipping {$data->type} notification.");
+            return;
         }
         switch ($data->type) {
             case 'submission_receipt':
                 if (!isset($data->submission, $data->user)) {
-                    throw new \coding_exception('Task is missing required custom data');
+                    mtrace('Task is missing required custom data');
+                    return;
                 }
-                $coursework = new coursework($data->coursework);
-                $submission = new submission($data->submission);
-                $user = user::get_from_id($data->user);
-                if (!$user) {
-                    throw new \coding_exception('Invalid user');
+                $submission = $this->load_submission($data->submission);
+                $user = $this->load_user($data->user);
+                if (!$submission || !$user) {
+                    return;
                 }
                 $this->send_submission_receipt($coursework, $submission, $user);
                 break;
             case 'feedback':
                 if (!isset($data->submission)) {
-                    throw new \coding_exception('Task is missing required custom data');
+                    mtrace('Task is missing required custom data');
+                    return;
                 }
-                $coursework = new coursework($data->coursework);
-                $submission = new submission($data->submission);
+                $submission = $this->load_submission($data->submission);
+                if (!$submission) {
+                    return;
+                }
                 $this->send_feedback_notification($coursework, $submission);
                 break;
             case 'deadline_reminder':
                 if (!isset($data->user, $data->extra->deadline)) {
-                    throw new \coding_exception('Task is missing required custom data');
+                    mtrace('Task is missing required custom data');
+                    return;
                 }
-                $coursework = new coursework($data->coursework);
-                $user = user::get_from_id($data->user);
+                $user = $this->load_user($data->user);
                 if (!$user) {
-                    throw new \coding_exception('Invalid user');
+                    return;
                 }
                 $user->deadline = $data->extra->deadline;
-                $this->send_deadline_reminder($coursework, $user);
+                $this->send_deadline_reminder($coursework, $user, $data);
                 break;
             case 'submission_notification':
                 if (!isset($data->user)) {
-                    throw new \coding_exception('Task is missing required custom data');
+                    mtrace('Task is missing required custom data');
+                    return;
                 }
-                $coursework = new coursework($data->coursework);
-                $user = user::get_from_id($data->user);
+                $user = $this->load_user($data->user);
                 if (!$user) {
-                    throw new \coding_exception('Invalid user');
+                    return;
                 }
                 $this->send_submission_notification($coursework, $user);
                 break;
             default:
                 throw new \coding_exception('Unknown type');
         }
+    }
+
+    /**
+     * Load the user.
+     * @param int $userid
+     * @return user
+     */
+    private function load_user(int $userid): user {
+        $user = user::get_from_id($userid);
+        if (!$user) {
+            mtrace("User {$userid} no longer exists, skipping notification.");
+        }
+        return $user;
+    }
+
+    /**
+     * Load the submission.
+     * @param int $submissionid
+     * @return submission
+     */
+    private function load_submission(int $submissionid): submission {
+        $submission = submission::get_from_id($submissionid);
+        if (!$submission) {
+            mtrace("Submission {$submissionid} no longer exists, skipping notification.");
+        }
+        return $submission;
     }
 
     /**
@@ -113,9 +148,19 @@ class mail_task extends \core\task\adhoc_task {
      * @param coursework $coursework
      * @param user $user
      */
-    private function send_deadline_reminder(coursework $coursework, user $user): void {
+    private function send_deadline_reminder(coursework $coursework, user $user, \stdClass $data): void {
+        global $DB;
         $mailer = new mailer($coursework);
-        $mailer->send_student_deadline_reminder($user);
+        if (!$mailer->send_student_deadline_reminder($user)) {
+            mtrace("Failed to send deadline reminder to user {$user->id}");
+            return;
+        }
+        $emailreminder = new \stdClass();
+        $emailreminder->userid = $user->id;
+        $emailreminder->courseworkid = $data->courseworkid;
+        $emailreminder->remindernumber = $data->nextremindernumber;
+        $emailreminder->extension = $data->extension;
+        $DB->insert_record('coursework_reminder', $emailreminder);
     }
 
     /**

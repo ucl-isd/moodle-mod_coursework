@@ -216,7 +216,12 @@ class cron {
                 null,
                 $user->id,
                 null,
-                ['deadline' => $user->deadline]
+                [
+                    'deadline' => $user->deadline,
+                    'courseworkid' => $user->courseworkid,
+                    'nextremindernumber' => $user->nextremindernumber,
+                    'extension' => $user->extension ?? 0,
+                ]
             );
             $emailcounter++;
             if (!isset($usercounter[$user->id])) {
@@ -224,14 +229,6 @@ class cron {
             } else {
                 $usercounter[$user->id]++;
             }
-
-            $extension = isset($user->extension) ? $user->extension : 0;
-            $emailreminder = new stdClass();
-            $emailreminder->userid = $user->id;
-            $emailreminder->courseworkid = $user->courseworkid;
-            $emailreminder->remindernumber = $user->nextremindernumber;
-            $emailreminder->extension = $extension;
-            $DB->insert_record('coursework_reminder', $emailreminder);
         }
 
         $counts['emails'] += $emailcounter;
