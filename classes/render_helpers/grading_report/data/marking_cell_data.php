@@ -123,7 +123,8 @@ class marking_cell_data extends cell_data_base {
             } else {
                 $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
                     || $this->coursework->viewinitialgradeenabled
-                    || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
+                    || has_capability('mod/coursework:administergrades', $this->coursework->get_context())
+                    || has_capability('mod/coursework:moderate', $this->coursework->get_context());
                 $marker = $this->create_marker_data($row->get_assessorid(), $markernumber, $canseeothermarkerdetails);
                 if (
                     isset($submission)
