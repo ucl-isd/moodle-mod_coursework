@@ -464,7 +464,7 @@ class coursework extends table_base {
         static $enabled;
 
         if (!isset($enabled)) {
-            $enabled = (bool)get_config('core', 'coursework_enablepdfjs');
+            $enabled = (bool)get_config('mod_coursework', 'enablepdfjs');
         }
         return $enabled;
     }
@@ -1480,7 +1480,7 @@ class coursework extends table_base {
     public function due_to_send_first_reminders($deadline) {
         global $CFG;
 
-        return ($deadline - $CFG->coursework_day_reminder * 86400) < time();
+        return ($deadline - get_config('mod_coursework', 'day_reminder') * 86400) < time();
     }
 
     /**
@@ -1490,7 +1490,7 @@ class coursework extends table_base {
     public function due_to_send_second_reminders($deadline) {
         global $CFG;
 
-        return ($deadline - $CFG->coursework_day_second_reminder * 86400) < time();
+        return ($deadline - get_config('mod_coursework', 'day_second_reminder') * 86400) < time();
     }
 
     /**
@@ -2009,11 +2009,10 @@ class coursework extends table_base {
      * @return array
      */
     public static function extension_reasons() {
-        global $CFG;
-
         $extensionreasons = [];
-        if (!empty($CFG->coursework_extension_reasons_list)) {
-            $extensionreasons = $CFG->coursework_extension_reasons_list;
+        $list = get_config('mod_coursework', 'extension_reasons_list');
+        if (!empty($list)) {
+            $extensionreasons = $list;
             $extensionreasons = explode("\n", $extensionreasons);
             $extensionreasons = array_map(function ($i) {
                     return trim($i);

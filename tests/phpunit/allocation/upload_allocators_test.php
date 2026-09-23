@@ -56,7 +56,7 @@ final class upload_allocators_test extends \advanced_testcase {
     public function test_upload_assessor_allocations(): void {
         global $CFG, $DB;
 
-        $CFG->coursework_allocation_identifier = 'email';
+        set_config('allocation_identifier', 'email', 'mod_coursework');
         $this->setAdminUser();
         $generator = $this->getDataGenerator();
 
