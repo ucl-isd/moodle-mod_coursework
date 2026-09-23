@@ -98,9 +98,9 @@ class mail_task extends \core\task\adhoc_task {
     /**
      * Load the user.
      * @param int $userid
-     * @return user
+     * @return user|null
      */
-    private function load_user(int $userid): user {
+    private function load_user(int $userid): ?user {
         $user = user::get_from_id($userid);
         if (!$user) {
             mtrace("User {$userid} no longer exists, skipping notification.");
@@ -111,9 +111,9 @@ class mail_task extends \core\task\adhoc_task {
     /**
      * Load the submission.
      * @param int $submissionid
-     * @return submission
+     * @return submission|null
      */
-    private function load_submission(int $submissionid): submission {
+    private function load_submission(int $submissionid): ?submission {
         $submission = submission::get_from_id($submissionid);
         if (!$submission) {
             mtrace("Submission {$submissionid} no longer exists, skipping notification.");
@@ -157,9 +157,9 @@ class mail_task extends \core\task\adhoc_task {
         }
         $emailreminder = new \stdClass();
         $emailreminder->userid = $user->id;
-        $emailreminder->courseworkid = $data->courseworkid;
-        $emailreminder->remindernumber = $data->nextremindernumber;
-        $emailreminder->extension = $data->extension;
+        $emailreminder->courseworkid = $coursework->id;
+        $emailreminder->remindernumber = $data->extra->nextremindernumber;
+        $emailreminder->extension = $data->extra->extension;
         $DB->insert_record('coursework_reminder', $emailreminder);
     }
 

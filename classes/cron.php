@@ -209,10 +209,9 @@ class cron {
         $usercounter = [];
 
         foreach ($users as $user) {
-            $courseworkinstance = coursework::get_from_id($user->courseworkid);
             mailer::queue(
                 'deadline_reminder',
-                $courseworkinstance->id(),
+                $user->courseworkid,
                 null,
                 $user->id,
                 null,
@@ -220,7 +219,7 @@ class cron {
                     'deadline' => $user->deadline,
                     'courseworkid' => $user->courseworkid,
                     'nextremindernumber' => $user->nextremindernumber,
-                    'extension' => $user->extension ?? 0,
+                    'extension' => isset($user->extension) ? $user->extension : 0,
                 ]
             );
             $emailcounter++;
