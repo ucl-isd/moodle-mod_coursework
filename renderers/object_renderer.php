@@ -87,11 +87,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         ) {
             $template->date = $feedback->timemodified;
 
-            $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission)
-            && (
-                has_capability('mod/coursework:administergrades', $coursework->get_context())
-                || has_capability('mod/coursework:moderate', $coursework->get_context())
-            );
+            $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission) &&
+                has_any_capability(['mod/coursework:administergrades', 'mod/coursework:moderate'], $coursework->get_context());
             if (!$feedback->is_assessor_anonymity_enabled() || $canseeothermarkerdetails) {
                 $template->markername = $assessor->name();
             } else if ($feedback->is_moderation()) {
