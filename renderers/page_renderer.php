@@ -47,12 +47,65 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function show_feedback_page($feedback) {
         $objectrenderer = $this->get_object_renderer();
-        $this->page->set_title($feedback->get_page_title($feedback->get_submission()));
+        $this->page->set_title($feedback->get_page_title());
         $html = '';
         $html .= $this->output->header();
         $html .= $objectrenderer->render_feedback($feedback);
         $html .= $this->output->footer();
         return $html;
+    }
+
+    private function add_pdf_to_model(stdClass $template, submission $submission, feedback $feedback = null) {
+        $submissionfiles = $submission->get_submission_files();
+
+        if (!$submissionfiles) {
+            return;
+        }
+
+        if (!($file = $submissionfiles->get_first_pdf())) {
+            return;
+        }
+
+        $template->showpdf = true;
+
+        if ($submission->get_coursework()->enablepdfjs()) {
+            // Annotations files will be put under the submissionid until the feedback record exists.
+            // See
+            $template->pdfannotator = $this->output->render(new \local_pdfjs\output\pdf(
+                $submission->get_submission_files()->get_files(),
+                $submission->get_context(),
+                'mod_coursework',
+                (isset($feedback) && $feedback->persisted()) ? $feedback->id() : $submission->id(),
+                isset($feedback) ? 'coursework-markingform' : '',
+                !isset($feedback)
+            ));
+        } else {
+            $template->pdfintro = get_string('pdfhelp', 'mod_coursework');
+            $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
+        }
+    }
+
+    private function add_feedback_annotations(stdClass $template, submission $submission, $feedbacks = null) {
+        if (!$submission->get_coursework()->enablepdfjs()) {
+            return;
+        }
+
+        $template->feedbackannotators = [];
+
+        foreach ($feedbacks as $feedback) {
+            if (\local_pdfjs\local\lib::fetch_annotations($submission->get_context(), $feedback->id())) {
+                $template->feedbackannotators[] = (object)[
+                    'feedbackid' => $feedback->id,
+                    'label' => $feedback->get_annotationtab_title(),
+                    'annotator' => $this->output->render(new \local_pdfjs\output\pdf(
+                        $submission->get_submission_files()->get_files(),
+                        $submission->get_context(),
+                        'mod_coursework',
+                        $feedback->id()
+                    )),
+                ];
+            }
+        }
     }
 
     /**
@@ -70,11 +123,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $template->title = $pagename;
 
-        // PDF or not?
-        if ($submissionfiles && ($file = $submissionfiles->get_first_pdf())) {
-            $template->showpdf = true;
-            $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
-        }
+        $this->add_pdf_to_model($template, $submission);
+        $this->add_feedback_annotations($template, $submission, $submission->get_feedbacks());
 
         // Submission metadata.
         $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
@@ -113,7 +163,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             // If we ARE using a different method at the end, now we need to append that rendered correctly.
             if ($differentfinal && $final) {
                 $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-                $template->feedback[] = $objrenderer->render_feedback($final, true);
+                $template->feedback[] = $objrenderer->render_feedback($final, true, true);
             }
         } else {
             // Simple direct grading.
@@ -124,7 +174,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
             foreach ($previousfeedbacks as $prev) {
-                $template->feedback[] = $objrenderer->render_feedback($prev, true);
+                $template->feedback[] = $objrenderer->render_feedback($prev, true, true);
             }
         }
 
@@ -140,13 +190,26 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      * @throws \core\exception\coding_exception
      */
-    public function show_viewpdf_page($submission) {
+    public function show_viewpdf_page(submission $submission): string {
         $this->page->set_pagelayout('popup');
 
-        $html = '';
-        $objectrenderer = $this->get_object_renderer();
-        $html .= $this->output->header();
-        $html .= $objectrenderer->render_viewpdf($submission);
+        $html = $this->output->header();
+
+        if (!$submission->get_coursework()->enablepdfjs()) {
+            throw new \core\exception\coding_exception(
+                'Cannot show show_viewpdf_page without pdfjs present and enabled'
+            );
+        }
+
+        $html .= $this->output->render(new \local_pdfjs\output\pdf(
+            $submission->get_submission_files()->get_files(),
+            $submission->get_context(),
+            'mod_coursework',
+            $submission->id(),
+            '',
+            true
+        ));
+
         $html .= $this->output->footer();
         return $html;
     }
@@ -180,17 +243,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $model->allocatablename = $submission->get_allocatable_name();
         $model->feedbacks = [];
 
-        $submissionfiles = $submission->get_submission_files();
-        if ($submissionfiles && ($file = $submissionfiles->get_first_pdf())) {
-            $model->showpdf = true;
-            $model->pdfurl = $this->get_object_renderer()->make_file_url($file);
-        }
+        $this->add_pdf_to_model($model, $submission);
 
         // Submission metadata.
         $model->submission = $this->get_object_renderer()->submission_metadata($submission, $moderatoragreement->get_coursework(), $submissionfiles);
 
         foreach ($submission->get_assessor_feedbacks() as $feedback) {
-            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, false);
+            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, true);
         }
 
         if ($moderatoragreement->moderatorid !== $USER->id) {
@@ -348,12 +407,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $template->title = $pagename;
 
-        // PDF or not?
-        if ($submissionfiles && ($file = $submissionfiles->get_first_pdf())) {
-            $template->showpdf = true;
-            $template->pdfintro = get_string('pdfhelp', 'mod_coursework');
-            $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
-        }
+        $this->add_pdf_to_model($template, $submission, $feedback);
 
         // Submission metadata.
         $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
@@ -384,10 +438,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     $renderedlist = [];
                     $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
                     foreach ($previousfeedbacks as $prev) {
-                        $renderedlist[] = $objrenderer->render_feedback($prev, false);
+                        $renderedlist[] = $objrenderer->render_feedback($prev, false, true);
                     }
                     $template->previousfeedback = implode('', $renderedlist);
                 }
+
+                $template->mainanotatoreditable = true;
+
+                $this->add_feedback_annotations($template, $submission, $previousfeedbacks);
             }
         }
 

@@ -475,6 +475,15 @@ class feedback extends table_base {
         if ($submission && $submission->courseworkid ?? false) {
             self::remove_cache($submission->courseworkid);
         }
+
+        if (class_exists('local_pdfjs\local\lib')) {
+            \local_pdfjs\local\lib::reallocate_annotations(
+                $this->get_coursework()->get_context(),
+                $this->submissionid,
+                $this->id(),
+                $this->assessorid
+            );
+        }
     }
 
     /**
@@ -483,6 +492,13 @@ class feedback extends table_base {
     protected function after_destroy() {
         $courseworkid = $this->get_submission()->courseworkid;
         self::remove_cache($courseworkid);
+
+        if (class_exists('local_pdfjs\local\lib')) {
+            \local_pdfjs\local\lib::remove_annotations(
+                $this->get_coursework()->get_context(),
+                $this->id
+            );
+        }
     }
 
     /**
@@ -580,8 +596,8 @@ class feedback extends table_base {
      * @param submission $submission Submission object.
      * @return string
      */
-    public function get_page_title(submission $submission): string {
-        $studentname = $submission->get_allocatable_name();
+    public function get_page_title(): string {
+        $studentname = $this->get_submission()->get_allocatable_name();
         if ($this->is_agreed_grade()) {
             return get_string('finalfeedback', 'mod_coursework', $studentname);
         } else if ($this->is_moderation()) {
@@ -601,5 +617,23 @@ class feedback extends table_base {
      */
     public function is_finalised(): bool {
         return (int) $this->finalised === 1;
+    }
+
+    /**
+     * Get the annotation tab title, depending on stage of feedback.
+     *
+     * @return string
+     */
+    public function get_annotationtab_title(): string {
+        if ($this->is_agreed_grade()) {
+            return get_string('annotationsfinalfeedback', 'mod_coursework');
+        } else if ($this->is_moderation()) {
+            return get_string('annotationsmoderatorfeedback', 'mod_coursework');
+        } else {
+            $stage = $this->get_assessor_stage_no();
+            return get_string('annotationscomponentfeedback', 'mod_coursework', [
+                'stage' => $stage,
+            ]);
+        }
     }
 }

@@ -1,4 +1,3 @@
-
 {{!
     This file is part of Moodle - http://moodle.org/
     Moodle is free software: you can redistribute it and/or modify
@@ -24,16 +23,81 @@
 }}
 
 <div id="mod-coursework-pdf-container" class="mx-auto sticky-top">
-    {{! Submissions metadata. }}
-    {{#submission}}
-        {{> mod_coursework/submissions/tr/submissions }}
-    {{/submission}}
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active feedbackannotator_tabbutton"
+               data-toggle="tab"
+               data-feedbackid="original"
+               role="tab"
+               aria-selected="true"
+               href="#feedbackannotator_original">
+                {{#str}} submission, mod_coursework {{/str}}
+            </a>
+        </li>
+
+        {{#feedbackannotators}}
+            <li class="nav-item">
+                <a class="nav-link feedbackannotator_tabbutton"
+                   data-toggle="tab"
+                   data-feedbackid="{{feedbackid}}"
+                   role="tab"
+                   aria-selected="false"
+                   href="#feedbackannotator_{{feedbackid}}">
+                    {{{label}}}
+                </a>
+            </li>
+        {{/feedbackannotators}}
+    </ul>
+
+
+    <div class="tab-content">
+        {{#pdfannotator}}
+            <div class="tab-pane active" id="feedbackannotator_original" role="tabpanel">
+                {{{pdfannotator}}}
+            </div>
+        {{/pdfannotator}}
+        {{#feedbackannotators}}
+            <div class="tab-pane" id="feedbackannotator_{{feedbackid}}" role="tabpanel">
+                {{#mainanotatoreditable}}
+                <button data-feedbackid="{{feedbackid}}"
+                        class="btn btn-secondary copy_feedbackannotator">
+                    {{#str}} copytosubmission, mod_coursework {{/str}}
+                </button>
+                {{/mainanotatoreditable}}
+                {{{annotator}}}
+            </div>
+        {{/feedbackannotators}}
+    </div>
 
     {{! Pdf iframe. }}
-    <div id="mod-coursework-pdf-wrapper">
-        {{#pdfintro}}
-        <p class="small">{{pdfintro}}</p>
-        {{/pdfintro}}
-        <iframe name="mod-coursework-pdf-iframe" src="{{{pdfurl}}}" loading="lazy" title="{{#str}} pdfpreview, mod_coursework {{/str}}"></iframe>
-    </div>
+    {{#pdfurl}}
+    {{! Submissions metadata. }}
+        {{#submission}}
+            {{> mod_coursework/submissions/tr/submissions }}
+        {{/submission}}
+        <div id="mod-coursework-pdf-wrapper">
+            {{#pdfintro}}
+                <p class="small">{{pdfintro}}</p>
+            {{/pdfintro}}
+            <iframe name="mod-coursework-pdf-iframe" src="{{{pdfurl}}}" loading="lazy"
+                    title="{{#str}} pdfpreview, mod_coursework {{/str}}"></iframe>
+        </div>
+    {{/pdfurl}}
 </div>
+<script>
+    document.querySelectorAll(".copy_feedbackannotator").forEach(elem => {
+        elem.addEventListener("click", () => {
+            var pdfjsinstanceid = document.querySelector('#feedbackannotator_original iframe').getAttribute('data-pdfjsinstanceid');
+            var pdfjsinstance = window.viewerLib[pdfjsinstanceid];
+            pdfjsinstance.PDFViewerApplication.open({
+                        url: document.querySelectorAll("#feedbackannotator_" + elem.getAttribute('data-feedbackid') + ' [data-action="localpdfjs_viewfile"]')[0].dataset.annotatedfileurl
+                    }
+            );
+            pdfjsinstance.PDFViewerApplication._hasChanges = function() {return true;};
+
+            require(['mod_coursework/feedbacktabcontroller'], function (feedbacktabcontroller) {
+                feedbacktabcontroller.setactivetab('original');
+            });
+        });
+    });
+</script>

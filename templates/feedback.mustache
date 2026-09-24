@@ -76,6 +76,20 @@
             </div>
             {{/feedbackfileshtml}}
 
+            {{#showannotationtabs}}
+                <a class="btn btn-secondary feedbackannotator_notationbutton"
+                   data-toggle="tab"
+                   data-feedbackid="{{{feedbackid}}}"
+                   role="tab"
+                   href="#feedbackannotator_{{{feedbackid}}}">{{#str}} viewannotations, mod_coursework {{/str}}</a>
+            {{/showannotationtabs}}
+
+            {{#annotationslink}}
+                <a class="btn btn-secondary feedbackannotator_modalbutton"
+                   href="{{{annotationslink}}}"
+                   target="_blank">{{#str}} viewannotations, mod_coursework {{/str}}</a>
+            {{/annotationslink}}
+
             {{#separator}}
                 <hr>
             {{/separator}}
@@ -95,3 +109,14 @@
         {{> mod_coursework/feedback/viewmoderation}}
     {{/moderation}}
 </div>
+<script>
+    document.querySelectorAll(".feedbackannotator_notationbutton").forEach(notationbutton => {
+        notationbutton.addEventListener("click", () => {
+            require(['mod_coursework/feedbacktabcontroller'], function (feedbacktabcontroller) {
+                feedbacktabcontroller.setactivetab(notationbutton.getAttribute('data-feedbackid'));
+            });
+        });
+    });
+
+
+</script>
