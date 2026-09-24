@@ -167,7 +167,8 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->markingsummary = $markingsummary;
 
         // Get grade boundaries for the mark filters.
-        $template->gradeboundaries = coursework::get_grade_boundaries();
+        $template->gradeboundaries = $coursework->uses_numeric_grade() ? coursework::get_grade_boundaries() : [];
+        $template->hasgradeboundaries = !empty($template->gradeboundaries);
         foreach ($template->gradeboundaries as $key => &$gradeboundary) {
             $gradeboundary['low'] = $gradeboundary[0];
             $gradeboundary['high'] = $gradeboundary[1];
@@ -221,7 +222,7 @@ class grading_report_renderer extends plugin_renderer_base {
         self::prepare_submission_cell_data($coursework, $rowobject, $trdata);
         self::prepare_marking_cell_data($coursework, $rowobject, $trdata);
         self::prepare_actions_cell_data($coursework, $rowobject, $trdata);
-        self::set_tr_status($trdata);
+        self::set_tr_status($coursework, $trdata);
         return $trdata;
     }
 
@@ -390,12 +391,47 @@ class grading_report_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Add grade boundaries to tr status for filtering.
+     * @param coursework $coursework
+     * @param stdClass $trdata
+     * @param array $status
+     */
+    protected static function set_tr_grade_boundaries(coursework $coursework, stdClass $trdata, array &$status): void {
+        // If "None" or "Scale" grading, we don't need boundaries.
+        if (!$coursework->uses_numeric_grade()) {
+            return;
+        }
+
+        $mark = null;
+        if (!is_null($trdata->agreedmark) && isset($trdata->agreedmark->mark) && !is_null($trdata->agreedmark->mark)) {
+            $mark = $trdata->agreedmark->mark->markvalue;
+        } else if (!is_null($trdata->singlemark)) {
+            $mark = $trdata->singlemark;
+        }
+
+        // Convert grades/marks to percentages.
+        if ($coursework->automaticagreementstrategy == 'none' && $coursework->grade <> 100 && is_numeric($mark)) {
+            $mark = \grade_grade::standardise_score($mark, 0, $coursework->grade, 0, 100);
+        }
+
+        if (!is_null($mark)) {
+            $boundaries = coursework::get_grade_boundaries();
+            foreach ($boundaries as $key => $boundary) {
+                if ($mark >= $boundary[0] && $mark <= $boundary[1]) {
+                    $status[] = 'boundary-' . $key;
+                }
+            }
+        }
+    }
+
+    /**
      * Set tr status.
      *
+     * @param coursework $coursework
      * @param stdClass $trdata
      * @return void
      */
-    protected static function set_tr_status(stdClass $trdata): void {
+    protected static function set_tr_status(coursework $coursework, stdClass $trdata): void {
         $status = [];
         if (!empty($trdata->submission->extensiongranted)) {
             $status[] = 'extension-granted';
@@ -427,23 +463,7 @@ class grading_report_renderer extends plugin_renderer_base {
             }
         }
 
-        // Grade boundaries.
-        $mark = null;
-        if (!is_null($trdata->agreedmark) && isset($trdata->agreedmark->mark) && !is_null($trdata->agreedmark->mark)) {
-            $mark = $trdata->agreedmark->mark->markvalue;
-        } else if (!is_null($trdata->singlemark)) {
-            $mark = $trdata->singlemark;
-        }
-
-        if (!is_null($mark)) {
-            $boundaries = coursework::get_grade_boundaries();
-            foreach ($boundaries as $key => $boundary) {
-                if ($mark >= $boundary[0] && $mark <= $boundary[1]) {
-                    $status[] = 'boundary-' . $key;
-                }
-            }
-        }
-
+        static::set_tr_grade_boundaries($coursework, $trdata, $status);
         $trdata->status = implode(', ', $status);
     }
 }
