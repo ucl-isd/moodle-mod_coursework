@@ -1232,13 +1232,19 @@ class submission extends table_base implements renderable {
             return;
         }
 
-        $userid = $this->is_submission_on_behalf() ? $this->allocatableid : $this->userid;
+        if ($this->is_submission_on_behalf() && $this->allocatabletype == 'user') {
+            $userid = $this->allocatableid;
+        } else {
+            $userid = $this->userid;
+        }
 
         if ($this->coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
             throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
         } else if ($this->coursework->usecandidate) {
             $filenamestem = candidateprovider_manager::instance()->get_candidate_number($this->get_course_id(), $userid);
-        } else {
+        }
+
+        if (empty($filenamestem)) {
             $filenamestem = $this->coursework->get_username_hash($userid);
         }
 
@@ -1313,12 +1319,19 @@ class submission extends table_base implements renderable {
     }
 
     /**
+     * Is the submission being made by a user who is not allocated (either directly or via a group)
+     * e.g. a teacher doing on behalf of a student.
+     *
      * @return bool
      */
     private function is_submission_on_behalf() {
         global $USER;
 
-        if (($this->allocatableid == $USER->id && $this->allocatabletype != 'group') || groups_is_member($this->allocatableid)) {
+        if (
+            ($this->allocatableid == $USER->id && $this->allocatabletype == 'user')
+            ||
+            (groups_is_member($this->allocatableid, $USER->id) && $this->allocatabletype == 'group')
+        ) {
             return false;
         } else {
             return true;
