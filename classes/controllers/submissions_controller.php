@@ -226,10 +226,9 @@ class submissions_controller extends controller_base {
 
         $submission->submit_plagiarism();
 
-        $mailer = new mailer($this->coursework);
         if (($CFG->coursework_allsubmissionreceipt ?? false) || $submission->is_finalised()) {
             foreach ($submission->get_students() as $student) {
-                $mailer->send_submission_receipt($student, $submission->is_finalised());
+                mailer::queue('submission_receipt', $this->coursework->id(), $submission->id(), $student->id(), $submission->is_finalised());
             }
         }
 
@@ -240,7 +239,7 @@ class submissions_controller extends controller_base {
                 if (!empty($useridcommaseparatedlist)) {
                     $userids = explode(',', $useridcommaseparatedlist);
                     foreach ($userids as $u) {
-                        $mailer->send_submission_notification(trim($u));
+                        mailer::queue('submission_notification', $this->coursework->id(), $submission->id(), trim($u));
                     }
                 }
             }
@@ -303,9 +302,8 @@ class submissions_controller extends controller_base {
         $this->submission->submit_plagiarism();
 
         if ($CFG->coursework_allsubmissionreceipt || $notifyaboutfinalisation) {
-            $mailer = new mailer($this->coursework);
             foreach ($this->submission->get_students() as $student) {
-                $mailer->send_submission_receipt($student, $notifyaboutfinalisation);
+                mailer::queue('submission_receipt', $this->coursework->id(), $this->submission->id(), $student->id(), $notifyaboutfinalisation);
             }
         }
 
@@ -333,9 +331,8 @@ class submissions_controller extends controller_base {
         $this->submission->save();
 
         // Email the user. Best to do this as an event after 2.7 so as to keep the page fast.
-        $mailer = new mailer($this->coursework);
         foreach ($this->submission->get_students() as $student) {
-            $mailer->send_submission_receipt($student, true);
+            mailer::queue('submission_receipt', $this->coursework->id(), $this->submission->id(), $student->id(), true);
         }
 
         redirect($courseworkpageurl, get_string('changessaved'));

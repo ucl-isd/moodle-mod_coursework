@@ -22,6 +22,7 @@ namespace mod_coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
 use mod_coursework\models\submission;
 
 /**
@@ -162,24 +163,134 @@ final class cron_test extends \advanced_testcase {
     }
 
     /**
-     * Student receives reminder email when submission due.
+     * Test submission receipt notifications from adhoc tasks.
      */
-    public function test_send_reminders_to_students(): void {
+    public function test_send_submission_receipt_notifications_to_students(): void {
         $this->create_a_course();
         $this->create_a_student();
         $coursework = $this->create_a_coursework();
-
-        // Set deadline within $CFG->coursework_day_reminder, 7 days by default.
-        $coursework->update_attribute('deadline', strtotime('+6 days'));
-
+        // Set the deadline so it's already passed.
+        $coursework->update_attribute('deadline', strtotime('-1 days'));
+        // Create a non-finalised submission.
+        $submission = $this->create_a_submission_for_the_student();
+        $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_NOT_FINALISED);
+        // Now run the cron and redirect emails.
         $sink = $this->redirectEmails();
         \mod_coursework\cron::run();
+        $this->runAdhocTasks(\mod_coursework\task\mail_task::class);
         $messages = $sink->get_messages();
         $this->assertEquals(1, count($messages));
         $message = reset($messages);
-        $this->assertStringStartsWith(
-            "Reminder: your assignment for $coursework->name is due",
+        $this->assertStringContainsString(
+            "Submission Receipt",
             $message->subject
         );
+    }
+
+    /**
+     * Test sending feedback notifications from adhoc tasks.
+     */
+    public function test_send_feedback_notifications_to_students(): void {
+        $this->create_a_course();
+        $this->create_a_student();
+        $this->create_a_coursework();
+        $submission = $this->create_a_submission_for_the_student();
+        $this->create_a_final_feedback_for_the_submission();
+        $submission->publish();
+        // Now run the cron and redirect emails.
+        $sink = $this->redirectEmails();
+        \mod_coursework\cron::run();
+        $this->runAdhocTasks(\mod_coursework\task\mail_task::class);
+        $messages = $sink->get_messages();
+        $this->assertEquals(1, count($messages));
+        $message = reset($messages);
+        $this->assertStringContainsString(
+            "Coursework feedback released",
+            $message->subject
+        );
+    }
+
+    /**
+     * Test sending deadline reminder notifications from adhoc tasks.
+     */
+    public function test_send_deadline_reminder_notifications_to_students(): void {
+        $this->create_a_course();
+        $this->create_a_student();
+        $coursework = $this->create_a_coursework();
+        $coursework->update_attribute('deadline', strtotime('+1 hours'));
+        // Now run the cron and redirect emails.
+        $sink = $this->redirectEmails();
+        \mod_coursework\cron::run();
+        $this->runAdhocTasks(\mod_coursework\task\mail_task::class);
+        $messages = $sink->get_messages();
+        $this->assertEquals(1, count($messages));
+        $message = reset($messages);
+        $this->assertStringContainsString(
+            "Reminder: your assignment for {$coursework->name} is due",
+            $message->subject
+        );
+    }
+
+    /**
+     * Test sending submission notifications from adhoc tasks.
+     */
+    public function test_send_submission_notifications_to_students(): void {
+        $this->create_a_course();
+        $student = $this->create_a_student();
+        $manager = $this->create_a_teacher();
+        $this->enrol_as_manager($manager);
+
+        $coursework = $this->create_a_coursework([
+            'deadline' => 0,
+        ]);
+        $coursework->update_attribute('submissionnotification', $manager->id);
+
+        $draftitemid = file_get_unused_draft_itemid();
+        $fs = get_file_storage();
+        $usercontext = \context_user::instance($student->id);
+        $fs->create_file_from_string([
+            'contextid' => $usercontext->id,
+            'component' => 'user',
+            'filearea' => 'draft',
+            'itemid' => $draftitemid,
+            'filepath' => '/',
+            'filename' => 'submission.txt',
+        ], 'Test submission content');
+
+        $this->setUser($student->get_raw_record());
+        \mod_coursework\forms\student_submission_form::mock_submit([
+            'courseworkid' => $coursework->id,
+            'userid' => $student->id,
+            'submissionid' => 0,
+            'allocatableid' => $student->id,
+            'allocatabletype' => 'user',
+            'submission_manager' => $draftitemid,
+            'finalisebutton' => 1,
+        ], []);
+
+        $controller = new \mod_coursework\controllers\submissions_controller([
+            'courseworkid' => $coursework->id,
+            'finalised' => 1,
+            'allocatableid' => $student->id,
+            'allocatabletype' => 'user',
+        ]);
+
+        $exception = false;
+
+        try {
+            $controller->create_submission();
+            $this->fail('Expected the submission redirect exception.');
+        } catch (moodle_exception $e) {
+            // The redirect is expected after the submission is created.
+            $exception = true;
+        }
+
+        $sink = $this->redirectEmails();
+        $this->runAdhocTasks(\mod_coursework\task\mail_task::class);
+        $messages = $sink->get_messages();
+        $this->assertCount(2, $messages);
+        $subjects = array_map(static fn($message) => $message->subject, $messages);
+        $this->assertNotEmpty(array_filter($subjects, static fn($subject) => str_contains($subject, 'Submission Receipt')));
+        $this->assertNotEmpty(array_filter($subjects, static fn($subject) => str_contains($subject, 'A submission has been made in')));
     }
 }
