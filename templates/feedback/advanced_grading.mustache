@@ -55,9 +55,11 @@
         {{/description}}
 
         <div class="row pt-2">
-            <div class="col-sm-3 mt-2">
-                {{> mod_coursework/progress }}
-            </div>
+            {{#showscorestudent}}
+                <div class="col-sm-3 mt-2">
+                    {{> mod_coursework/progress }}
+                </div>
+            {{/showscorestudent}}
 
             <div class="col mt-2">
             {{#hascomments}}
