@@ -1227,8 +1227,10 @@ class submission extends table_base implements renderable {
     }
 
     public function rename_files() {
+        $coursework = $this->get_coursework();
+
         // We rename files if flag is set or blind marking is enabled.
-        if (empty($this->coursework->renamefiles) && empty($this->coursework->blindmarking_enabled())) {
+        if (empty($coursework->renamefiles) && empty($coursework->blindmarking_enabled())) {
             return;
         }
 
@@ -1238,14 +1240,14 @@ class submission extends table_base implements renderable {
             $userid = $this->userid;
         }
 
-        if ($this->coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
+        if ($coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
             throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
-        } else if ($this->coursework->usecandidate) {
+        } else if ($coursework->usecandidate) {
             $filenamestem = candidateprovider_manager::instance()->get_candidate_number($this->get_course_id(), $userid);
         }
 
         if (empty($filenamestem)) {
-            $filenamestem = $this->coursework->get_username_hash($userid);
+            $filenamestem = $coursework->get_username_hash($userid);
         }
 
         $counter = 1;
