@@ -442,6 +442,77 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026082701, 'coursework');
     }
 
+    if ($oldversion < 2026091502) {
+        $table = new xmldb_table('coursework_submissions');
+        $field = new xmldb_field('allocatableuser');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $field = new xmldb_field('allocatablegroup');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $table = new xmldb_table('coursework_allocation_pairs');
+        $field = new xmldb_field('allocatableuser');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $field = new xmldb_field('allocatablegroup');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $table = new xmldb_table('coursework_mod_set_members');
+        $field = new xmldb_field('allocatableuser');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $field = new xmldb_field('allocatablegroup');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $table = new xmldb_table('coursework_extensions');
+        $field = new xmldb_field('allocatableuser');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $field = new xmldb_field('allocatablegroup');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $table = new xmldb_table('coursework_sample_set_mbrs');
+        $field = new xmldb_field('allocatableuser');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $field = new xmldb_field('allocatablegroup');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $table = new xmldb_table('coursework_person_deadlines');
+        $field = new xmldb_field('allocatableuser', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'allocatableid');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $field = new xmldb_field('allocatablegroup', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'allocatableuser');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026091502, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

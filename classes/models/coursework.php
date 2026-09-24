@@ -2371,7 +2371,7 @@ class coursework extends table_base {
      */
     public function remove_deadline_extensions_by_user($userid) {
         global $DB;
-        $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND (allocatableid = ? OR allocatableuser = ? ) ', ['user', $userid, $userid]);
+        $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND allocatableid = ? ', ['user', $userid]);
     }
     /**
      * Function to Remove all personal deadlines by coursework
