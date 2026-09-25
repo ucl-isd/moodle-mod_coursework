@@ -28,7 +28,7 @@
                         "maxscore": "10.00",
                         "percent": 80,
                         "remark": "<p>The structure was logical and the argument was mostly clear.</p>",
-                        "feedbackfileshtml": "<a href="#">file link</a>"
+                        "feedbackfileshtml": "<a href='#'>file link</a>"
                     },
                     {
                         "label": "Marker 2",
@@ -36,7 +36,7 @@
                         "maxscore": "10.00",
                         "percent": 70,
                         "remark": "<p>A good effort, but the argument could have been supported with more evidence in places.</p>",
-                        "feedbackfileshtml": "<a href="#">file link</a>"
+                        "feedbackfileshtml": "<a href='#'>file link</a>"
                     }
                 ]
             },
@@ -52,6 +52,14 @@
                         "feedbackfileshtml": false
                     }
                 ]
+            }
+        ],
+        "markersdata": [
+            {
+                "label": "Marker 1",
+                "stage": "final_agreed_1",
+                "feedbackcomment": "<p>The structure was logical and the argument was mostly clear.</p>",
+                "feedbackfileshtml": "<a href='#'>file link</a>"
             }
         ]
     }
@@ -98,10 +106,12 @@
                             <div>
                                 <strong>{{label}}</strong>
                             </div>
-                            <div class="text-muted">
-                                {{#str}} feedback, mod_coursework {{/str}}
-                            </div>
-                            {{{feedbackcomment}}}
+                            {{#feedbackcomment}}
+                                <div class="text-muted">
+                                    {{#str}} feedback, mod_coursework {{/str}}
+                                </div>
+                                {{{feedbackcomment}}}
+                            {{/feedbackcomment}}
                         </div>
                         <div>
                             {{! Feedback files. }}
