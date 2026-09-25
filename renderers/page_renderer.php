@@ -454,7 +454,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $markersdata[(int)$feedback->get_assessor_stage_no()] = $markerobj;
             }
         }
+
+        // Sort so that Agreed is first.
         ksort($markersdata);
+
+        // Then re-do the keys incase they don't start at 0, cos Mustache.
+        $markersdata = array_values($markersdata);
 
         $template = new stdClass();
         $template->reviewcriteria = [];
