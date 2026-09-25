@@ -223,6 +223,7 @@ class grading_report_renderer extends plugin_renderer_base {
         self::prepare_marking_cell_data($coursework, $rowobject, $trdata);
         self::prepare_actions_cell_data($coursework, $rowobject, $trdata);
         self::set_tr_status($coursework, $trdata);
+        self::set_tr_grade_boundaries($coursework, $trdata);
         return $trdata;
     }
 
@@ -394,9 +395,8 @@ class grading_report_renderer extends plugin_renderer_base {
      * Add grade boundaries to tr status for filtering.
      * @param coursework $coursework
      * @param stdClass $trdata
-     * @param array $status
      */
-    protected static function set_tr_grade_boundaries(coursework $coursework, stdClass $trdata, array &$status): void {
+    protected static function set_tr_grade_boundaries(coursework $coursework, stdClass $trdata): void {
         // If "None" or "Scale" grading, we don't need boundaries.
         if (!$coursework->uses_numeric_grade()) {
             return;
@@ -414,14 +414,18 @@ class grading_report_renderer extends plugin_renderer_base {
             $mark = \grade_grade::standardise_score($mark, 0, $coursework->grade, 0, 100);
         }
 
+        $trboundaries = [];
+
         if (!is_null($mark)) {
             $boundaries = coursework::get_grade_boundaries();
             foreach ($boundaries as $key => $boundary) {
                 if ($mark >= $boundary[0] && $mark <= $boundary[1]) {
-                    $status[] = 'boundary-' . $key;
+                    $trboundaries[] = 'boundary-' . $key;
                 }
             }
         }
+
+        $trdata->gradeboundaries = implode(', ', $trboundaries);
     }
 
     /**
@@ -463,7 +467,6 @@ class grading_report_renderer extends plugin_renderer_base {
             }
         }
 
-        static::set_tr_grade_boundaries($coursework, $trdata, $status);
         $trdata->status = implode(', ', $status);
     }
 }
