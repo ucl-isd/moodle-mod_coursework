@@ -2,7 +2,8 @@
     data-status="{{status}}"
     data-marker="{{{markerfilter}}}"
     data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#submissiontype.group}}{{submissiontype.group.id}}{{/submissiontype.group}}"
-    data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#submissiontype.group}}group{{/submissiontype.group}}">
+    data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#submissiontype.group}}group{{/submissiontype.group}}"
+    data-boundary="{{#gradeboundaries}}{{gradeboundaries}}{{/gradeboundaries}}">
 
         {{! User. }}
         <td class="mod-coursework-submissions-user-col">
