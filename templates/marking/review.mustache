@@ -81,12 +81,6 @@
                         </div>
                         {{/remark}}
 
-                        {{! Feedback files. }}
-                        {{#feedbackfileshtml}}
-                            <div>
-                                <small>{{{.}}}</small>
-                            </div>
-                        {{/feedbackfileshtml}}
                     </div>
                     {{/markers}}
                 </div>
@@ -94,6 +88,35 @@
             </div>
         </li>
     {{/reviewcriteria}}
+    <li>
+        <div class="line-clamp-2">{{#str}} overall, mod_coursework {{/str}}</div>
+        <div class="review-marks animate-enter">
+            <div class="row mt-2">
+                {{#markersdata}}
+                    <div class="col-md mod_coursework-stage-{{stage}}">
+                        <div class="mt-2 small">
+                            <div>
+                                <strong>{{label}}</strong>
+                            </div>
+                            <div class="text-muted">
+                                {{#str}} feedback, mod_coursework {{/str}}
+                            </div>
+                            {{{feedbackcomment}}}
+                        </div>
+                        <div>
+                            {{! Feedback files. }}
+                            {{#feedbackfileshtml}}
+                                <div>
+                                    <small>{{{.}}}</small>
+                                </div>
+                            {{/feedbackfileshtml}}
+                        </div>
+                    </div>
+                {{/markersdata}}
+            </div>
+            <hr>
+        </div>
+    </li>
     </ul>
 </div>
 
