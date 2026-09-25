@@ -450,7 +450,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     $objrenderer = $this->get_object_renderer();
                     $markerobj->feedbackfileshtml = $objrenderer->render_feedback_files(new mod_coursework_feedback_files($files));
                 }
-                $markersdata[$feedback->get_assessor_stage_no()] = $markerobj;
+                $markerobj->feedbackcomment = format_text($feedback->feedbackcomment, $feedback->feedbackcommentformat);
+                $markersdata[(int)$feedback->get_assessor_stage_no()] = $markerobj;
             }
         }
         ksort($markersdata);
@@ -512,6 +513,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->reviewcriteria[] = $criterionitem;
         }
 
+        $template->markersdata = $markersdata;
         return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 
