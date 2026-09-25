@@ -1330,9 +1330,9 @@ class submission extends table_base implements renderable {
         global $USER;
 
         if (
-            ($this->allocatableid == $USER->id && $this->allocatabletype == 'user')
+            ($this->allocatabletype == 'user' && $this->allocatableid == $USER->id)
             ||
-            (groups_is_member($this->allocatableid, $USER->id) && $this->allocatabletype == 'group')
+            ($this->allocatabletype == 'group' && groups_is_member($this->allocatableid, $USER->id))
         ) {
             return false;
         } else {
