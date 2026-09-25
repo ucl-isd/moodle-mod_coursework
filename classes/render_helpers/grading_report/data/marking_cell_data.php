@@ -82,18 +82,17 @@ class marking_cell_data extends cell_data_base {
 
         if ($this->coursework->has_multiple_markers()) {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
+        }
 
-            // Can the user view all the feedback in one place?
-            $submission = $rowsbase->get_submission();
-            if ($submission) {
-                $rowdata->viewallfeedback = $submission->can_show_all_feedback() ? [
-                    'url' => $this->get_mark_url(
-                        'all',
-                        $submission,
-                        null,
-                    ),
-                ] : false;
-            }
+        // Can the user view all the feedback in one place?
+        if ($submission) {
+            $rowdata->viewallfeedback = $submission->can_show_all_feedback() ? [
+                'url' => $this->get_mark_url(
+                    'all',
+                    $submission,
+                    null,
+                ),
+            ] : false;
         }
 
         if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
