@@ -840,33 +840,38 @@ class submission extends table_base implements renderable {
      * As with the author id field this function was created to verify that coursework will work correctly with Turnitin
      * Plagiarism plugin that requires the author of a submission to
      */
-    public function get_author_id() {
+    public function get_author_id(): int {
         global $USER;
-
-        $id = $USER->id;
 
         // If this is a submission on behalf of the student and it is a group submission we have to make sure
         // the author is the first member of the group
 
-        if ($this->is_submission_on_behalf()) {
-            if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
-                $members = groups_get_members($this->allocatableid, 'u.id', 'id');
-                if ($members) {
-                    $id = reset($members)->id;
-                }
+        if ($this->allocatabletype == 'user') {
+            return $this->allocatableid;
+        }
 
-                if ($this->get_coursework()->plagiarism_enabled()) {
-                    $groupmember = $this->get_tii_group_member_with_eula($this->allocatableid);
-                    if (!empty($groupmember)) {
-                        $id = $groupmember->id;
-                    }
-                }
-            } else {
-                $id = $this->allocatableid;
+        if (groups_is_member($this->allocatableid, $USER->id)) {
+            return $USER->id;
+        }
+
+        if ($this->get_coursework()->plagiarism_enabled()) {
+            $groupmember = $this->get_tii_group_member_with_eula($this->allocatableid);
+            if (!empty($groupmember)) {
+                return $groupmember->id;
             }
         }
 
-        return $id;
+        $members = groups_get_members($this->allocatableid, 'u.id', 'id');
+        if ($members) {
+            return reset($members)->id;
+        }
+
+        debugging(
+            "Unable to determine author",
+            DEBUG_ALL
+        );
+
+        return $USER->id;
     }
 
     /**
@@ -1234,11 +1239,7 @@ class submission extends table_base implements renderable {
             return;
         }
 
-        if ($this->is_submission_on_behalf() && $this->allocatabletype == 'user') {
-            $userid = $this->allocatableid;
-        } else {
-            $userid = $this->userid;
-        }
+        $userid = $this->get_author_id();
 
         if ($coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
             throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
@@ -1318,26 +1319,6 @@ class submission extends table_base implements renderable {
             }
         }
         return [];
-    }
-
-    /**
-     * Is the submission being made by a user who is not allocated (either directly or via a group)
-     * e.g. a teacher doing on behalf of a student.
-     *
-     * @return bool
-     */
-    private function is_submission_on_behalf() {
-        global $USER;
-
-        if (
-            ($this->allocatabletype == 'user' && $this->allocatableid == $USER->id)
-            ||
-            ($this->allocatabletype == 'group' && groups_is_member($this->allocatableid, $USER->id))
-        ) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     /**
