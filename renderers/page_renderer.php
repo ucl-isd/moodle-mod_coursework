@@ -446,15 +446,26 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $markerobj->label = get_string('marker', 'mod_coursework') . " " . $feedback->get_assessor_stage_no();
                 $markerobj->fillings = $filling['criteria'] ?? [];
                 $markerobj->stage = $feedback->stageidentifier;
-                $markersdata[$feedback->get_assessor_stage_no()] = $markerobj;
+                if ($files = $feedback->get_feedback_files()) {
+                    $objrenderer = $this->get_object_renderer();
+                    $markerobj->feedbackfileshtml = $objrenderer->render_feedback_files(new mod_coursework_feedback_files($files));
+                }
+                $markerobj->feedbackcomment = format_text($feedback->feedbackcomment, $feedback->feedbackcommentformat);
+                $markersdata[(int)$feedback->get_assessor_stage_no()] = $markerobj;
             }
         }
+
+        // Sort so that Agreed is first.
         ksort($markersdata);
+
+        // Then re-do the keys incase they don't start at 0, cos Mustache.
+        $markersdata = array_values($markersdata);
 
         $template = new stdClass();
         $template->reviewcriteria = [];
         // "0" in this context means the same through all stages. So anything higher means use a different one.
         $template->differentfinalgradingmethod = ($coursework->finalstagegrading > 0);
+        $alreadygotfile = [];
 
         foreach ($criteria as $criterion) {
             $criterionitem = new stdClass();
@@ -496,12 +507,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
                 $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
                 $marker->percent = (int)round($percentraw);
-
                 $criterionitem->markers[] = $marker;
             }
             $template->reviewcriteria[] = $criterionitem;
         }
 
+        $template->markersdata = $markersdata;
         return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 

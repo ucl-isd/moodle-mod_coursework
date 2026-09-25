@@ -27,14 +27,16 @@
                         "score": "8.00",
                         "maxscore": "10.00",
                         "percent": 80,
-                        "remark": "<p>The structure was logical and the argument was mostly clear.</p>"
+                        "remark": "<p>The structure was logical and the argument was mostly clear.</p>",
+                        "feedbackfileshtml": "<a href='#'>file link</a>"
                     },
                     {
                         "label": "Marker 2",
                         "score": "7.00",
                         "maxscore": "10.00",
                         "percent": 70,
-                        "remark": "<p>A good effort, but the argument could have been supported with more evidence in places.</p>"
+                        "remark": "<p>A good effort, but the argument could have been supported with more evidence in places.</p>",
+                        "feedbackfileshtml": "<a href='#'>file link</a>"
                     }
                 ]
             },
@@ -46,9 +48,18 @@
                         "score": "15.00",
                         "maxscore": "20.00",
                         "percent": 75,
-                        "remark": "<p>Good use of sources, but some minor errors in APA formatting.</p>"
+                        "remark": "<p>Good use of sources, but some minor errors in APA formatting.</p>",
+                        "feedbackfileshtml": false
                     }
                 ]
+            }
+        ],
+        "markersdata": [
+            {
+                "label": "Marker 1",
+                "stage": "final_agreed_1",
+                "feedbackcomment": "<p>The structure was logical and the argument was mostly clear.</p>",
+                "feedbackfileshtml": "<a href='#'>file link</a>"
             }
         ]
     }
@@ -77,6 +88,7 @@
                             {{{.}}}
                         </div>
                         {{/remark}}
+
                     </div>
                     {{/markers}}
                 </div>
@@ -84,6 +96,37 @@
             </div>
         </li>
     {{/reviewcriteria}}
+    <li>
+        <div class="line-clamp-2">{{#str}} overall, mod_coursework {{/str}}</div>
+        <div class="review-marks animate-enter">
+            <div class="row mt-2">
+                {{#markersdata}}
+                    <div class="col-md mod_coursework-stage-{{stage}}">
+                        <div class="mt-2 small">
+                            <div>
+                                <strong>{{label}}</strong>
+                            </div>
+                            {{#feedbackcomment}}
+                                <div class="text-muted">
+                                    {{#str}} feedback, mod_coursework {{/str}}
+                                </div>
+                                {{{feedbackcomment}}}
+                            {{/feedbackcomment}}
+                        </div>
+                        <div>
+                            {{! Feedback files. }}
+                            {{#feedbackfileshtml}}
+                                <div>
+                                    <small>{{{.}}}</small>
+                                </div>
+                            {{/feedbackfileshtml}}
+                        </div>
+                    </div>
+                {{/markersdata}}
+            </div>
+            <hr>
+        </div>
+    </li>
     </ul>
 </div>
 
