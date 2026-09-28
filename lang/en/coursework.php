@@ -325,6 +325,7 @@ $string['generalfeedbackreleasedate'] = 'Release date for any "Feedback for all 
 $string['grade'] = 'Grade';
 $string['grade_editing'] = 'Grade editing time';
 $string['grade_help'] = 'Select the grade scale on which this coursework will be marked';
+$string['gradeboundaries'] = 'Grade boundaries';
 $string['gradeboundaryerrorinvalidgradetype'] = 'Strategy not available with non-numerically graded courseworks (Grade setting must be \'Point\')';
 $string['gradeboundaryerrorinvalidincrement'] = 'Invalid value on line {$a->line} - the second value on this line ({$a->thistop}) must be exactly {$a->increment} lower than the previous line\'s second value ({$a->previousbottom}) (i.e. value gaps or overlaps between lines are not allowed)';
 $string['gradeboundaryerrorinvalidrange'] = 'Invalid value on line {$a} - on each line, the first number must be lower than the second.';

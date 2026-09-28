@@ -82,6 +82,24 @@ class marking_cell_data extends cell_data_base {
 
         if ($this->coursework->has_multiple_markers()) {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
+
+            // Can the user view all the feedback in one place?
+            $submission = $rowsbase->get_submission();
+            if ($submission) {
+                $rowdata->viewallfeedback = $submission->can_show_all_feedback() ? [
+                    'url' => $this->get_mark_url(
+                        'all',
+                        $submission,
+                        null,
+                    ),
+                ] : false;
+            }
+        } else {
+            $submission = $rowsbase->get_submission();
+            if ($submission) {
+                $finalfeedback = $submission->get_final_feedback();
+                $rowdata->singlemark = $finalfeedback->grade ?? null;
+            }
         }
 
         if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
@@ -133,7 +151,6 @@ class marking_cell_data extends cell_data_base {
             $rowdata->markers[] = $marker;
             $markernumber++;
         }
-
         return $rowdata;
     }
 
