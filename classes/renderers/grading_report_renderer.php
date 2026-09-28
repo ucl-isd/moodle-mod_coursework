@@ -222,7 +222,7 @@ class grading_report_renderer extends plugin_renderer_base {
         self::prepare_submission_cell_data($coursework, $rowobject, $trdata);
         self::prepare_marking_cell_data($coursework, $rowobject, $trdata);
         self::prepare_actions_cell_data($coursework, $rowobject, $trdata);
-        self::set_tr_status($coursework, $trdata);
+        self::set_tr_status($trdata);
         self::set_tr_grade_boundaries($coursework, $trdata);
         return $trdata;
     }
@@ -431,11 +431,10 @@ class grading_report_renderer extends plugin_renderer_base {
     /**
      * Set tr status.
      *
-     * @param coursework $coursework
      * @param stdClass $trdata
      * @return void
      */
-    protected static function set_tr_status(coursework $coursework, stdClass $trdata): void {
+    protected static function set_tr_status(stdClass $trdata): void {
         $status = [];
         if (!empty($trdata->submission->extensiongranted)) {
             $status[] = 'extension-granted';
