@@ -196,6 +196,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string Template HTML or ''
      */
     protected function render_advanced_grading(coursework $coursework, feedback $feedback): string {
+        global $USER;
         $gradingcontroller = $coursework->get_advanced_grading_active_controller();
         if (!$gradingcontroller) {
             return '';
@@ -282,6 +283,21 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->customgrading[] = $item;
         }
 
+        $isgradeduser = $feedback->get_submission()->belongs_to_user($USER->id);
+        $options = $gradingcontroller->get_options();
+        if (in_array(get_class($gradingcontroller), ['gradingform_rubric_controller', 'gradingform_rubric_ranges_controller'])) {
+            $key = ($isgradeduser) ? 'showscorestudent' : 'showscoreteacher';
+        } else if (get_class($gradingcontroller) === 'gradingform_guide_controller') {
+            $key = 'showmarkspercriterionstudents';
+            if (!$isgradeduser) {
+                // There is no teacher-specific option, so if they aren't the student, always show the marks.
+                $options[$key] = true;
+            }
+        } else {
+            $key = null;
+        }
+
+        $template->showscore = $options[$key] ?? false;
         return $this->render_from_template('mod_coursework/feedback/advanced_grading', $template);
     }
 
