@@ -465,7 +465,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->reviewcriteria = [];
         // "0" in this context means the same through all stages. So anything higher means use a different one.
         $template->differentfinalgradingmethod = ($coursework->finalstagegrading > 0);
-        $alreadygotfile = [];
 
         foreach ($criteria as $criterion) {
             $criterionitem = new stdClass();
