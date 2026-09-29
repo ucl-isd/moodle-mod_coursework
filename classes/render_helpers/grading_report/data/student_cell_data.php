@@ -82,8 +82,18 @@ class student_cell_data extends cell_data_base {
         $data->picture = $this->hidestudentidentities ? '' : get_group_picture_url($group, $this->coursework->get_course_id());
         $data->members = [];
 
-        foreach ($group->get_members($this->coursework->get_context(), $cm) as $member) {
-            $data->members[] = $this->get_user_data($member);
+        if (
+            $this->coursework->blindmarking_enabled()
+            &&
+            !$this->viewanonymouscap
+            &&
+            !get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')
+        ) {
+            $data->members[] = (object)['name' => get_string('membershidden', 'coursework')];
+        } else {
+            foreach ($group->get_members($this->coursework->get_context(), $cm) as $member) {
+                $data->members[] = $this->get_user_data($member);
+            }
         }
 
         return $data;

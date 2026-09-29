@@ -151,8 +151,6 @@ final class student_cell_data_test extends \advanced_testcase {
         $data = $celldata->get_table_cell_data($row);
         $this->assertEmpty($data->group->id);
         $this->assertEquals($this->group->name, $data->group->name);
-        $this->assertEmpty($data->group->members[0]->id);
-        $this->assertEquals('Hidden', $data->group->members[0]->name);
-        $this->assertEmpty($data->group->members[0]->url);
+        $this->assertEquals('Members are hidden', $data->group->members[0]->name);
     }
 }
