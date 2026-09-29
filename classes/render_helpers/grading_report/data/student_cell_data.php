@@ -103,7 +103,7 @@ class student_cell_data extends cell_data_base {
         return (object)[
             'id' => $this->hidestudentidentities ? '' : $user->id,
             'name' => $this->get_user_display_name($user),
-            'url' => $this->hidestudentidentities ? '#' : $user->get_user_profile_url(),
+            'url' => $this->hidestudentidentities ? '' : $user->get_user_profile_url(),
         ];
     }
 

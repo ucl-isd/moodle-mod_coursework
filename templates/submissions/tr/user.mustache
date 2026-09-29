@@ -6,7 +6,7 @@
         {{/user.picture}}
         {{#user.url}}
             <a href="{{{.}}}" class="d-flex align-items-center" target="_blank">
-                {{{user.name}}}
+                {{user.name}}
             </a>
         {{/user.url}}
         {{^user.url}}
@@ -28,7 +28,14 @@
                 </button>
                 <ul class="dropdown-menu">
                 {{#members}}
-                    <li><a class="dropdown-item" href="{{url}}" target="_blank">{{name}}</a></li>
+                    <li>
+                        {{#url}}
+                            <a class="dropdown-item" href="{{url}}" target="_blank">{{name}}</a>
+                        {{/url}}
+                        {{^url}}
+                            {{name}}
+                        {{/url}}
+                    </li>
                 {{/members}}
                 </ul>
             </div>

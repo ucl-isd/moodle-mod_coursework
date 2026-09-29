@@ -64,7 +64,7 @@ final class student_cell_data_test extends \advanced_testcase {
         $data = $celldata->get_table_cell_data($row);
         $this->assertEmpty($data->user->id);
         $this->assertEquals('Hidden', $data->user->name);
-        $this->assertEquals('#', $data->user->url);
+        $this->assertEmpty($data->user->url);
 
         // Assign viewanonymous capabilidy to the teacher role.
         $role = $DB->get_record('role', ['shortname' => 'teacher']);
@@ -103,7 +103,7 @@ final class student_cell_data_test extends \advanced_testcase {
         $data = $celldata->get_table_cell_data($row);
         $this->assertEmpty($data->user->id);
         $this->assertEquals('Hidden', $data->user->name);
-        $this->assertEquals('#', $data->user->url);
+        $this->assertEmpty($data->user->url);
 
         // Teacher sees a candidate number when blind marking enabled.
         $user = $student->get_raw_record();
@@ -112,7 +112,7 @@ final class student_cell_data_test extends \advanced_testcase {
         $data = $celldata->get_table_cell_data($row);
         $this->assertEmpty($data->user->id);
         $this->assertEquals('useridnumber', $data->user->name);
-        $this->assertEquals('#', $data->user->url);
+        $this->assertEmpty($data->user->url);
 
         // Assign viewanonymous capabilidy to the teacher role.
         $role = $DB->get_record('role', ['shortname' => 'teacher']);
@@ -153,6 +153,6 @@ final class student_cell_data_test extends \advanced_testcase {
         $this->assertEquals($this->group->name, $data->group->name);
         $this->assertEmpty($data->group->members[0]->id);
         $this->assertEquals('Hidden', $data->group->members[0]->name);
-        $this->assertEquals('#', $data->group->members[0]->url);
+        $this->assertEmpty($data->group->members[0]->url);
     }
 }
