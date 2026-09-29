@@ -285,6 +285,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $key = ($isgradeduser) ? 'showscorestudent' : 'showscoreteacher';
         } else if (get_class($gradingcontroller) === 'gradingform_guide_controller') {
             $key = 'showmarkspercriterionstudents';
+            if (!$isgradeduser) {
+                // There is no teacher-specific option, so if they aren't the student, always show the marks.
+                $options[$key] = true;
+            }
         } else {
             $key = null;
         }
