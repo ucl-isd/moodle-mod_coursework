@@ -336,6 +336,15 @@ class assessor_feedback_mform extends moodleform {
             $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
         }
 
+        // Grade must be set unless using advanced.
+        if (
+            !feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback) &&
+            !isset($data['grade']) &&
+            $this->coursework->uses_numeric_grade()
+        ) {
+            $errors['grade'] = get_string('err_grademissing', 'coursework');
+        }
+
         return $errors;
     }
 
