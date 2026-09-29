@@ -81,8 +81,6 @@ final class sampling_test extends \advanced_testcase {
             'timelocked' => 0,
             'stageidentifier' => 'assessor_1',
             'allocatableid' => $this->student->id,
-            'allocatableuser' => 0,
-            'allocatablegroup' => 0,
             'allocatabletype' => 'user',
         ];
         $allocation = \mod_coursework\models\allocation::build($allocationparams);
@@ -219,8 +217,6 @@ final class sampling_test extends \advanced_testcase {
             'timelocked' => 0,
             'stageidentifier' => 'assessor_1',
             'allocatableid' => $this->student->id,
-            'allocatableuser' => 0,
-            'allocatablegroup' => 0,
             'allocatabletype' => 'user',
         ];
         $allocation = \mod_coursework\models\allocation::build($allocationparams);
