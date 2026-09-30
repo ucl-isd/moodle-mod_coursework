@@ -50,6 +50,14 @@
                     }
                 ]
             }
+        ],
+        "markersdata": [
+            {
+                "label": "Marker 1",
+                "stage": "final_agreed_1",
+                "feedbackcomment": "<p>The structure was logical and the argument was mostly clear.</p>",
+                "feedbackfileshtml": "<a href='#'>file link</a>"
+            }
         ]
     }
 }}
@@ -77,6 +85,7 @@
                             {{{.}}}
                         </div>
                         {{/remark}}
+
                     </div>
                     {{/markers}}
                 </div>
@@ -84,6 +93,37 @@
             </div>
         </li>
     {{/reviewcriteria}}
+    <li>
+        <div class="line-clamp-2">{{#str}} overall, mod_coursework {{/str}}</div>
+        <div class="review-marks animate-enter">
+            <div class="row mt-2">
+                {{#markersdata}}
+                    <div class="col-md mod_coursework-stage-{{stage}}">
+                        <div class="mt-2 small">
+                            <div>
+                                <strong>{{label}}</strong>
+                            </div>
+                            {{#feedbackcomment}}
+                                <div class="text-muted">
+                                    {{#str}} feedback, mod_coursework {{/str}}
+                                </div>
+                                {{{feedbackcomment}}}
+                            {{/feedbackcomment}}
+                        </div>
+                        <div>
+                            {{! Feedback files. }}
+                            {{#feedbackfileshtml}}
+                                <div>
+                                    <small>{{{.}}}</small>
+                                </div>
+                            {{/feedbackfileshtml}}
+                        </div>
+                    </div>
+                {{/markersdata}}
+            </div>
+            <hr>
+        </div>
+    </li>
     </ul>
 </div>
 
