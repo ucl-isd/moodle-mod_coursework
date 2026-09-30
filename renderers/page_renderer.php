@@ -98,6 +98,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $final = $submission->get_final_feedback();
 
         $template->feedback = [];
+        $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
 
         if ($advancedmarking) {
             // If we are not using a different method at the end, we can append the final feedback here.
@@ -112,7 +113,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             );
             // If we ARE using a different method at the end, now we need to append that rendered correctly.
             if ($differentfinal && $final) {
-                $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
                 $template->feedback[] = $objrenderer->render_feedback($final, true);
             }
         } else {
@@ -122,10 +122,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $previousfeedbacks[$final->id] = $final;
             }
 
-            $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
             foreach ($previousfeedbacks as $prev) {
                 $template->feedback[] = $objrenderer->render_feedback($prev, true);
             }
+        }
+
+        // If there is an internal comment add that as well.
+        if ($final && $final->internalcomment) {
+            $template->feedback[] = $objrenderer->render_internal_comment($final->internalcomment);
         }
 
         $html = '';

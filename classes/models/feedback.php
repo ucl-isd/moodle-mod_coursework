@@ -169,6 +169,16 @@ class feedback extends table_base {
     private $showgrade = true;
 
     /**
+     * @var mixed Internal comment, not visible to student.
+     */
+    public mixed $internalcomment = null;
+
+    /**
+     * @var int|null Format of the internal comment.
+     */
+    public ?int $internalcommentformat = null;
+
+    /**
      * @return string
      */
     public function get_assessor_stage_no() {
