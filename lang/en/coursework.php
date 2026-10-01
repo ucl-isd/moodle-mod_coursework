@@ -231,6 +231,7 @@ $string['emptysubmissionid'] = 'Empty submission id';
 $string['enablepdfjs'] = 'Enable viewing and annotation of PDFs';
 $string['enroltask'] = 'Coursework process enrolment allocation task';
 $string['entergradesaspercent'] = 'Enter marks as %';
+$string['err_grademissing'] = 'You must enter a grade';
 $string['err_valueoutofrange'] = 'You must enter a number within the range of marks accepted by this coursework';
 $string['eventassessablesubmitted'] = 'A file has been submitted.';
 $string['eventassessableuploaded'] = 'A file has been uploaded.';
