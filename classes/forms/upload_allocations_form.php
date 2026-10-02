@@ -34,11 +34,10 @@ class upload_allocations_form extends moodleform {
     }
 
     public function definition() {
-        global $CFG;
         $mform =& $this->_form;
 
         // The identifier used could be email or username depending on plugin settings.
-        $useridentifierfield = $CFG->coursework_allocation_identifier;
+        $useridentifierfield = get_config('mod_coursework', 'allocation_identifier');
         $mform->addElement(
             'html',
             get_string('uploadallocationsintro', 'coursework')
