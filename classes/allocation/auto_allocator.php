@@ -47,54 +47,30 @@ class auto_allocator {
     public function process_allocations() {
         $this->delete_all_ungraded_auto_allocations();
 
-        foreach ($this->marking_stages() as $stage) {
-            if ($stage->group_assessor_enabled() && $stage->identifier() == 'assessor_1') {
-                // if allocation strategy 'group_assessor' then assign assessor from that group to stage1 and continue
-                // for the rest of stages with manual allocation
-                $allocatables = $this->get_allocatables();
+        $relevantstages = [];
+        foreach ($this->coursework->marking_stages() as $stage) {
+            if (
+                ($stage->group_assessor_enabled() && $stage->identifier() == 'assessor_1')
+                ||
+                $stage->auto_allocation_enabled()
+            ) {
+                $relevantstages[] = $stage;
+            }
+        }
 
-                foreach ($allocatables as $allocatable) {
+        if (!empty($relevantstages)) {
+            $allocatables = $this->coursework->get_allocatables();
+        }
+
+        foreach ($relevantstages as $stage) {
+            foreach ($allocatables as $allocatable) { // Allocatable = user or group
+                if ($stage->allocatable_is_in_sample($allocatable)) {
                     $stage->make_auto_allocation_if_necessary($allocatable);
                 }
-            } else if ($stage->auto_allocation_enabled()) {
-                $this->process_marking_stage($stage);
             }
         }
+
         allocation::remove_cache($this->coursework->id);
-    }
-
-    /**
-     * @param stage_base $stage
-     * @throws \coding_exception
-     */
-    private function process_marking_stage($stage) {
-        if (!$stage->auto_allocation_enabled()) {
-            return;
-        }
-
-        $allocatables = $this->get_allocatables();
-
-        foreach ($allocatables as $allocatable) { // Allocatable = user or group
-            if ($stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
-                continue;
-            }
-
-            $stage->make_auto_allocation_if_necessary($allocatable);
-        }
-    }
-
-    /**
-     * @return stage_base[]
-     */
-    private function marking_stages() {
-        return $this->get_coursework()->marking_stages();
-    }
-
-    /**
-     * @return allocatable[]
-     */
-    private function get_allocatables() {
-        return $this->get_coursework()->get_allocatables();
     }
 
     /**
@@ -118,7 +94,7 @@ class auto_allocator {
                 AND s.courseworkid = p.courseworkid
                 AND f.stageidentifier = p.stageidentifier
             )
-        ', ['courseworkid' => $this->get_coursework()->id]);
+        ', ['courseworkid' => $this->coursework->id]);
 
         foreach ($ungradedallocations as &$allocation) {
             /**
@@ -129,12 +105,5 @@ class auto_allocator {
         }
         // Behat test @mod_coursework_allocation_auto_interact_manual fails without this.
         allocation::remove_cache($this->coursework->id);
-    }
-
-    /**
-     * @return coursework
-     */
-    private function get_coursework() {
-        return $this->coursework;
     }
 }

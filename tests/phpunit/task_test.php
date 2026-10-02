@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for mod/coursework/classes/task/enrol_task and unenrol_task.
+ * Unit tests for mod/coursework/classes/task/process_auto_allocations_task.
  *
  * @package    mod_coursework
  * @copyright  2026 onwards University College London {@link https://www.ucl.ac.uk/}
@@ -25,8 +25,8 @@
 
 namespace mod_coursework;
 
-use mod_coursework\task\enrol_task;
-use mod_coursework\task\unenrol_task;
+use core\task\manager;
+use mod_coursework\task\process_auto_allocations_task;
 
 /**
  * Unit tests for mod/coursework/lib.php.
@@ -38,45 +38,34 @@ final class task_test extends \advanced_testcase {
     /**
      * Add a single record for the enrol task to process.
      */
-    public function test_enrol_tasks(): void {
+    public function test_process_auto_allocations_tasks(): void {
         global $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
-        $coursework = $this->getDataGenerator()->create_module('coursework', ['course' => $course->id]);
 
-        // Enrol teacher and check there is a processenrol record.
-        $teacher  = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
-        $this->assertCount(1, $DB->get_records('coursework', ['processenrol' => 1]));
+        $this->assertEmpty(manager::get_adhoc_tasks(process_auto_allocations_task::class));
 
-        // Run task and check there are no processenrol records.
-        $task = new enrol_task();
+        $this->getDataGenerator()->create_module('coursework', ['course' => $course->id]);
+        $this->assertCount(1, manager::get_adhoc_tasks(process_auto_allocations_task::class));
+
+        $DB->delete_records('task_adhoc');
+
+        $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $this->assertCount(1, manager::get_adhoc_tasks(process_auto_allocations_task::class));
+
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $this->assertCount(1, manager::get_adhoc_tasks(process_auto_allocations_task::class));
+
+        $task = \core\task\manager::get_next_adhoc_task(time());
         $task->execute();
-        $this->assertCount(0, $DB->get_records('coursework', ['processenrol' => 1]));
-    }
+        manager::adhoc_task_complete($task);
+        $this->assertEmpty(manager::get_adhoc_tasks(process_auto_allocations_task::class));
 
-    /**
-     * Add a single record for the unenrol task to process.
-     */
-    public function test_unenrol_tasks(): void {
-        global $DB;
-
-        $this->resetAfterTest();
-        $this->setAdminUser();
-        $course = $this->getDataGenerator()->create_course();
-        $teacher  = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
-        $coursework = $this->getDataGenerator()->create_module('coursework', ['course' => $course->id]);
-
-        // Unenrol teacher and check there is a processunenrol record.
         $enrol = enrol_get_plugin('manual');
         $manualenrol = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'manual']);
         $enrol->unenrol_user($manualenrol, $teacher->id);
-        $this->assertCount(1, $DB->get_records('coursework', ['processunenrol' => 1]));
-
-        // Run task and check there are no processunenrol records.
-        $task = new unenrol_task();
-        $task->execute();
-        $this->assertCount(0, $DB->get_records('coursework', ['processunenrol' => 1]));
+        $this->assertCount(1, manager::get_adhoc_tasks(process_auto_allocations_task::class));
     }
 }

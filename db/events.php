@@ -25,27 +25,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 
 $observers = [
-
-    [
-        'eventname' => '\core\event\role_assigned',
-        'callback' => 'mod_coursework_observer::autoallocate_when_user_added',
-    ],
-    [
-        'eventname' => '\core\event\role_unassigned',
-        'callback' => 'mod_coursework_observer::autoallocate_when_user_removed',
-    ],
     [
         'eventname' => '\mod_coursework\event\coursework_deadline_changed',
         'callback' => 'mod_coursework_observer::coursework_deadline_changed',
         'schedule' => 'cron',
-    ],
-    [
-        'eventname' => '\core\event\course_module_updated',
-        'callback' => 'mod_coursework_observer::process_allocation_after_update',
-    ],
-    [
-        'eventname' => '\core\event\course_module_created',
-        'callback' => 'mod_coursework_observer::process_allocation_after_creation',
     ],
     [
         'eventname' => '\core\event\group_member_added',
@@ -64,3 +47,14 @@ $observers = [
         'callback' => 'mod_coursework_observer::remove_teacher_from_dropdown_when_unenrolled',
     ],
 ];
+
+foreach (
+    ['role_assigned', 'role_unassigned', 'course_module_updated', 'course_module_created']
+    as
+    $event
+) {
+    $observers[] = [
+        'eventname' => "\\core\\event\\$event",
+        'callback' => 'mod_coursework_observer::queue_process_auto_allocations_task',
+    ];
+}
