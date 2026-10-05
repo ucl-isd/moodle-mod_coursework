@@ -535,6 +535,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026110900, 'coursework');
     }
 
+    if ($oldversion < 2026111100) {
+        $table = new xmldb_table('coursework');
+
+        foreach (['processenrol', 'processunenrol'] as $field) {
+            $upgradefield = new xmldb_field($field);
+
+            if ($dbman->field_exists($table, $upgradefield)) {
+                $dbman->drop_field($table, $upgradefield);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2026111100, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

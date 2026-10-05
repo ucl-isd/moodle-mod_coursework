@@ -105,7 +105,7 @@ abstract class base {
         }
 
         if ($teacher) {
-            $this->make_auto_allocation($allocatable, $teacher);
+            $this->make_allocation($allocatable, $teacher, false, false);
         }
     }
 
@@ -185,12 +185,15 @@ abstract class base {
      * @throws \dml_exception
      * @throws coding_exception
      */
-    public function make_manual_allocation($allocatable, $teacher) {
-        $allocation = allocation::find([
-            'courseworkid' => $this->get_courseworkid(),
-            'stageidentifier' => $this->identifier(),
-            'allocatableid' => $allocatable->id,
-        ]);
+    public function make_allocation(allocatable $allocatable, object $teacher, bool $manual = true, bool $checkforexisting = true): allocation {
+        if ($checkforexisting) {
+            $allocation = allocation::find([
+                'courseworkid' => $this->get_courseworkid(),
+                'stageidentifier' => $this->identifier(),
+                'allocatableid' => $allocatable->id,
+            ]);
+        }
+
         if (empty($allocation)) {
             $allocation = new allocation();
             $allocation->courseworkid = $this->coursework->id;
@@ -200,27 +203,10 @@ abstract class base {
             $allocation->allocatabletype = $allocatable->type();
         }
         $allocation->assessorid = $teacher->id;
-        $allocation->ismanual = 1;
+        $allocation->ismanual = $manual;
         $allocation->save();
 
         return $allocation;
-    }
-
-    /**
-     * @param $allocatable
-     * @param $teacher
-     *
-     * @return void
-     */
-    private function make_auto_allocation($allocatable, $teacher) {
-        $allocation = new allocation();
-        $allocation->courseworkid = $this->coursework->id;
-        $allocation->assessorid = $teacher->id;
-        $allocation->stageidentifier = $this->identifier();
-        $allocation->moderator = $this->is_moderator();
-        $allocation->allocatableid = $allocatable->id();
-        $allocation->allocatabletype = $allocatable->type();
-        $allocation->save();
     }
 
     /**
