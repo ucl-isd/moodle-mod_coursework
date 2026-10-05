@@ -91,7 +91,7 @@ class assessorallocation extends external_api {
         } else if ($assessorid == 0) {
             $stage->destroy_allocation($allocatable);
         } else {
-            $stage->make_manual_allocation($allocatable, $assessor);
+            $stage->make_allocation($allocatable, $assessor);
         }
 
         return [

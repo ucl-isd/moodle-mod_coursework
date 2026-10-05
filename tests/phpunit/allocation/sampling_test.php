@@ -83,8 +83,12 @@ final class sampling_test extends \advanced_testcase {
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
         ];
-        $allocation = \mod_coursework\models\allocation::build($allocationparams);
-        $allocation->save();
+
+        $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            $this->teacher,
+            false
+        );
 
         $submission = new \mod_coursework\models\submission();
         $submission->courseworkid = $this->coursework->id;
@@ -219,8 +223,12 @@ final class sampling_test extends \advanced_testcase {
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
         ];
-        $allocation = \mod_coursework\models\allocation::build($allocationparams);
-        $allocation->save();
+
+        $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            $this->teacher,
+            false
+        );
 
         $submission = new \mod_coursework\models\submission();
         $submission->courseworkid = $this->coursework->id;
