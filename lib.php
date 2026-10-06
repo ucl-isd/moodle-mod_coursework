@@ -976,85 +976,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
     }
 }
 
-/**
- * Auto-allocates after a new student or teacher is added to a coursework.
- *
- * @param $roleassignment - record from role_assignments table
- * @return bool
- * @throws coding_exception
- * @throws dml_exception
- */
-function coursework_role_assigned_event_handler($roleassignment) {
-    global $DB;
-
-    $courseworkids = coursework_get_courseworkids_from_context_id($roleassignment->contextid);
-
-    foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework', 'processenrol', 1, ['id' => $courseworkid]);
-    }
-
-    return true;
-}
-
-/**
- * Auto allocates when a student or teacher leaves.
- *
- * @param $roleassignment
- * @return bool
- * @throws coding_exception
- * @throws dml_exception
- */
-function coursework_role_unassigned_event_handler($roleassignment) {
-
-    global $DB;
-
-    $courseworkids = coursework_get_courseworkids_from_context_id($roleassignment->contextid);
-
-    foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework', 'processunenrol', 1, ['id' => $courseworkid]);
-    }
-
-    return true;
-}
-
-/**
- * Role may be assigned at course or coursemodule level. This gives us an array of relevant coursework
- * ids to loop through so we can re-allocate.
- *
- * @param $contextid
- * @return array
- * @throws coding_exception
- * @throws dml_exception
- */
-function coursework_get_courseworkids_from_context_id($contextid) {
-
-    global $DB;
-
-    $courseworkids = [];
-
-    // Is this a coursework?
-    $context = context::instance_by_id($contextid);
-
-    switch ($context->contextlevel) {
-        case CONTEXT_MODULE:
-            $coursemodule = get_coursemodule_from_id('coursework', $context->instanceid);
-            $courseworkmoduleid = $DB->get_field('modules', 'id', ['name' => 'coursework']);
-
-            if ($coursemodule && $coursemodule->module == $courseworkmoduleid) {
-                $courseworkids[] = $coursemodule->instance;
-            }
-            break;
-
-        case CONTEXT_COURSE:
-            $coursemodules = $DB->get_records('coursework', ['course' => $context->instanceid]);
-            if ($coursemodules) {
-                $courseworkids = array_keys($coursemodules);
-            }
-            break;
-    }
-
-    return $courseworkids;
-}
 
 /**
  * Makes a number of seconds into a human readable string, like '3 days'.
@@ -1252,25 +1173,6 @@ function coursework_records_to_menu($records, $field1, $field2) {
         }
     }
     return $menu;
-}
-
-/**
- * @param $eventdata
- * @return bool
- * @throws coding_exception
- * @throws dml_exception
- */
-function coursework_mod_updated($eventdata) {
-    if ($eventdata->other['modulename'] == 'coursework') {
-        $coursework = coursework::get_from_id($eventdata->other['instanceid']);
-        /**
-         * @var coursework $coursework
-         */
-        $allocator = new auto_allocator($coursework);
-        $allocator->process_allocations();
-    }
-
-    return true;
 }
 
 /**

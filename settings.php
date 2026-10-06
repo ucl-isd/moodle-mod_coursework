@@ -324,6 +324,14 @@ if ($ADMIN->fulltree) {
         get_string('automaticagreementofmarks', 'mod_coursework'),
         ''
     );
+
+    $settings->add(new admin_setting_configcheckbox(
+        'mod_coursework/process_auto_allocations_sync',
+        get_string('process_auto_allocations_sync', 'mod_coursework'),
+        get_string('process_auto_allocations_sync_desc', 'mod_coursework'),
+        (defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')
+    ));
+
     $settings->add($settingsheader);
     $settings->add(
         new admin_setting_autogradeboundaries(

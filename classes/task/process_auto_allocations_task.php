@@ -17,6 +17,7 @@
 namespace mod_coursework\task;
 
 use cache;
+use core\task\adhoc_task;
 use core\task\scheduled_task;
 use mod_coursework\allocation\auto_allocator;
 use mod_coursework\models\coursework;
@@ -29,7 +30,7 @@ use mod_coursework\models\coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class enrol_task extends scheduled_task {
+class process_auto_allocations_task extends adhoc_task {
     /**
      * Get a descriptive name for this task (shown to admins).
      *
@@ -44,15 +45,9 @@ class enrol_task extends scheduled_task {
      * Run coursework cron.
      */
     public function execute() {
-        global $DB;
-
-        foreach (coursework::find_all(['processenrol' => 1]) as $coursework) {
-            $cache = cache::make('mod_coursework', 'courseworkdata');
-            $cache->set($coursework->id() . "_teachers", '');
+        if ($coursework = coursework::get_from_id($this->get_custom_data()->courseworkid)) {
             $allocator = new auto_allocator($coursework);
             $allocator->process_allocations();
-
-            $DB->set_field('coursework', 'processenrol', 0, ['id' => $coursework->id()]);
         }
 
         return true;

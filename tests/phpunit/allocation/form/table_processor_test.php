@@ -99,14 +99,12 @@ final class table_processor_test extends \advanced_testcase {
         $this->coursework->update_attribute('numberofmarkers', 1);
 
         // Make a non manual allocation for teacher.
-        $allocation = \mod_coursework\models\allocation::build([
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-            'assessorid' => $this->teacher->id,
-            'stageidentifier' => 'assessor_1',
-        ]);
-        $allocation->save();
+        $allocation = $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            $this->teacher,
+            false,
+            false
+        );
         $this->assertEquals($allocation->assessorid, $this->teacher->id);
 
         assessorallocation::execute(
@@ -119,13 +117,12 @@ final class table_processor_test extends \advanced_testcase {
         $allocation->reload();
         $this->assertEquals($allocation->assessorid, $this->otherteacher->id);
 
-        $params = [
+        $records = $DB->get_records('coursework_allocation_pairs', [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'stageidentifier' => 'assessor_1',
-        ];
-        $records = $DB->get_records('coursework_allocation_pairs', $params);
+        ]);
         $this->assertEquals(
             1,
             count($records),
