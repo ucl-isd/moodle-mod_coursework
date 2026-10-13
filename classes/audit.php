@@ -617,11 +617,20 @@ class audit {
                 $record->user = fullname($user);
             }
             $record->time = userdate($record->modifiedtime);
+            $record->representativerecommendations = format_text($record->representativerecommendations, FORMAT_HTML);
             $record->markingcriteriarecommendations = format_text($record->markingcriteriarecommendations, FORMAT_HTML);
             $record->markersmarkingrecommendations = format_text($record->markersmarkingrecommendations, FORMAT_HTML);
             $record->feedbackrecommendations = format_text($record->feedbackrecommendations, FORMAT_HTML);
             $record->goodpracticecomments = format_text($record->goodpracticecomments, FORMAT_HTML);
             $record->generalcomments = format_text($record->generalcomments, FORMAT_HTML);
+
+            foreach (['representative', 'markingcriteriaconsistent', 'markersmarkingconsistent', 'feedbackappropriate'] as $field) {
+                $record->{$field . 'label'} = match ((int)$record->{$field}) {
+                    1 => get_string('yes'),
+                    0 => get_string('no'),
+                    -1 => get_string('statusna'),
+                };
+            }
 
             // Is there a file upload?
             $fs = get_file_storage();
@@ -692,6 +701,7 @@ class audit {
         $record = new stdClass();
         $record->courseworkid = $courseworkid;
         $record->representative = $data['representative'];
+        $record->representativerecommendations = $data['representativerecommendations'];
         $record->markingcriteriaconsistent = $data['markingcriteriaconsistent'];
         $record->markingcriteriarecommendations = $data['markingcriteriarecommendations'];
         $record->markersmarkingconsistent = $data['markersmarkingconsistent'];
