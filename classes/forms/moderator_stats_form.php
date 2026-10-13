@@ -41,8 +41,9 @@ class moderator_stats_form extends moodleform {
 
         $options = [
             '' => get_string('chooseoption', 'coursework'),
-            0 => get_string('no'),
             1 => get_string('yes'),
+            0 => get_string('no'),
+            -1 => get_string('statusna'),
         ];
 
         $heading = get_string('statsappraisal', 'coursework');
@@ -66,6 +67,11 @@ class moderator_stats_form extends moodleform {
             $options,
         );
         $this->_form->addRule('representative', null, 'required', null, 'client');
+        $this->_form->addElement(
+            'editor',
+            'representativerecommendations',
+            get_string('statsappraisal:recommendations', 'coursework'),
+        );
         $this->_form->addElement(
             'select',
             'markingcriteriaconsistent',
@@ -129,6 +135,7 @@ class moderator_stats_form extends moodleform {
         $this->_form->setType('markingcriteriaconsistent', PARAM_INT);
         $this->_form->setType('markersmarkingconsistent', PARAM_INT);
         $this->_form->setType('feedbackappropriate', PARAM_INT);
+        $this->_form->setType('representativerecommendations', PARAM_RAW);
         $this->_form->setType('markingcriteriarecommendations', PARAM_RAW);
         $this->_form->setType('markersmarkingrecommendations', PARAM_RAW);
         $this->_form->setType('feedbackrecommendations', PARAM_RAW);
@@ -136,6 +143,7 @@ class moderator_stats_form extends moodleform {
         $this->_form->setType('generalcomments', PARAM_RAW);
 
         // Rules to show/hide elements.
+        $this->_form->hideIf('representativerecommendations', 'representative', 'neq', 0);
         $this->_form->hideIf('markingcriteriarecommendations', 'markingcriteriaconsistent', 'neq', 0);
         $this->_form->hideIf('markersmarkingrecommendations', 'markersmarkingconsistent', 'neq', 0);
         $this->_form->hideIf('feedbackrecommendations', 'feedbackappropriate', 'neq', 0);
@@ -193,6 +201,9 @@ class moderator_stats_form extends moodleform {
         $data = audit::get_moderator_appraisal($coursework->id, $context->id);
         if (!$data) {
             return [];
+        }
+        if (!is_null($data->representativerecommendations)) {
+            $data->representativerecommendations = ['text' => $data->representativerecommendations];
         }
         if (!is_null($data->markingcriteriarecommendations)) {
             $data->markingcriteriarecommendations = ['text' => $data->markingcriteriarecommendations];
