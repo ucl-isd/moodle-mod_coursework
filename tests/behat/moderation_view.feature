@@ -98,5 +98,6 @@ Feature: View moderation feedback
     And I should see "Jane1" in the "Submissions table" "table"
     When I click on "Filter" "button"
     And I click on "Ready for release" "checkbox"
+    And I click on "Apply" "button"
     Then I should see "John1" in the "Submissions table" "table"
     But I should not see "Jane1" in the "Submissions table" "table"
