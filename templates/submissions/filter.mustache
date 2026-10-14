@@ -107,6 +107,14 @@
                     </div>
                     {{/hasmarkers}}
                 </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="button" class="btn btn-secondary mr-2" id="close-filter-popup">
+                        {{#str}}close_filter_popup, mod_coursework{{/str}}
+                    </button>
+                    <button type="button" class="btn btn-primary" id="apply-filter-popup">
+                        {{#str}}apply_filters, mod_coursework{{/str}}
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -159,10 +167,13 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filter_form = document.getElementById('filter-form');
-    const filter_dropdown_button = document.getElementById('filter-submissions'); // Changed ID to match HTML
+    const filter_dropdown = filter_form.querySelector('.dropdown');
+    const filter_dropdown_button = document.getElementById('filter-submissions');
     const filter_dropdown_menu = document.querySelector('#filter-submissions + .dropdown-menu');
     const filter_button_text_display = document.getElementById('filter-button-text-display');
-    const filter_checkboxes = document.querySelectorAll('.custom-control-input[type="checkbox"][data-filter-type]'); // Updated selector
+    const filter_checkboxes = document.querySelectorAll('.custom-control-input[type="checkbox"][data-filter-type]');
+    const close_filter_popup_button = document.getElementById('close-filter-popup');
+    const apply_filter_popup_button = document.getElementById('apply-filter-popup');
     const record_count_display = document.getElementById('record-count-display').querySelector('strong');
     const active_filters_list = document.getElementById('active-filters-list');
     const table_rows = document.querySelectorAll('#table-body-rows tr[data-status]');
@@ -171,7 +182,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const SESSION_STORAGE_FILTERS_KEY = 'submission_filters';
     let active_filters = {};
+    let pending_filters = {};
     let current_search_query = '';
+
+    function clone_filters(filters) {
+        return JSON.parse(JSON.stringify(filters));
+    }
+
+    function sync_pending_filters_from_active() {
+        pending_filters = clone_filters(active_filters);
+    }
 
     function save_filters_to_session_storage() {
         try {
@@ -196,16 +216,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Renamed function and updated to handle checkbox 'checked' state
-    function update_checkbox_states() {
+    function update_checkbox_states(filters = pending_filters) {
         filter_checkboxes.forEach(checkbox => {
             const filter_type = checkbox.dataset.filterType;
             const filter_value = checkbox.dataset.filterValue;
 
-            const is_active = active_filters[filter_type] &&
-                              active_filters[filter_type].some(f => f.value === filter_value);
+            const is_active = filters[filter_type] &&
+                              filters[filter_type].some(f => f.value === filter_value);
 
-            checkbox.checked = is_active; // Set checkbox 'checked' property
+            checkbox.checked = is_active;
         });
     }
 
@@ -222,8 +241,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function update_record_count() {
-        record_count_display.textContent = `${get_visible_row_count()} {{#str}} records, mod_coursework {{/str}}`;
+    function close_filter_dropdown() {
+        filter_dropdown.classList.remove('show');
+        filter_dropdown_menu.classList.remove('show');
+        filter_dropdown_button.setAttribute('aria-expanded', 'false');
+        filter_dropdown_button.focus();
     }
 
     function update_filter_tags_display() {
@@ -241,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 list_item.classList.add('list-inline-item');
 
                 const button = document.createElement('button');
+                button.setAttribute('type', 'button');
                 button.classList.add('btn', 'btn-sm', 'btn-light');
                 button.textContent = filter_info.label;
                 button.innerHTML += ' <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>';
@@ -266,7 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     apply_filters_and_search();
                     update_dropdown_button_text();
                     update_filter_tags_display();
-                    update_checkbox_states(); // Call updated function
+                    sync_pending_filters_from_active();
+                    update_checkbox_states(active_filters);
                     save_filters_to_session_storage();
                 });
 
@@ -385,61 +409,73 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Listen for 'change' event on checkboxes instead of 'click' on buttons
-    filter_checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() { // Listen for 'change' event
-            // No need for event.preventDefault() for checkboxes
-            current_search_query = '';
-            user_search_input.value = '';
+    filter_dropdown_button.addEventListener('click', function() {
+        if (!filter_dropdown_menu.classList.contains('show')) {
+            sync_pending_filters_from_active();
+            update_checkbox_states();
+        }
+    });
 
+    filter_checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
             const filter_type = this.dataset.filterType;
             const filter_value = this.dataset.filterValue;
-            const filter_label = this.nextElementSibling.textContent.trim(); // Get label from the <label> element
-            const is_checked = this.checked; // Get current checked state
+            const filter_label = this.nextElementSibling.textContent.trim();
+            const is_checked = this.checked;
 
-            if (!active_filters[filter_type]) {
-                active_filters[filter_type] = [];
+            if (!pending_filters[filter_type]) {
+                pending_filters[filter_type] = [];
             }
 
             if (is_checked) {
-                // Add filter if checked and not already present
-                const is_already_selected = active_filters[filter_type].some(
+                const is_already_selected = pending_filters[filter_type].some(
                     f => f.value === filter_value && f.label === filter_label
                 );
                 if (!is_already_selected) {
-                    active_filters[filter_type].push({
+                    pending_filters[filter_type].push({
                         value: filter_value,
                         label: filter_label
                     });
                 }
             } else {
-                // Remove filter if unchecked
-                active_filters[filter_type] = active_filters[filter_type].filter(
+                pending_filters[filter_type] = pending_filters[filter_type].filter(
                     f => !(f.value === filter_value && f.label === filter_label)
                 );
-                if (active_filters[filter_type].length === 0) {
-                    delete active_filters[filter_type];
+                if (pending_filters[filter_type].length === 0) {
+                    delete pending_filters[filter_type];
                 }
             }
-
-            apply_filters_and_search();
-            update_dropdown_button_text();
-            update_filter_tags_display();
-            update_checkbox_states(); // Ensure all checkboxes reflect current state
-            save_filters_to_session_storage();
         });
+    });
+
+    close_filter_popup_button.addEventListener('click', function() {
+        sync_pending_filters_from_active();
+        update_checkbox_states();
+        close_filter_dropdown();
+    });
+
+    apply_filter_popup_button.addEventListener('click', function() {
+        current_search_query = '';
+        user_search_input.value = '';
+        active_filters = clone_filters(pending_filters);
+        apply_filters_and_search();
+        update_dropdown_button_text();
+        update_filter_tags_display();
+        save_filters_to_session_storage();
+        close_filter_dropdown();
     });
 
     filter_form.addEventListener('reset', function(event) {
         event.preventDefault();
 
         active_filters = {};
+        pending_filters = {};
         current_search_query = '';
         user_search_input.value = '';
 
         update_dropdown_button_text();
         update_filter_tags_display();
-        update_checkbox_states(); // Update checkbox states on reset
+        update_checkbox_states(active_filters);
         sessionStorage.removeItem(SESSION_STORAGE_FILTERS_KEY);
 
         apply_filters_and_search();
@@ -462,22 +498,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     user_search_input.addEventListener('input', function() {
         current_search_query = this.value;
-        active_filters = {}; // Clear filters when typing in search
+        active_filters = {};
+        pending_filters = {};
         sessionStorage.removeItem(SESSION_STORAGE_FILTERS_KEY);
         update_dropdown_button_text();
         update_filter_tags_display();
-        update_checkbox_states(); // Update checkbox states
+        update_checkbox_states(active_filters);
 
         apply_filters_and_search();
     });
 
     search_button.addEventListener('click', function() {
         current_search_query = user_search_input.value;
-        active_filters = {}; // Clear filters when search button is clicked
+        active_filters = {};
+        pending_filters = {};
         sessionStorage.removeItem(SESSION_STORAGE_FILTERS_KEY);
         update_dropdown_button_text();
         update_filter_tags_display();
-        update_checkbox_states(); // Update checkbox states
+        update_checkbox_states(active_filters);
 
         apply_filters_and_search();
     });
@@ -492,7 +530,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Initial Load ---
     load_filters_from_session_storage();
-    update_checkbox_states(); // Call updated function to set initial checkbox states
+    sync_pending_filters_from_active();
+    update_checkbox_states(active_filters);
     apply_filters_and_search();
     update_dropdown_button_text();
     update_filter_tags_display();
