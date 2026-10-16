@@ -505,8 +505,6 @@ class ability extends framework\ability {
                 if (
                     !$this->coursework->moderation_agreement_enabled()
                     ||
-                    $this->coursework->has_multiple_markers()
-                    ||
                     $submission->get_state() < submission::FULLY_GRADED
                 ) {
                     return false;
