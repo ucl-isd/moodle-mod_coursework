@@ -149,13 +149,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param submission $submission The submission object.
      * @param coursework $coursework The coursework settings object.
-     * @param submission_files $submissionfiles Submitted files object.
      * @return stdClass Structured data for the template.
      */
-    public function submission_metadata(submission $submission, coursework $coursework, $submissionfiles): stdClass {
+    public function submission_metadata(submission $submission, coursework $coursework): stdClass {
         $template = new stdClass();
         $template->submissiondata = new stdClass();
         $template->submissiondata->files = [];
+
+        $submissionfiles = $submission->get_submission_files();
 
         if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
             foreach ($submissionfiles->get_files() as $file) {

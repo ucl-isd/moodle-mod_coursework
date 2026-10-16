@@ -115,7 +115,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function show_all_feedback_page(submission $submission) {
         $coursework = $submission->get_coursework();
-        $submissionfiles = $submission->get_submission_files();
         $pagename = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
         $this->page->set_title($pagename);
 
@@ -127,7 +126,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->add_feedback_annotations($template, $submission, $submission->get_feedbacks());
 
         // Submission metadata.
-        $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
+        $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework);
 
         // Advanced marking.
         $advancedmarking = $coursework->is_using_advanced_grading();
@@ -246,7 +245,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->add_pdf_to_model($model, $submission);
 
         // Submission metadata.
-        $model->submission = $this->get_object_renderer()->submission_metadata($submission, $moderatoragreement->get_coursework(), $submissionfiles);
+        $model->submission = $this->get_object_renderer()->submission_metadata($submission, $moderatoragreement->get_coursework());
 
         foreach ($submission->get_assessor_feedbacks() as $feedback) {
             $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, true);
@@ -399,7 +398,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
         $coursework = $feedback->get_coursework();
         $submission = $feedback->get_submission();
-        $submissionfiles = $submission->get_submission_files();
         $pagename = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
         $this->page->set_title($pagename);
 
@@ -410,7 +408,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->add_pdf_to_model($template, $submission, $feedback);
 
         // Submission metadata.
-        $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
+        $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework);
 
         // Advanced marking.
         $advancedmarking = $coursework->is_using_advanced_grading();
