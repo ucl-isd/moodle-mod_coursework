@@ -44,7 +44,7 @@ require_once($CFG->dirroot . '/webservice/lib.php');
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $fileid = required_param('fileid', PARAM_INT);
-$filename = required_param('filename', PARAM_TEXT);
+$filename = clean_param(required_param('filename', PARAM_TEXT), PARAM_FILE);
 
 $submission = submission::get_from_id($submissionid);
 
@@ -55,8 +55,9 @@ if (!$submission) {
 $coursework = $submission->get_coursework();
 $context = $coursework->get_context();
 require_login($coursework->get_course(), false, $coursework->get_course_module());
+require_sesskey();
 
-if (empty($this->coursework->enablepdfjs())) {
+if (empty($coursework->enablepdfjs())) {
     throw new Exception('coursework enablepdfjs not enabled');
 }
 
