@@ -53,4 +53,14 @@ $tasks = [
         'month' => '*',
         'dayofweek' => '*',
     ],
+    // Teacher marking reminders. Default midnight every day.
+    [
+        'classname' => 'mod_coursework\task\reminders_task',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '0',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
 ];
