@@ -25,6 +25,7 @@
     }
 }}
 <form id="allocation_form" class="p-3 bg-light" method="post">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
 
     <label for="assessorallocationstrategy" class="h5">
     {{#str}} allocationstrategy, mod_coursework {{/str}}</label>

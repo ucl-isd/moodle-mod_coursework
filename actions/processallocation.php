@@ -42,6 +42,7 @@ $coursework = coursework::get_from_id($coursemodule->instance, MUST_EXIST);
 $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
 
 require_login($course, true, $coursemodule);
+require_sesskey();
 
 require_capability('mod/coursework:allocate', $PAGE->context, null, true, "Can't allocate here - permission denied.");
 
