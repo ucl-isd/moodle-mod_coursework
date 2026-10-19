@@ -217,7 +217,7 @@ class audit {
      * Get the data for the marking summary section.
      * @return array
      */
-    protected function get_marking_summary(): array {
+    public function get_marking_summary(): array {
         // Get all submissions made on the activity.
         $submissions = submission::find_all(['courseworkid' => $this->coursework->id]);
 

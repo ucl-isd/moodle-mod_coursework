@@ -604,6 +604,28 @@ $string['relativeinitialmarkingdeadline'] = "Relative initial marking deadline";
 $string['relativeinitialmarkingdeadline_help'] = "Set the amount of time that initial marking should be completed by relative to submission time";
 $string['release_mark'] = 'Release mark';
 $string['release_marks'] = 'Release the marks';
+$string['reminder:email:agreed:body'] = 'Dear Colleague,
+ <br><br>
+ Our records indicate that you have outstanding marking agreement activity for the assessments below.
+ <br><br>
+ The following assessments are due for agreed marking {$a->due}:
+ <br><br>
+ <b>Agreed Marking Required:</b>
+ <br><br>
+ {$a->list}';
+$string['reminder:email:agreed:item'] = ' - {$a} submissions awaiting agreed final marking';
+$string['reminder:email:agreed:subject'] = 'Outstanding Moodle Agreed Marking: Action Required';
+$string['reminder:email:initial:body'] = 'Dear Colleague,
+<br><br>
+Our records indicate that you have outstanding marking activity for the assessments below.
+<br><br>
+The following assessments are due for initial marking {$a->due}:
+<br><br>
+<b>Marking Required:</b>
+<br><br>
+{$a->list}';
+$string['reminder:email:initial:item'] = ' - {$a} submissions awaiting marking and agreement';
+$string['reminder:email:initial:subject'] = 'Outstanding Moodle Marking: Action Required';
 $string['remove_filter'] = 'Remove filter: ';
 $string['removeappraisal'] = 'Remove moderator outcome';
 $string['removefeedback'] = 'Remove feedback';
@@ -743,6 +765,7 @@ $string['tableheadplagiarismalert'] = 'Plagiarism alert';
 $string['tableheadstatus'] = 'Status';
 $string['tableheadsubmissiondate'] = 'Submission date';
 $string['tableheadtime'] = 'Submitted';
+$string['task:reminders'] = 'Reminder notifications task';
 $string['termsagreement'] = 'Terms Agreement';
 $string['threeweeksoption'] = '3 weeks';
 $string['timedays'] = 'd';
@@ -793,5 +816,6 @@ $string['viewmembers'] = 'View members';
 $string['viewsubmission'] = 'View submission - {$a}';
 $string['week'] = 'Week';
 $string['weeks'] = 'Weeks';
+$string['withinxdays'] = 'within the next {$a} days';
 $string['yesrenamefile'] = 'Yes (you are unable to change this setting as a submission has been made)';
 $string['youmustagreetotheterms'] = 'You must agree to the following terms before submitting:';
