@@ -191,6 +191,7 @@ class actions_cell_data extends cell_data_base {
                 [
                     'cmid' => $rowsbase->get_course_module_id(),
                     'submissionid' => $rowsbase->get_submission_id(),
+                    'sesskey' => sesskey(),
                 ]
             );
             $data->unfinalise = new stdClass();

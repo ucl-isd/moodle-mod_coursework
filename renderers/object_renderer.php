@@ -544,6 +544,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     public function render_mod_coursework_allocation_widget(mod_coursework_allocation_widget $allocationwidget) {
         $coursework = $allocationwidget->get_coursework();
         $template = new stdClass();
+        $template->sesskey = sesskey();
 
         // Prepare strategy options for the select dropdown.
         $template->strategy = [];

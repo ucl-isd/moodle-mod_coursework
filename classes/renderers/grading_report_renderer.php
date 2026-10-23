@@ -377,7 +377,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $warnings = [];
         $releasemarks->url = new moodle_url(
             '/mod/coursework/actions/releasemarks.php',
-            ['cmid' => $coursework->get_coursemodule_id()]
+            ['cmid' => $coursework->get_coursemodule_id(), 'sesskey' => sesskey()]
         );
 
         if ($coursework->blindmarking_enabled()) {
