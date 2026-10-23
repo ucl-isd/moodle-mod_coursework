@@ -21,8 +21,9 @@
         "appraisal": {
             "user": "Teacher One",
             "time": "01-01-2026 00:00",
-            "representative": 1,
-            "markingcriteriaconsistent": 1,
+            "representativelabel": "Yes",
+            "representativerecommendations": "Some comments",
+            "markingcriteriaconsistentlabel": "Yes",
             "markingcriteriarecommendations": "Some recommendations",
             etc...
         }
@@ -53,13 +54,16 @@
             </div>
             <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
                 <div id="mod_coursework_appraisal_representative" class="form-control-static">
-                    {{#representative}}
-                        {{#str}} yes {{/str}}
-                    {{/representative}}
-                    {{^representative}}
-                        {{#str}} no {{/str}}
-                    {{/representative}}
+                    {{representativelabel}}
                 </div>
+            </div>
+        </div>
+        <div class="mb-4 row fitem">
+            <div class="col-md-4 col-form-label d-flex pb-0 pe-md-0">
+                <span class="d-inline-block">{{#str}} statsappraisal:recommendations, mod_coursework {{/str}}</span>
+            </div>
+            <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
+                <div id="mod_coursework_appraisal_representative_recommendations" class="form-control-static">{{{representativerecommendations}}}</div>
             </div>
         </div>
         <div class="mb-4 row fitem">
@@ -68,12 +72,7 @@
             </div>
             <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
                 <div id="mod_coursework_appraisal_markingcriteriaconsistent" class="form-control-static">
-                    {{#markingcriteriaconsistent}}
-                        {{#str}} yes {{/str}}
-                    {{/markingcriteriaconsistent}}
-                    {{^markingcriteriaconsistent}}
-                        {{#str}} no {{/str}}
-                    {{/markingcriteriaconsistent}}
+                    {{markingcriteriaconsistentlabel}}
                 </div>
             </div>
         </div>
@@ -91,12 +90,7 @@
             </div>
             <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
                 <div id="mod_coursework_appraisal_markersmarkingconsistent" class="form-control-static">
-                    {{#markersmarkingconsistent}}
-                        {{#str}} yes {{/str}}
-                    {{/markersmarkingconsistent}}
-                    {{^markersmarkingconsistent}}
-                        {{#str}} no {{/str}}
-                    {{/markersmarkingconsistent}}
+                    {{markersmarkingconsistentlabel}}
                 </div>
             </div>
         </div>
@@ -114,12 +108,7 @@
             </div>
             <div class="col-md-8 d-flex flex-wrap align-items-start felement" data-fieldtype="static">
                 <div id="mod_coursework_appraisal_feedbackappropriate" class="form-control-static">
-                    {{#feedbackappropriate}}
-                        {{#str}} yes {{/str}}
-                    {{/feedbackappropriate}}
-                    {{^feedbackappropriate}}
-                        {{#str}} no {{/str}}
-                    {{/feedbackappropriate}}
+                    {{feedbackappropriatelabel}}
                 </div>
             </div>
         </div>

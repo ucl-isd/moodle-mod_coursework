@@ -442,6 +442,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026082701, 'coursework');
     }
 
+    if ($oldversion < 2026101300) {
+        // Define field representativerecommendations to be added to coursework_moderator_appraisals.
+        $table = new xmldb_table('coursework_moderator_appraisals');
+        $field = new xmldb_field('representativerecommendations', XMLDB_TYPE_TEXT, null, null, null, null, null, 'representative');
+
+        // Conditionally launch add field representativerecommendations.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026101300, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
