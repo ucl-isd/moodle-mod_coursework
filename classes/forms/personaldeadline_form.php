@@ -113,7 +113,7 @@ class personaldeadline_form extends dynamic_form {
             $this->_form->setDefault('personaldeadline', time());
         }
         // Date and time picker.
-        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxextensionmonths = get_config('mod_coursework', 'max_extension_deadline') ?? 0;
         $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',
