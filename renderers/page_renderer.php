@@ -443,7 +443,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if ($instance) {
                 $filling = $isguide ? $instance->get_guide_filling() : $instance->get_rubric_filling();
                 $markerobj = new stdClass();
-                $markerobj->label = get_string('marker', 'mod_coursework') . " " . $feedback->get_assessor_stage_no();
+                $markerobj->label = ($feedback->stageidentifier == 'final_agreed_1') ?
+                    get_string('agreedmark', 'mod_coursework') :
+                    get_string('marker', 'mod_coursework') . " " . $feedback->get_assessor_stage_no();
                 $markerobj->fillings = $filling['criteria'] ?? [];
                 $markerobj->stage = $feedback->stageidentifier;
                 if ($files = $feedback->get_feedback_files()) {
