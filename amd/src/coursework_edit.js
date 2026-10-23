@@ -20,6 +20,23 @@ define('mod_coursework/coursework_edit',
                             }
                         );
                     });
+
+                    // Release mark for a single student.
+                    $('.coursework-actions').on('click', '.mark-release', function(e) {
+                        e.preventDefault();
+                        const studentname = $(this).attr('data-student');
+                        const url = $(this).attr('href');
+                        Notification.confirm(
+                            str.getString('notification_confirm_label', 'mod_coursework'),
+                            str.getString('confirm_release_mark', 'mod_coursework', {'studentname': studentname}),
+                            str.getString('notification_yes_label', 'mod_coursework'),
+                            str.getString('notification_no_label', 'mod_coursework'),
+                            function() {
+                                // Redirect to URL.
+                                window.location.href = url;
+                            }
+                        );
+                    });
                 });
             }
         };

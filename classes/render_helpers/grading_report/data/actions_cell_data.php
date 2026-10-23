@@ -62,6 +62,9 @@ class actions_cell_data extends cell_data_base {
         // Set unfinalise parameters.
         $this->set_unfinalise_data($data, $rowsbase);
 
+        // Set release parameters.
+        $this->set_release_data($data, $rowsbase);
+
         // Set plagiarism parameters.
         $this->set_plagiarism_data($data, $rowsbase);
 
@@ -199,6 +202,27 @@ class actions_cell_data extends cell_data_base {
             $data->unfinalise = new stdClass();
             $data->unfinalise->url = $url->out(false);
             $data->unfinalise->studentname = !$rowsbase->get_coursework()->hide_student_identities()
+                ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
+        }
+    }
+
+    /**
+     * Set release parameters, allowing a user with the publish capability to release the mark for the single student submission.
+     *
+     * @param stdClass $data The data object
+     * @param grading_table_row_base $rowsbase The row base object
+     */
+    protected function set_release_data(stdClass $data, grading_table_row_base $rowsbase): void {
+        $submission = $rowsbase->get_submission();
+        if (!$submission) {
+            return;
+        }
+        if ($this->ability->can('release', $submission)) {
+            $data->release = new stdClass();
+            $url = router::instance()->get_path('release submission', ['submission' => $submission], true);
+            $url->param('sesskey', sesskey());
+            $data->release->url = $url->out(false);
+            $data->release->studentname = !$rowsbase->get_coursework()->hide_student_identities()
                 ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
         }
     }

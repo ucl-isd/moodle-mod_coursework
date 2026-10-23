@@ -116,6 +116,10 @@ class ability extends framework\ability {
         // Finalise submission
         $this->allow_finalisation_when_has_permission_and_settings_allow();
 
+        // Release submission mark.
+        $this->prevent_release_submission_when_not_ready_to_publish();
+        $this->allow_release_submission_when_has_permission();
+
         // Resubmit to plagiarism submission
         $this->allow_resubmit_to_plagiarism_submission_if_user_is_assessor_for_any_stage();
 
@@ -651,6 +655,36 @@ class ability extends framework\ability {
                 $allowedto = $this->can('new', $submission) || $this->can('edit', $submission);
 
                 return $allowedto && $notalreadyfinalised && ($earlyfinalisationallowed || $courseworkhasnodeadline);
+            }
+        );
+    }
+
+    /**
+     * Prevents releasing the mark of a submission which is not ready to publish.
+     *
+     * @return void
+     */
+    protected function prevent_release_submission_when_not_ready_to_publish(): void {
+        $this->prevent(
+            'release',
+            'mod_coursework\models\submission',
+            function (submission $submission) {
+                return !$submission->ready_to_publish();
+            }
+        );
+    }
+
+    /**
+     * Allows releasing the mark of a submission when the user has the publish capability.
+     *
+     * @return void
+     */
+    protected function allow_release_submission_when_has_permission(): void {
+        $this->allow(
+            'release',
+            'mod_coursework\models\submission',
+            function (submission $submission) {
+                return has_capability('mod/coursework:publish', $submission->get_context(), $this->userid);
             }
         );
     }
