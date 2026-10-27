@@ -131,7 +131,8 @@ class audit {
             $markerstats,
             $moderatorstats,
             $moderationsummary,
-            $moderationsample
+            $moderationsample,
+            $this->get_boundary_end_marks(),
         );
 
         if (isset($this->form)) {
@@ -761,5 +762,65 @@ class audit {
                 'accepted_types' => ['document'],
             ]
         );
+    }
+
+    /**
+     * Get all marks on this coursework activity at the end of a boundary.
+     * @return array
+     */
+    public function get_boundary_end_marks(): array {
+        global $DB;
+
+        $data = ['boundary_marks' => []];
+
+        $end = [];
+        $boundaries = $this->get_boundaries();
+        if (!$boundaries) {
+            return $data;
+        }
+
+        foreach ($boundaries as $boundary) {
+            $end[] = $boundary[1];
+        }
+
+        $where = [];
+        $params = ['courseworkid' => $this->coursework->id];
+        $cast = "(" . $DB->sql_cast_char2real('f.grade') . " / c.grade) * 100";
+        foreach ($end as $key => $val) {
+            $where[] = "({$cast} >= :lower{$key} AND {$cast} <= :upper{$key})";
+            $params['lower' . $key] = floor($val);
+            $params['upper' . $key] = $val;
+        }
+
+        $marks = $DB->get_records_sql(
+            "SELECT f.id, {$cast} as grade, s.allocatabletype, s.allocatableid, ma.agreement
+               FROM {coursework_feedbacks} f
+               JOIN {coursework_submissions} s ON f.submissionid = s.id
+               JOIN {coursework} c ON s.courseworkid = c.id
+          LEFT JOIN {coursework_mod_agreements} ma ON ma.feedbackid = f.id
+              WHERE (" . implode(' OR ', $where) . ")
+                AND c.id = :courseworkid
+                AND f.finalised = 1",
+            $params
+        );
+
+        foreach ($marks as $mark) {
+            $obj = [];
+            $obj['grade'] = (float)$mark->grade;
+            if ($mark->allocatabletype === 'user') {
+                if (!$this->coursework->hide_student_identities()) {
+                    $obj['for'] = \mod_coursework\models\user::get_from_id($mark->allocatableid)?->name();
+                } else {
+                    $obj['for'] = get_string('hidden', 'coursework');
+                }
+            } else if ($mark->allocatabletype === 'group') {
+                $obj['for'] = \mod_coursework\models\group::get_from_id($mark->allocatableid)?->name();
+            }
+            $obj['agreement'] = $mark->agreement;
+            $obj['url'] = new \moodle_url('/mod/coursework/actions/feedbacks/edit.php', ['feedbackid' => $mark->id]);
+            $data['boundary_marks'][] = $obj;
+        }
+
+        return $data;
     }
 }
