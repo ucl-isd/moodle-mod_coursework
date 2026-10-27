@@ -56,6 +56,19 @@ class audit_testable extends audit {
     }
 
     /**
+     * Override grade boundaries to keep the boundary-end test deterministic.
+     *
+     * @return array
+     */
+    protected function get_boundaries(): array {
+        return [
+            [0, 0.99],
+            [60, 69.99],
+            [70, 100],
+        ];
+    }
+
+    /**
      * Override flag count so the tests are DB-independent.
      *
      * @return int

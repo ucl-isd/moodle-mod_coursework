@@ -196,6 +196,28 @@
     </tbody>
 </table>
 
+<h3>{{#str}} boundarymarks, mod_coursework {{/str}}</h3>
+<table id="grading-audit-boundarymarks" class="table table-striped">
+    <thead>
+        <tr>
+            <th>{{#str}} mark, mod_coursework {{/str}}</th>
+            <th>{{#str}} student, mod_coursework {{/str}}</th>
+            <th>{{#str}} moderated, mod_coursework {{/str}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#boundary_marks}}
+            <tr>
+                <td>
+                    <a href="{{{url}}}">{{grade}}</a>
+                </td>
+                <td>{{for}}</td>
+                <td>{{#agreement}} {{#str}} yes, core {{/str}} - {{.}} {{/agreement}}{{^agreement}} {{#str}} no, core {{/str}}{{/agreement}}</td>
+            </tr>
+        {{/boundary_marks}}
+    </tbody>
+</table>
+
 {{#form}}
     {{{form}}}
 {{/form}}
