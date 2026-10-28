@@ -1069,7 +1069,13 @@ class submission extends table_base implements renderable {
             return false;
         }
 
-        if (!empty($this->get_final_feedback()) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
+        // If the final agreed feedback was automatically created, and it's a draft, it can't be released yet.
+        $finalfeedback = $this->get_final_feedback();
+        if ($finalfeedback && empty($finalfeedback->assessorid) && !$finalfeedback->finalised) {
+            return false;
+        }
+
+        if (!empty($finalfeedback) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
             return true;
         }
 
