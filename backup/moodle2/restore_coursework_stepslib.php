@@ -85,6 +85,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             unset($data->finalised);
         }
 
+        $this->fixallocatable($data);
+
         $this->updatedate(['timemodified',
                                 'timecreated',
                                 'timesubmitted',
@@ -183,6 +185,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->updatedate(['timelocked'], $data);
 
+        $this->fixallocatable($data);
+
         $this->set_defaults(
             [
             'assessorid' => 0,
@@ -253,6 +257,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data = (object)$data;
         $this->fixlegacybackupfields($data);
         $data->courseworkid = $this->get_new_parentid('coursework');
+        $this->fixallocatable($data);
         $this->set_defaults(['stageidentifier' => ''], $data);
 
         $DB->insert_record('coursework_mod_set_members', $data);
@@ -265,6 +270,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
+
+        $this->fixallocatable($data);
 
         $this->set_defaults(['allocatableid' => 0,
                                   'allocatabletype' => '',
@@ -282,6 +289,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->createdbyid = $this->get_mappingid('user', $data->createdbyid);
+
+        $this->fixallocatable($data);
 
         $this->updatedate(['extended_deadline'], $data);
 
@@ -302,6 +311,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->createdbyid = $this->get_mappingid('user', $data->createdbyid);
         $data->lastmodifiedbyid = $this->get_mappingid('user', $data->lastmodifiedbyid);
+
+        $this->fixallocatable($data);
 
         $this->updatedate(['personaldeadline',
                                 'timecreated',
@@ -326,6 +337,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->moderatorid = $this->get_mappingid('user', $data->moderatorid);
         $data->lastmodifiedby = $this->get_mappingid('user', $data->lastmodifiedby);
 
+        $this->fixallocatable($data);
+
         $this->updatedate(['timecreated',
                                 'timemodified'], $data);
 
@@ -348,6 +361,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->submissionid = $this->get_new_parentid('coursework_submission');
         $data->createdby = $this->get_mappingid('user', $data->createdby);
         $data->lastmodifiedby = $this->get_mappingid('user', $data->lastmodifiedby);
+        $this->fixallocatable($data);
 
         $this->updatedate(['timecreated',
                                 'timemodified'], $data);
@@ -525,5 +539,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                 unset($data->$legacyfield);
             }
         }
+    }
+
+    protected function fixallocatable(&$data) {
+        if (empty($data->allocatabletype) || empty($data->allocatableid)) {
+            return;
+        }
+        $data->allocatableid = $this->get_mappingid($data->allocatabletype, $data->allocatableid, 0);
     }
 }
