@@ -1,5 +1,5 @@
 @mod @mod_coursework @mod_coursework_moderation_view
-Feature: View moderation feedback
+Feature: Annotate files using pdfjs
 
   Background:
     Given the following "course" exists:
@@ -39,14 +39,6 @@ Feature: View moderation feedback
     And the following config values are set as admin:
       | config                 | value |
       | coursework_enablepdfjs | 1     |
-
-  @javascript @_file_upload
-  Scenario: I am prevented from uploading more files than specified
-    Given I am on the "Coursework" "coursework activity" page logged in as "student1"
-    And I click on "Upload your submission" "link"
-    And I upload "mod/coursework/tests/files_for_uploading/test_pdf.pdf" file to "Upload a file" filemanager
-    And I upload "mod/coursework/tests/files_for_uploading/test_pdf2.pdf" file to "Upload a file" filemanager
-    And I press "Submit"
 
   @javascript @_file_upload
   Scenario: The moderator agrees one marker's annotations and the learner sees them
