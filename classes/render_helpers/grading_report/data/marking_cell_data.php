@@ -328,6 +328,11 @@ class marking_cell_data extends cell_data_base {
         }
 
         $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
+
+        // Can it be released?
+        $ready = !$rowsbase->get_submission()->is_published() &&
+            $rowsbase->get_submission()->ready_to_publish();
+
         // If this is an auto generated feedback, lasteditedbyuser will be zero.
         if (empty($finalfeedback->assessorid)) {
             $assessorname = get_string('automaticallyagreed', 'mod_coursework');
@@ -364,8 +369,7 @@ class marking_cell_data extends cell_data_base {
                 // Only show draft label if final feedback is not finalised and submission is not ready for release.
                 // Final feedback is still unfinalised if it is agreed automatically.
                 'draft' => !$finalfeedback->finalised,
-                'readyforrelease' => !$rowsbase->get_submission()->is_published() &&
-                    $rowsbase->get_submission()->ready_to_publish(),
+                'readyforrelease' => $ready,
                 'released' => $rowsbase->get_submission()->is_published(),
                 'timemodified' => $finalfeedback->timemodified,
                 'markername' => $assessorname,
