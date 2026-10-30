@@ -10,5 +10,5 @@ trusted_users: ["aspark21", "andrewhancox", "cwarwicker", "leonstr", "DavidUCL",
 include:
   branches: ["main", "CTP-*"]
 exclude:
-  paths: ["lang/**", "vendor/**"]
+  paths: ["lang/**", "vendor/**", "lib/**"]
   authors: ["dependabot[bot]"]
