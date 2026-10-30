@@ -456,6 +456,23 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026101300, 'coursework');
     }
 
+    if ($oldversion < 2026101303) {
+        // Make plugin config settings consistent with the plugin name.
+        $DB->execute("UPDATE {config_plugins} SET plugin = 'mod_coursework' WHERE plugin = 'coursework'");
+        // Move core settings to plugin settings table.
+        $likesql = $DB->sql_like('name', ':plugin', false);
+        $settings = $DB->get_records_sql("SELECT * FROM {config} WHERE {$likesql}", [
+            'plugin' => $DB->sql_like_escape('coursework_') . '%',
+        ]);
+        foreach ($settings as $setting) {
+            $name = str_replace('coursework_', '', $setting->name);
+            set_config($name, $setting->value, 'mod_coursework');
+            unset_config($setting->name);
+        }
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026101303, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

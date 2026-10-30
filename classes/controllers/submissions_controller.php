@@ -225,8 +225,7 @@ class submissions_controller extends controller_base {
         $event->trigger();
 
         $submission->submit_plagiarism();
-
-        if (($CFG->coursework_allsubmissionreceipt ?? false) || $submission->is_finalised()) {
+        if ((get_config('mod_coursework', 'allsubmissionreceipt') ?? false) || $submission->is_finalised()) {
             foreach ($submission->get_students() as $student) {
                 mailer::queue('submission_receipt', $this->coursework->id(), $submission->id(), $student->id(), $submission->is_finalised());
             }
@@ -301,7 +300,7 @@ class submissions_controller extends controller_base {
 
         $this->submission->submit_plagiarism();
 
-        if ($CFG->coursework_allsubmissionreceipt || $notifyaboutfinalisation) {
+        if (get_config('mod_coursework', 'allsubmissionreceipt') || $notifyaboutfinalisation) {
             foreach ($this->submission->get_students() as $student) {
                 mailer::queue('submission_receipt', $this->coursework->id(), $this->submission->id(), $student->id(), $notifyaboutfinalisation);
             }
