@@ -442,6 +442,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 }
 
                 $template->mainanotatoreditable = true;
+                $template->submissionlabel = get_string('agreeannotations', 'mod_coursework');
 
                 $this->add_feedback_annotations($template, $submission, $previousfeedbacks);
             }

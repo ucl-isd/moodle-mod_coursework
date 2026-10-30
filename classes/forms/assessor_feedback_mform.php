@@ -230,7 +230,7 @@ class assessor_feedback_mform extends moodleform {
         $this->feedback = $this->_customdata['feedback'];
 
         $ispublished = $this->feedback->get_submission()->is_published();
-
+        $ispublished = false;
         if ($feedbackid &&  !$ispublished) {
             $buttonarray[] = $this->_form->createElement(
                 'submit',

@@ -27,7 +27,7 @@ export const setactivetab = (annotatedfeedbackid) => {
         elem.setAttribute('aria-selected', false);
         elem.classList.remove("active");
     });
-    document.querySelectorAll('.tab-pane').forEach(elem => {
+    document.querySelectorAll('.tab-pane.feedbackannotator').forEach(elem => {
         elem.classList.remove("active");
     });
 
