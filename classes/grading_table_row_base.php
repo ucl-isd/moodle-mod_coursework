@@ -366,22 +366,21 @@ class grading_table_row_base implements user_row {
 
     /**
      * Is this row (specifically) visible to the current user?
-     * Note that user may be able to see all rows which, for efficiency in a loop, this does not check.
-     * @see grading_report::can_see_all_rows()
+     * @param coursework $coursework
+     * @param submission $submission
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return bool
      */
-    public function user_visible(): bool {
+    public static function is_user_row_visible(coursework $coursework, submission $submission, int $allocatableid, string $allocatabletype): bool {
         global $USER;
-
-        $coursework = $this->get_coursework();
-        $submission = $this->get_submission();
 
         if ($coursework->allocation_enabled()) {
             if (
                 allocation::allocatable_is_allocated_to_assessor(
                     $coursework->id(),
-                    $this->allocatable->id(),
-                    $this->allocatable->type(),
+                    $allocatableid,
+                    $allocatabletype,
                     $USER->id
                 )
             ) {
@@ -412,7 +411,21 @@ class grading_table_row_base implements user_row {
             // If we've already graded any stage for this submission, row is visible.
             return true;
         }
-
         return false;
+    }
+
+    /**
+     * Is this row (specifically) visible to the current user?
+     * Note that user may be able to see all rows which, for efficiency in a loop, this does not check.
+     * @see grading_report::can_see_all_rows()
+     * @return bool
+     */
+    public function user_visible(): bool {
+        return static::is_user_row_visible(
+            $this->get_coursework(),
+            $this->get_submission(),
+            $this->get_allocatable()->id(),
+            $this->get_allocatable()->type()
+        );
     }
 }
