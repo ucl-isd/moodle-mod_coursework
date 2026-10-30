@@ -30,6 +30,11 @@ namespace mod_coursework\local\report_rubricgrading;
 
 use core\lang_string;
 use core_reportbuilder\local\report\column;
+use mod_coursework\candidateprovider_manager;
+use mod_coursework\grading_report;
+use mod_coursework\grading_table_row_base;
+use mod_coursework\models\feedback;
+use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use stdClass;
 use xmldb_table;
 
@@ -39,6 +44,10 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/grade/grading/lib.php');
 
 class coursework extends \report_rubricgrading\local\plugin_base {
+
+    /** @var \mod_coursework\models\coursework Coursework object */
+    protected \mod_coursework\models\coursework $coursework;
+
     #[\Override]
     protected function load_grading_manager(): void {
         $this->gradingmanager = get_grading_manager($this->cm->context, 'mod_coursework', 'submissions');
@@ -58,6 +67,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       cwf.markernumber,
                       cwf.stageidentifier,
                       cwf.timemodified       AS timegraded,
+                      cwf.id                 AS feedbackid,
                       stu.id                 AS userid,
                       stu.firstname,
                       stu.lastname,
@@ -68,7 +78,9 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       stu.lastnamephonetic,
                       stu.middlename,
                       stu.alternatename,
+                      cws.allocatableid,
                       cws.allocatabletype,
+                      cws.id                 AS submissionid,
                       grp.name               AS group_name,
                       gstu.id                AS group_member_id,
                       gstu.firstname         AS group_member_firstname,
@@ -80,6 +92,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       gstu.lastnamephonetic  AS group_member_lastnamephonetic,
                       gstu.middlename        AS group_member_middlename,
                       gstu.alternatename     AS group_member_alternatename,
+                      grdr.id                AS grader_id,
                       grdr.firstname         AS grader_firstname,
                       grdr.lastname          AS grader_lastname,
                       grdr.firstnamephonetic AS grader_firstnamephonetic,
@@ -123,6 +136,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       cwf.markernumber,
                       cwf.stageidentifier,
                       cwf.timemodified       AS timegraded,
+                      cwf.id                 AS feedbackid,
                       stu.id                 AS userid,
                       stu.firstname,
                       stu.lastname,
@@ -133,7 +147,9 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       stu.lastnamephonetic,
                       stu.middlename,
                       stu.alternatename,
+                      cws.allocatableid,
                       cws.allocatabletype,
+                      cws.id                 AS submissionid,
                       grp.name               AS group_name,
                       gstu.id                AS group_member_id,
                       gstu.firstname         AS group_member_firstname,
@@ -145,6 +161,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       gstu.lastnamephonetic  AS group_member_lastnamephonetic,
                       gstu.middlename        AS group_member_middlename,
                       gstu.alternatename     AS group_member_alternatename,
+                      grdr.id                AS grader_id,
                       grdr.firstname         AS grader_firstname,
                       grdr.lastname          AS grader_lastname,
                       grdr.firstnamephonetic AS grader_firstnamephonetic,
@@ -187,6 +204,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       cwf.markernumber,
                       cwf.stageidentifier,
                       cwf.timemodified       AS timegraded,
+                      cwf.id                 AS feedbackid,
                       stu.id                 AS userid,
                       stu.firstname,
                       stu.lastname,
@@ -197,7 +215,9 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       stu.lastnamephonetic,
                       stu.middlename,
                       stu.alternatename,
+                      cws.allocatableid,
                       cws.allocatabletype,
+                      cws.id                 AS submissionid,
                       grp.name               AS group_name,
                       gstu.id                AS group_member_id,
                       gstu.firstname         AS group_member_firstname,
@@ -209,6 +229,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                       gstu.lastnamephonetic  AS group_member_lastnamephonetic,
                       gstu.middlename        AS group_member_middlename,
                       gstu.alternatename     AS group_member_alternatename,
+                      grdr.id                AS grader_id,
                       grdr.firstname         AS grader_firstname,
                       grdr.lastname          AS grader_lastname,
                       grdr.firstnamephonetic AS grader_firstnamephonetic,
@@ -255,6 +276,9 @@ class coursework extends \report_rubricgrading\local\plugin_base {
         } else {
             $pivotrow->stageidentifier = $row->stageidentifier;
         }
+        $pivotrow->submissionid = $row->submissionid ?? '';
+        $pivotrow->feedbackid = $row->feedbackid ?? '';
+        $pivotrow->realstageidentifier = $row->stageidentifier ?? '';
     }
 
     #[\Override]
@@ -269,7 +293,26 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     }
 
     #[\Override]
-    public function fiddle(stdClass &$row): void {
+    public function fiddle(stdClass &$row): bool
+    {
+        if (empty($this->coursework)) {
+            $this->coursework = \mod_coursework\models\coursework::get_from_id($this->cm->instance);
+        }
+
+        $coursework = $this->coursework;
+
+        if (!PHPUNIT_TEST) {
+            $feedback = feedback::get_from_id($row->feedbackid);
+            $submission = $feedback->get_submission();
+
+            // Can the user see all rows?
+            $canseeallrows = grading_report::can_see_all_rows($coursework);
+            $canseethisrow = grading_table_row_base::is_user_row_visible($coursework, $submission, $row->allocatableid, $row->allocatabletype);
+            if (!$canseeallrows && !$canseethisrow) {
+                return false;
+            }
+        }
+
         if ($row->allocatabletype === 'group') {
             $row->userid = $row->group_member_id;
             $row->firstname = $row->group_member_firstname;
@@ -282,5 +325,30 @@ class coursework extends \report_rubricgrading\local\plugin_base {
             $row->middlename = $row->group_member_middlename;
             $row->alternatename = $row->group_member_alternatename;
         }
+
+        // Are student names hidden?
+        if ($coursework->hide_student_identities()) {
+            $row->firstname = '';
+            $row->lastname = '';
+            $row->firstnamephonetic = '';
+            $row->lastnamephonetic = '';
+            $row->middlename = '';
+            $row->alternatename = '';
+            $row->email = '';
+            if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
+                $row->fullname = candidateprovider_manager::instance()->get_candidate_number($this->coursework->get_course_id(), $row->userid) ??
+                    get_string('hidden', 'mod_coursework');
+            } else {
+                $row->fullname = get_string('hidden', 'mod_coursework');
+            }
+        }
+
+        if (!PHPUNIT_TEST) {
+            // Are marker names hidden?
+            $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission);
+            $marker = marking_cell_data::create_marker_data_static($row->grader_id, $row->markernumber, $canseeothermarkerdetails);
+            $row->graderfullname = $marker->markername;
+        }
+        return true;
     }
 }
