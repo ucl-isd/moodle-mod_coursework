@@ -88,18 +88,40 @@
 <script>
     document.querySelectorAll(".copy_feedbackannotator").forEach(elem => {
         elem.addEventListener("click", () => {
-            var pdfitemid = document.querySelector('#feedbackannotator_original iframe').getAttribute('data-pdfitemid');
-
-            for (const fileid in window.viewerLib[pdfitemid]) {
-                var pdfjsinstance = window.viewerLib[pdfitemid][fileid];
-                pdfjsinstance.PDFViewerApplication.open({
-                            url: document.querySelectorAll("#feedbackannotator_" + elem.getAttribute('data-feedbackid') + ' [data-fileid="' + fileid + '"]')[0].dataset.annotatedfileurl
-                        }
+            document.querySelectorAll('#feedbackannotator_original iframe').forEach(iframe => {
+                const {pdfitemid, fileid} = iframe.dataset;
+                const markerviewer = document.querySelector(
+                    "#feedbackannotator_" + elem.getAttribute('data-feedbackid') + ' [data-fileid="' + fileid + '"]'
                 );
-                pdfjsinstance.PDFViewerApplication._hasChanges = function () {
-                    return true;
-                };
-            }
+
+                // Leave files the marker didn't annotate as they are.
+                if (!markerviewer?.dataset.annotatedfileurl) {
+                    return;
+                }
+
+                // Viewers load lazily, so load any that haven't been opened yet before copying into them.
+                const loaded = new Promise(resolve => {
+                    if (window.viewerLib?.[pdfitemid]?.[fileid]) {
+                        resolve();
+                    } else {
+                        iframe.addEventListener('load', resolve, {once: true});
+                        iframe.loading = 'eager';
+                    }
+                });
+
+                loaded.then(() => {
+                    var pdfjsinstance = window.viewerLib[pdfitemid][fileid];
+                    return pdfjsinstance.PDFViewerApplication.initializedPromise.then(() => {
+                        pdfjsinstance.PDFViewerApplication.open({
+                                    url: markerviewer.dataset.annotatedfileurl
+                                }
+                        );
+                        pdfjsinstance.PDFViewerApplication._hasChanges = function () {
+                            return true;
+                        };
+                    });
+                });
+            });
 
             require(['mod_coursework/feedbacktabcontroller'], function (feedbacktabcontroller) {
                 feedbacktabcontroller.setactivetab('original');
