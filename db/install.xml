@@ -121,8 +121,6 @@
         <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User id of creator"/>
         <FIELD NAME="lastupdatedby" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User id of last person to update this submission."/>
         <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user or group"/>
-        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
-        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
         <FIELD NAME="allocatabletype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="user" SEQUENCE="false" COMMENT="Type of the user or group"/>
         <FIELD NAME="firstpublished" TYPE="int" LENGTH="12" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="lastpublished" TYPE="int" LENGTH="12" NOTNULL="false" SEQUENCE="false"/>
@@ -160,8 +158,6 @@
         <FIELD NAME="timelocked" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When someone starts to grade a piece of work, we want to lock their allocation so that automatic re-allocations will not remove it. This field holds a timestamp, which will prevent re-allocation if it's recent enough."/>
         <FIELD NAME="stageidentifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
-        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
         <FIELD NAME="allocatabletype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="user" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
@@ -209,8 +205,6 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
-        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
         <FIELD NAME="allocatabletype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="user" SEQUENCE="false"/>
         <FIELD NAME="stageidentifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
@@ -222,8 +216,6 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
-        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
         <FIELD NAME="allocatabletype" TYPE="char" LENGTH="25" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="extended_deadline" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -271,8 +263,6 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
-        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
         <FIELD NAME="allocatabletype" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="stageidentifier" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="selectiontype" TYPE="char" LENGTH="255" NOTNULL="false" DEFAULT="manual" SEQUENCE="false"/>
@@ -289,8 +279,6 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
-        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
         <FIELD NAME="allocatabletype" TYPE="char" LENGTH="25" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="personaldeadline" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

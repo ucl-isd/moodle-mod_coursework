@@ -456,6 +456,32 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026101300, 'coursework');
     }
 
+    if ($oldversion < 2026101301) {
+        foreach (
+            [
+                'coursework_submissions',
+                'coursework_allocation_pairs',
+                'coursework_mod_set_members',
+                'coursework_extensions',
+                'coursework_sample_set_mbrs',
+                'coursework_person_deadlines',
+
+            ] as $tablename
+        ) {
+            $table = new xmldb_table($tablename);
+            $field = new xmldb_field('allocatableuser');
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+            $field = new xmldb_field('allocatablegroup');
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026101301, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

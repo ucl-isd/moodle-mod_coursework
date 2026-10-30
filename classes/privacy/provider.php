@@ -74,15 +74,11 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             'createdbyid' => 'privacy:metadata:createdbyid',
             'extrainformationtext' => 'privacy:metadata:extrainformationtext',
             'extended_deadline' => 'privacy:metadata:extended_deadline',
-            'allocatableuser' => 'privacy:metadata:userid',
-            'allocatablegroup' => 'privacy:metadata:groupid',
         ];
         $persondeadlines = [
             'allocatableid' => 'privacy:metadata:allocatableid',
             'createdbyid' => 'privacy:metadata:createdbyid',
             'personaldeadline' => 'privacy:metadata:personaldeadline',
-            'allocatableuser' => 'privacy:metadata:userid',
-            'allocatablegroup' => 'privacy:metadata:groupid',
         ];
         $modagreements = [
             'moderatorid' => 'privacy:metadata:moderatorid',
@@ -102,16 +98,16 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
         ];
         $allocationpairs = [
             'assessorid' => 'privacy:metadata:assessorid',
-            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatableid' => 'privacy:metadata:allocatableid',
         ];
         $allocationconfig = [
             'assessorid' => 'privacy:metadata:assessorid',
         ];
         $setmembers = [
-            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatableid' => 'privacy:metadata:allocatableid',
         ];
         $samplesetmbrs = [
-            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatableid' => 'privacy:metadata:allocatableid',
         ];
         $collection->add_database_table('coursework_feedbacks', $feedbacks, 'privacy:metadata:feedbacks');
         $collection->add_database_table('coursework_submissions', $submissions, 'privacy:metadata:submissions');
@@ -160,7 +156,7 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
                 WHERE ctx.id = :contextid AND ctx.contextlevel = :contextlevel";
         $userlist->add_from_sql('userid', $sql, $params);
         $userlist->add_from_sql('authorid', $sql, $params);
-        $sql = "SELECT cwe.allocatableid, cwe.allocatableuser, cwe.allocatablegroup
+        $sql = "SELECT cwe.allocatableid
                     FROM {context} ctx
                     JOIN {course_modules} cm ON cm.id = ctx.instanceid
                     JOIN {modules} m ON m.id = cm.module AND m.name = :modulename
@@ -168,9 +164,7 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
                     JOIN {coursework_extensions} cwe ON cw.id = cwe.courseworkid
                 WHERE ctx.id = :contextid AND ctx.contextlevel = :contextlevel";
         $userlist->add_from_sql('allocatableid', $sql, $params);
-        $userlist->add_from_sql('allocatableuser', $sql, $params);
-        $userlist->add_from_sql('allocatablegroup', $sql, $params);
-        $sql = "SELECT cwpd.allocatableid, cwpd.allocatableuser, cwpd.allocatablegroup
+        $sql = "SELECT cwpd.allocatableid
                     FROM {context} ctx
                     JOIN {course_modules} cm ON cm.id = ctx.instanceid
                     JOIN {modules} m ON m.id = cm.module AND m.name = :modulename
@@ -178,8 +172,6 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
                     JOIN {coursework_person_deadlines} cwpd ON cw.id = cwpd.courseworkid
                 WHERE ctx.id = :contextid AND ctx.contextlevel = :contextlevel";
         $userlist->add_from_sql('allocatableid', $sql, $params);
-        $userlist->add_from_sql('allocatableuser', $sql, $params);
-        $userlist->add_from_sql('allocatablegroup', $sql, $params);
         $sql = "SELECT cwma.moderatorid
                     FROM {context} ctx
                     JOIN {course_modules} cm ON cm.id = ctx.instanceid
@@ -215,8 +207,6 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             'authorid' => $userid,
             'assessorid' => $userid,
             'allocatableid' => $userid,
-            'allocatableuser' => $userid,
-            'allocatablegroup' => $userid,
             'moderatorid' => $userid,
             'createdby' => $userid,
         ];
@@ -241,14 +231,14 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
                     JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                     JOIN {coursework} cw ON cm.instance = cw.id
                     JOIN {context} ctx ON cm.id = ctx.instanceid AND ctx.contextlevel = :contextlevel
-                    JOIN {coursework_extensions} cwx ON cwx.courseworkid = cw.id AND (cwx.allocatableid = :userid OR cwx.allocatableuser = :allocatableuser OR cwx.allocatablegroup = :allocatablegroup)";
+                    JOIN {coursework_extensions} cwx ON cwx.courseworkid = cw.id AND cwx.allocatableid = :userid";
         $contextlist->add_from_sql($sql, $params);
         $sql = "SELECT ctx.id
                     FROM {course_modules} cm
                     JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                     JOIN {coursework} cw ON cm.instance = cw.id
                     JOIN {context} ctx ON cm.id = ctx.instanceid AND ctx.contextlevel = :contextlevel
-                    JOIN {coursework_person_deadlines} cw_pd ON cw_pd.courseworkid = cw.id AND (cw_pd.allocatableid = :userid OR cw_pd.allocatableuser = :allocatableuser OR cw_pd.allocatablegroup = :allocatablegroup)";
+                    JOIN {coursework_person_deadlines} cw_pd ON cw_pd.courseworkid = cw.id AND cw_pd.allocatableid = :userid";
         $contextlist->add_from_sql($sql, $params);
         $sql = "SELECT ctx.id
                     FROM {course_modules} cm
