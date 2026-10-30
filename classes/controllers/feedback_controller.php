@@ -389,6 +389,7 @@ class feedback_controller extends controller_base {
                 $this->get_page_renderer()->confirm_feedback_removal_page($teacherfeedback, $confirmurl);
                 return;
             } else {
+                require_sesskey();
                 feedback::remove_cache($teacherfeedback->get_courseworkid());
                 submission::remove_cache($teacherfeedback->get_courseworkid());
 

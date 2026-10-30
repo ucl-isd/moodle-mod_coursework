@@ -30,4 +30,5 @@ $controller = new mod_coursework\controllers\submissions_controller([
     'submissionid' => required_param('submissionid', PARAM_INT),
 ]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
+require_sesskey();
 $controller->finalise_submission();

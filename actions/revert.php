@@ -34,18 +34,24 @@ global $DB, $PAGE, $CFG;
 $cmid = required_param('cmid', PARAM_INT);
 $submissionid = required_param('submissionid', PARAM_INT);
 
-$cm = $DB->get_record('course_modules', ['id' => $cmid]);
+$cm = $DB->get_record('course_modules', ['id' => $cmid], '*', MUST_EXIST);
 $coursework = coursework::get_from_id($cm->instance);
-$course = $DB->get_record('course', ['id' => $cm->course]);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 $submission = submission::get_from_id($submissionid);
 
 require_login($course, false, $cm);
+require_sesskey();
 $url = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
 
 // Bounce anyone who shouldn't be here.
 if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
     $message = 'You do not have permission to revert submissions';
     redirect($url, $message);
+}
+
+// Verify the submission belongs to this coursework.
+if (empty($submission) || (int) $submission->courseworkid !== (int) $coursework->id) {
+    throw new moodle_exception('invalidrecordunknown', 'error', '', null, 'Submission does not belong to this coursework');
 }
 
 if ($submission->is_late() && !$coursework->allow_late_submissions()) {
