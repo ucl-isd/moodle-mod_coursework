@@ -78,7 +78,7 @@ class reminders_task extends scheduled_task {
 
             // Load the course and its markers if we haven't come across this one yet.
             if (!array_key_exists($activity->course, $courses)) {
-                $context = \core\context\course::instance($activity->course);
+                $context = \core\context\module::instance($courseworks[$activity->id]->get_course_module()->id);
                 $courses[$activity->course] = get_course($activity->course);
                 $markers[$activity->course] = get_users_by_capability($context, 'mod/coursework:addinitialgrade');
             }
@@ -210,7 +210,7 @@ class reminders_task extends scheduled_task {
              LEFT JOIN {coursework_feedbacks} f ON (f.submissionid = s.id AND f.stageidentifier = ap.stageidentifier)
                  WHERE ap.courseworkid = :courseworkid
                        AND ap.assessorid = :assessorid
-                       AND f.id IS NULL
+                       AND (f.id IS NULL OR f.finalised = 0)
                        AND s.finalisedstatus = :finalisedstatus
             ", [
                     'courseworkid' => $coursework->id,
@@ -264,7 +264,7 @@ class reminders_task extends scheduled_task {
                          )
                      WHERE ap.courseworkid = :courseworkid
                            AND ap.assessorid = :assessorid
-                           AND f.id IS NULL
+                           AND (f.id IS NULL OR f.finalised = 0)
                            AND s.finalisedstatus = :finalisedstatus
                 ", [
                     'courseworkid' => $coursework->id,
