@@ -149,6 +149,17 @@ class marking_cell_data extends cell_data_base {
      * @throws coding_exception
      */
     private function create_marker_data(int $assessorid, int $markingstage, bool $canseeothermarkerdetails): stdClass {
+        return static::create_marker_data_static($assessorid, $markingstage, $canseeothermarkerdetails);
+    }
+
+    /**
+     * Creates marker data object with common properties, available statically
+     * @param int $assessorid
+     * @param int $markingstage
+     * @param bool $canseeothermarkerdetails
+     * @return stdClass
+     */
+    public static function create_marker_data_static(int $assessorid, int $markingstage, bool $canseeothermarkerdetails): stdClass {
         global $OUTPUT, $USER;
         $marker = new stdClass();
         $marker->markingstage = $markingstage;
