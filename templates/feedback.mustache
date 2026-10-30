@@ -84,11 +84,11 @@
                    href="#feedbackannotator_{{{feedbackid}}}">{{#str}} viewannotations, mod_coursework {{/str}}</a>
             {{/showannotationtabs}}
 
-            {{#annotationslink}}
+            {{#annotationslinks}}
                 <a class="btn btn-secondary feedbackannotator_modalbutton"
-                   href="{{{annotationslink}}}"
-                   target="_blank">{{#str}} viewannotations, mod_coursework {{/str}}</a>
-            {{/annotationslink}}
+                   href="{{url}}"
+                   target="_blank">{{#str}} viewannotationsforfile, mod_coursework, {{filename}} {{/str}}</a>
+            {{/annotationslinks}}
 
             {{#separator}}
                 <hr>

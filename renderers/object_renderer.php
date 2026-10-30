@@ -127,8 +127,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     $feedback->id()
                 );
 
-                if ($pdfjs_file_viewers = $pdfannotator->get_pdfjs_file_viewers()) {
-                    $template->annotationslink = $pdfjs_file_viewers[0];
+                $template->annotationslinks = [];
+                foreach ($pdfannotator->get_pdfjs_file_viewers() as $filename => $viewerurl) {
+                    $template->annotationslinks[] = (object)[
+                        'filename' => $filename,
+                        'url' => $viewerurl->out(false),
+                    ];
                 }
             }
         }

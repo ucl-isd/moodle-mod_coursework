@@ -791,6 +791,7 @@ $string['usernotincoursework'] = 'Student \'{$a}\' not found in this site, or st
 $string['valuenotincourseworkscale'] = "Mark value not in coursework scale.";
 $string['viewallfeedback'] = 'View all feedback';
 $string['viewannotations'] = 'View annotations';
+$string['viewannotationsforfile'] = 'View annotations on {$a}';
 $string['viewinitialmarkenabled'] = 'View initial markers\' grades';
 $string['viewinitialmarkenabled_help'] = 'If selected, markers will be able to see initial marks from other markers.';
 $string['viewmembers'] = 'View members';
