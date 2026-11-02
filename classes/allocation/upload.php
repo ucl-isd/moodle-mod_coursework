@@ -54,9 +54,9 @@ class upload {
      * @throws moodle_exception
      */
     public function validate_csv($content, $encoding, $delimeter) {
-        global $CFG, $DB;
+        global $DB;
 
-        $assessoridentifier = $CFG->coursework_allocation_identifier;
+        $assessoridentifier = get_config('mod_coursework', 'allocation_identifier');
 
         $iid = csv_import_reader::get_new_iid('courseworkallocationsdata');
         $csvreader = new csv_import_reader($iid, 'courseworkallocationsdata');
@@ -193,9 +193,9 @@ class upload {
      * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $processingresults) {
-        global $CFG, $DB;
+        global $DB;
 
-        $assessoridentifier = $CFG->coursework_allocation_identifier;
+        $assessoridentifier = get_config('mod_coursework', 'allocation_identifier');
 
         $iid = csv_import_reader::get_new_iid('courseworkallocationsdata');
         $csvreader = new csv_import_reader($iid, 'courseworkallocationsdata');

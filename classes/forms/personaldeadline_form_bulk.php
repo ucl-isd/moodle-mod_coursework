@@ -59,7 +59,7 @@ class personaldeadline_form_bulk extends moodleform {
         );
 
         // Date and time picker.
-        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxextensionmonths = get_config('mod_coursework', 'max_extension_deadline') ?? 0;
         $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',

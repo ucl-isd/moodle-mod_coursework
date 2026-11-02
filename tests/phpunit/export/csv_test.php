@@ -94,7 +94,7 @@ final class csv_test extends \advanced_testcase {
         $extensionreasons = $coursework->extension_reasons();
 
         if (empty($extensionreasons)) {
-            set_config('coursework_extension_reasons_list', "coursework extension \n sick leave");
+            set_config('extension_reasons_list', "coursework extension \n sick leave", 'mod_coursework');
             $extensionreasons = $coursework->extension_reasons();
         }
 

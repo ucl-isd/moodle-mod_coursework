@@ -94,7 +94,7 @@ class deadline_extension_form extends dynamic_form {
         );
 
         // Date and time picker.
-        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxextensionmonths = get_config('mod_coursework', 'max_extension_deadline') ?? 0;
         $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',
@@ -223,7 +223,7 @@ class deadline_extension_form extends dynamic_form {
         if ($data['deleteextension'] ?? null == 1) {
             return [];
         }
-        $maxdeadline = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxdeadline = get_config('mod_coursework', 'max_extension_deadline') ?? 0;
         $deadline = $this->get_user_latest_deadline();
 
         if ($data['extended_deadline']) {
