@@ -293,7 +293,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     }
 
     #[\Override]
-    public function fiddle(stdClass &$row): bool
+    public function alter(stdClass &$row): bool
     {
         if (empty($this->coursework)) {
             $this->coursework = \mod_coursework\models\coursework::get_from_id($this->cm->instance);

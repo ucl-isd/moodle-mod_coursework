@@ -134,7 +134,7 @@ final class report_rubricgrading_test extends advanced_testcase {
         $this->assertSame('moderation', $pivotrow->stageidentifier);
     }
 
-    public function test_fiddle_maps_group_member_fields_to_student_fields(): void {
+    public function test_alter_maps_group_member_fields_to_student_fields(): void {
         if (!$this->check_report_rubricgrading_installed()) {
             $this->markTestSkipped('report_rubricgrading plugin is not installed.');
         }
@@ -165,7 +165,7 @@ final class report_rubricgrading_test extends advanced_testcase {
             'group_member_alternatename' => 'Countess',
         ];
 
-        $plugin->fiddle($row);
+        $plugin->alter($row);
 
         $this->assertSame(99, $row->userid);
         $this->assertSame('Ada', $row->firstname);
@@ -179,7 +179,7 @@ final class report_rubricgrading_test extends advanced_testcase {
         $this->assertSame('Countess', $row->alternatename);
     }
 
-    public function test_fiddle_leaves_user_rows_unchanged(): void {
+    public function test_alter_leaves_user_rows_unchanged(): void {
         if (!$this->check_report_rubricgrading_installed()) {
             $this->markTestSkipped('report_rubricgrading plugin is not installed.');
         }
@@ -210,7 +210,7 @@ final class report_rubricgrading_test extends advanced_testcase {
             'group_member_alternatename' => 'Countess',
         ];
 
-        $plugin->fiddle($row);
+        $plugin->alter($row);
 
         $this->assertSame(13, $row->userid);
         $this->assertSame('Grace', $row->firstname);
