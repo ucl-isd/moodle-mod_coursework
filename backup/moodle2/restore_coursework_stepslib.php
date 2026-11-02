@@ -147,7 +147,9 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'feedbackcommentformat' => FORMAT_HTML,
                                   'markernumber' => 0,
                                   'stageidentifier' => '',
-                                  'finalised' => 0], $data);
+                                  'finalised' => 0,
+                                  'isautomatic' => 0,
+        ], $data);
 
         $newitemid = $DB->insert_record('coursework_feedbacks', $data);
 

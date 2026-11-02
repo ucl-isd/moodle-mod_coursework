@@ -97,7 +97,7 @@ class stages_cell extends cell_base {
 
             $gradedata[] = $submission->get_agreed_grade() == false ? '' : $this->get_actual_grade($submission->get_agreed_grade()->grade);
 
-            if ((!$this->coursework->sampling_enabled() || $submission->sampled_feedback_exists()) && $feedback && (($feedback->assessorid == 0 && $timecreated == $timemodified) || $feedback->lasteditedbyuser == 0 )) {
+            if ($feedback && $feedback->isautomatic) {
                 $gradedata[] = get_string('automaticagreement', 'coursework');
                 $gradedata[] = get_string('automaticagreement', 'coursework');
             } else {

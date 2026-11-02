@@ -73,15 +73,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template->mark = $gradejudge->grade_to_display($feedback->get_grade());
 
         // Marker name.
-        // TODO - this feels like a lot! varlidate this logic - is it all needed?
-        $issamplingenabled = $submission->get_coursework()->sampling_enabled();
-        $sampledfeedbackexists = $submission->sampled_feedback_exists();
-        $assessoriszero = ($feedback->assessorid == 0);
-        $timeequal = ($feedback->timecreated == $feedback->timemodified);
-        $isautomaticagreement = ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal);
-
         if (
-            !$isautomaticagreement
+            !$feedback->is_auto_grade()
             &&
             $assessor = user::get_cached_object_from_id($feedback->assessorid)
         ) {

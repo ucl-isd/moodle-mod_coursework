@@ -328,8 +328,7 @@ class marking_cell_data extends cell_data_base {
         }
 
         $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
-        // If this is an auto generated feedback, lasteditedbyuser will be zero.
-        if (empty($finalfeedback->assessorid)) {
+        if ($finalfeedback->is_auto_grade()) {
             $assessorname = get_string('automaticallyagreed', 'mod_coursework');
         } else if ($assessor = user::get_from_id($finalfeedback->assessorid)) {
             $assessorname = $assessor->name();

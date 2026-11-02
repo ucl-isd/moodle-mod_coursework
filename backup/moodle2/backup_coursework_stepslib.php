@@ -175,6 +175,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "markernumber",
                                                      "stageidentifier",
                                                      "finalised",
+                                                     "isautomatic",
                 ]
             );
 
