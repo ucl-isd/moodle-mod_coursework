@@ -150,7 +150,7 @@ class reminders_task extends scheduled_task {
             }
 
             if (!array_key_exists($activity->course, $courses)) {
-                $context = \core\context\course::instance($activity->course);
+                $context = \core\context\module::instance($courseworks[$activity->id]->get_course_module()->id);
                 $courses[$activity->course] = get_course($activity->course);
                 $markers[$activity->course] = get_users_by_capability($context, 'mod/coursework:addagreedgrade');
             }
