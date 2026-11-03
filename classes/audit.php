@@ -795,7 +795,7 @@ class audit {
 
         $where = [];
         $params = ['courseworkid' => $this->coursework->id];
-        $cast = "(" . $DB->sql_cast_char2real('f.grade') . " / c.grade) * 100";
+        $cast = "(CAST(f.grade AS DECIMAL(10,2)) / c.grade) * 100";
         foreach ($end as $key => $val) {
             $where[] = "({$cast} >= :lower{$key} AND {$cast} <= :upper{$key})";
             $params['lower' . $key] = floor($val);
@@ -816,7 +816,7 @@ class audit {
 
         foreach ($marks as $mark) {
             $obj = [];
-            $obj['grade'] = (float)$mark->grade;
+            $obj['grade'] = round((float)$mark->grade, 2);
             if ($mark->allocatabletype === 'user') {
                 if (!$this->coursework->hide_student_identities()) {
                     $obj['for'] = \mod_coursework\models\user::get_from_id($mark->allocatableid)?->name();

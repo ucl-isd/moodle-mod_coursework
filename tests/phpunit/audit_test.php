@@ -162,5 +162,7 @@ final class audit_test extends \advanced_testcase {
         $this->assertCount(2, $data['boundary_marks']);
         $this->assertNotContains(70.0, $grades);
         $this->assertNotContains(69.98, $grades);
+        $this->assertContains(69.99, $grades);
+        $this->assertContains(69.0, $grades);
     }
 }
