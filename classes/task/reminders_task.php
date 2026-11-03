@@ -60,6 +60,8 @@ class reminders_task extends scheduled_task {
             'id, course'
         );
 
+        mtrace('Found ' . count($activities) . ' activities with initial marking deadlines in the next ' . $daythreshold . ' days');
+
         if (!$activities) {
             return;
         }
@@ -85,6 +87,7 @@ class reminders_task extends scheduled_task {
 
             // If either the course or the users is empty for some reason, just skip this activity.
             if (!$courses[$activity->course] || !$markers[$activity->course]) {
+                mtrace('Skipping activity ' . $activity->id . ' as course or markers are empty');
                 continue;
             }
 
@@ -102,8 +105,11 @@ class reminders_task extends scheduled_task {
             }
         }
 
+        mtrace('Found ' . count($data) . ' users who need reminders');
+
         // Build adhoc tasks to spawn.
         foreach ($data as $userid => $useractivitydata) {
+            mtrace('Spawning initial_marking_reminder task for user ' . $userid);
             mailer::queue(
                 'initial_marking_reminder',
                 null,
@@ -135,6 +141,8 @@ class reminders_task extends scheduled_task {
             'id, course'
         );
 
+        mtrace('Found ' . count($activities) . ' activities with agreed marking deadlines in the next ' . $daythreshold . ' days');
+
         if (!$activities) {
             return;
         }
@@ -156,6 +164,7 @@ class reminders_task extends scheduled_task {
             }
 
             if (!$courses[$activity->course] || !$markers[$activity->course]) {
+                mtrace('Skipping activity ' . $activity->id . ' as course or markers are empty');
                 continue;
             }
 
@@ -172,7 +181,10 @@ class reminders_task extends scheduled_task {
             }
         }
 
+        mtrace('Found ' . count($data) . ' users who need reminders');
+
         foreach ($data as $userid => $useractivitydata) {
+            mtrace('Spawning agreed_marking_reminder task for user ' . $userid);
             mailer::queue(
                 'agreed_marking_reminder',
                 null,

@@ -239,7 +239,7 @@ class mail_task extends \core\task\adhoc_task {
             );
             $activities[] = \html_writer::link(
                 new \moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]),
-                $coursework->name,
+                format_string($coursework->name),
             ) . $itemstring;
         }
         return implode('<br>', $activities);
