@@ -262,27 +262,18 @@ class upload {
                 if ($allocatable && str_starts_with($cells[$keynum], 'assessor') && !empty($value)) {
                     $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
-                    $params = ['courseworkid' => $this->coursework->id,
-                                    'allocatableid' => $allocatable->id,
-                                    'allocatabletype' => $allocatabletype,
-                                    'stageidentifier' => $cells[$keynum]];
+                    // update allocation if submission was not marked yet
+                    $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $this->coursework->id,
+                                                                                   'allocatabletype' => $allocatabletype,
+                                                                                   'allocatableid' => $allocatable->id]);
+                    $submission = submission::find($subdbrecord);
 
-                    $allocation = $DB->get_record('coursework_allocation_pairs', $params);
-
-                    if (!$allocation) {
-                        // create allocation
-                        $this->add_allocation($assessor->id, $cells[$keynum], $allocatable);
-                    } else {
-                        // update allocation if submission was not marked yet
-                        $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $this->coursework->id,
-                                                                                       'allocatabletype' => $allocatabletype,
-                                                                                       'allocatableid' => $allocatable->id]);
-                        $submission = submission::find($subdbrecord);
-
-                        if (!$submission || !$submission->get_assessor_feedback_by_stage($cells[$keynum])) {
-                            $this->update_allocation($allocation->id, $assessor->id);
-                        }
+                    if ($submission && $submission->get_assessor_feedback_by_stage($cells[$keynum])) {
+                        continue;
                     }
+
+                    // create allocation
+                    $this->coursework->get_stage($cells[$keynum])->make_allocation($allocatable, $assessor);
                 }
             }
 
@@ -290,41 +281,5 @@ class upload {
         }
 
         return (!empty($errors)) ? $errors : false;
-    }
-
-    /**
-     * Add allocation pair
-     *
-     * @param $assessorid
-     * @param $stageidentifier
-     * @param $allocatable
-     * @return void
-     * @throws \dml_exception
-     */
-    public function add_allocation($assessorid, $stageidentifier, $allocatable): void {
-        $addallocation = new stdClass();
-        $addallocation->id = '';
-        $addallocation->courseworkid = $this->coursework->id;
-        $addallocation->assessorid = $assessorid;
-        $addallocation->ismanual = 1;
-        $addallocation->stageidentifier = $stageidentifier;
-        $addallocation->allocatableid = $allocatable->id();
-        $addallocation->allocatabletype = $allocatable->type();
-        $allocation = \mod_coursework\models\allocation::build((array)$addallocation);
-        $allocation->save();
-    }
-
-    /**
-     * Update allocation pair
-     *
-     * @param $allocationid
-     * @param $assessorid
-     * @return void
-     */
-    public function update_allocation($allocationid, $assessorid): void {
-        $allocation = allocation::get_from_id($allocationid);
-        $allocation->ismanual = 1;
-        $allocation->assessorid = $assessorid;
-        $allocation->save();
     }
 }
