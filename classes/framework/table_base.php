@@ -278,6 +278,14 @@ abstract class table_base {
     }
 
     /**
+     * @param int $objectid
+     * @return string
+     */
+    private static function get_cache_key(int $objectid): string {
+        return implode('-', [static::get_table_name(), $objectid]);
+    }
+
+    /**
      * @param $colname
      * @throws coding_exception
      */
@@ -353,6 +361,8 @@ abstract class table_base {
 
         // Possibly we just saved only some fields and some were created as defaults. Update with the missing ones.
         $this->reload();
+
+        cache::make('mod_coursework', 'objectcachebyid')->delete(self::get_cache_key($this->id()));
 
         $this->post_save_hook();
     }
@@ -802,7 +812,7 @@ abstract class table_base {
         $cache = cache::make('mod_coursework', 'objectcachebyid');
 
         // Have to use a composite key rather than identifiers due to bug in MODE_REQUEST.
-        $key = implode('-', [static::get_table_name(), $objectid]);
+        $key = self::get_cache_key($objectid);
         if (empty($data = $cache->get($key))) {
             // Get record if cache miss or was null when last fetched.
             $data = $DB->get_record(static::get_table_name(), ['id' => $objectid]);
