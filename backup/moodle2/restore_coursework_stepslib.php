@@ -68,16 +68,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function fixallocatable(&$data) {
-        if (!empty($data->allocatableuser)) {
-            $data->allocatableid = $this->get_mappingid('user', $data->allocatableuser);
-            $data->allocatabletype = 'user';
-        } else {
-            $data->allocatableid = $this->get_mappingid('group', $data->allocatablegroup);
-            $data->allocatabletype = 'group';
-        }
-    }
-
     protected function process_coursework_submission($data) {
         global $DB;
         $data = (object)$data;
@@ -285,8 +275,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->set_defaults(['allocatableid' => 0,
                                   'allocatabletype' => '',
-                                  'allocatableuser' => 0,
-                                  'allocatablegroup' => 0,
                                   'stageidentifier' => '',
                                   'selectiontype' => ''], $data);
 
@@ -373,7 +361,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->submissionid = $this->get_new_parentid('coursework_submission');
         $data->createdby = $this->get_mappingid('user', $data->createdby);
         $data->lastmodifiedby = $this->get_mappingid('user', $data->lastmodifiedby);
-
         $this->fixallocatable($data);
 
         $this->updatedate(['timecreated',
@@ -552,5 +539,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                 unset($data->$legacyfield);
             }
         }
+    }
+
+    protected function fixallocatable(&$data) {
+        if (empty($data->allocatabletype) || empty($data->allocatableid)) {
+            return;
+        }
+        $data->allocatableid = $this->get_mappingid($data->allocatabletype, $data->allocatableid, 0);
     }
 }
