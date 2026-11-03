@@ -250,7 +250,7 @@ class mailer {
     }
 
     /**
-     * Send intial marking reminder email to the user.
+     * Send initial marking reminder email to the user.
      * @param user $user
      * @param string $subject
      * @param string $body
