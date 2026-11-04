@@ -14,18 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Implementation of coursework support for rubricgrading report.
- *
- * This assumes the rubricgrading plugin is installed, but this class won't ever be loaded if that plugin is not
- * installed, so we don't need a hard dependency on it.
- *
- * @package    mod_coursework
- * @author     Conn Warwicker <conn.warwicker@catalyst-eu.net>
- * @copyright  2026 onwards Catalyst IT EU {@link https://catalyst-eu.net}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace mod_coursework\local\report_rubricgrading;
 
 use core\lang_string;
@@ -43,8 +31,18 @@ defined('MOODLE_INTERNAL') || die();
 // Not included when exporting a reportbuilder report.
 require_once($CFG->dirroot . '/grade/grading/lib.php');
 
+/**
+ * Implementation of coursework support for rubricgrading report.
+ *
+ * This assumes the rubricgrading plugin is installed, but this class won't ever be loaded if that plugin is not
+ * installed, so we don't need a hard dependency on it.
+ *
+ * @package    mod_coursework
+ * @author     Conn Warwicker <conn.warwicker@catalyst-eu.net>
+ * @copyright  2026 onwards Catalyst IT EU {@link https://catalyst-eu.net}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class coursework extends \report_rubricgrading\local\plugin_base {
-
     /** @var \mod_coursework\models\coursework Coursework object */
     protected \mod_coursework\models\coursework $coursework;
 
@@ -202,6 +200,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
+    #[\Override]
     protected function get_sql_guide(): string {
         global $DB;
         $id = "CASE WHEN cws.allocatabletype = 'group' THEN " .
@@ -307,8 +306,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     }
 
     #[\Override]
-    public function alter(stdClass &$row): bool
-    {
+    public function alter(stdClass &$row): bool {
         $coursework = $this->get_coursework();
 
         if (!PHPUNIT_TEST) {
@@ -372,7 +370,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
         $coursework = $this->get_coursework();
         $column
             ->add_fields("{$alias}.submissionid, {$alias}.feedbackid, {$alias}.realstageidentifier")
-            ->add_callback(static function(?float $grade, stdClass $row) use ($coursework): string {
+            ->add_callback(static function (?float $grade, stdClass $row) use ($coursework): string {
                 $feedback = feedback::get_from_id($row->feedbackid);
                 $canshow = $feedback->can_show($coursework, $feedback->get_submission());
                 return (string) marking_cell_data::get_mark_for_feedback($coursework, $feedback, $canshow, $grade);
