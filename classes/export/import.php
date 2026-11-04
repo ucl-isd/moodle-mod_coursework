@@ -612,6 +612,7 @@ class import extends grading_sheet {
         $addgrade->markernumber = $markernumber;
         $addgrade->stageidentifier = $stageidentifier;
         $addgrade->finalised = 1;
+        $addgrade->isautomatic = 0;
 
         $feedbackid = $DB->insert_record('coursework_feedbacks', $addgrade, true);
 
@@ -688,6 +689,7 @@ class import extends grading_sheet {
             $editgrade->feedbackcomment = $feedback;
             $editgrade->lasteditedbyuser = $USER->id;
             $editgrade->finalised = 1;
+            $editgrade->isautomatic = 0;
 
              $update = $DB->update_record('coursework_feedbacks', $editgrade);
 

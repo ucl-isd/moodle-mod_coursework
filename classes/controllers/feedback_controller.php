@@ -427,6 +427,7 @@ class feedback_controller extends controller_base {
                 // Grade is -1 here if rubric was not completed at all, so abort processing.
                 redirect($PAGE->url, get_string('rubricnotcompleted', 'gradingform_rubric'), null, notification::NOTIFY_ERROR);
             }
+            $teacherfeedback->isautomatic = 0;
             $teacherfeedback->save();
             $form->save_feedback_files();
 

@@ -83,13 +83,22 @@ class percentage_distance implements auto_grader {
             return;
         }
 
+        // If we are using an advanced method throughout, don't try to calculate.
+        // But if we're using an advanced method at first, then simple for final grade - do calculate.
+        if (
+            $this->get_coursework()->is_using_advanced_grading()
+            && $this->get_coursework()->finalstagegrading == 0
+        ) {
+            return;
+        }
+
         if ($this->grades_are_close_enough()) {
             if (!$allocatable->has_agreed_feedback($this->get_coursework())) {
                 $this->create_final_feedback();
             } else {
                 // update only if AgreedGrade has been automatic
                 $agreedfeedback = $allocatable->get_agreed_feedback($this->get_coursework());
-                if ($agreedfeedback->timecreated == $agreedfeedback->timemodified || $agreedfeedback->lasteditedbyuser == 0) {
+                if ($agreedfeedback->isautomatic) {
                     $this->update_final_feedback($agreedfeedback);
                 }
             }
@@ -136,6 +145,7 @@ class percentage_distance implements auto_grader {
                 'grade' => $this->automatic_grade(),
                 'lasteditedbyuser' => 0, // Grade was auto generated - zero here shows no user involved.
                 'isfinalgrade' => 1, // This is an "agreed" final grade.
+                'isautomatic' => 1,
             ];
 
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
@@ -155,6 +165,7 @@ class percentage_distance implements auto_grader {
         $updatedfeedback->id = $feedback->id;
         $updatedfeedback->grade = $this->automatic_grade();
         $updatedfeedback->lasteditedbyuser = 0;
+        $updatedfeedback->isautomatic = 1;
 
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
             $updatedfeedback->feedbackcomment = $this->feedback_comments();

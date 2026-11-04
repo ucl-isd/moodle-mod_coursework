@@ -83,10 +83,12 @@ class average_grade implements auto_grader {
             return;
         }
 
-        if ($this->get_coursework()->is_using_advanced_grading()) {
-            // If the coursework uses advanced grading (rubric/guide) there will be a detailed marks breakdown.
-            // For now, we don't want to automatically "agree" a final grade without a breakdown to match.
-            // It is planned to implement something more complex to cover that requirement separately.
+        // If we are using an advanced method throughout, don't try to calculate.
+        // But if we're using an advanced method at first, then simple for final grade - do calculate.
+        if (
+            $this->get_coursework()->is_using_advanced_grading()
+            && $this->get_coursework()->finalstagegrading == 0
+        ) {
             return;
         }
 
@@ -95,7 +97,7 @@ class average_grade implements auto_grader {
         } else {
             // update only if AgreedGrade has been automatic
             $agreedfeedback = $allocatable->get_agreed_feedback($this->get_coursework());
-            if ($agreedfeedback->timecreated == $agreedfeedback->timemodified || $agreedfeedback->lasteditedbyuser == 0) {
+            if ($agreedfeedback->isautomatic) {
                 $this->update_final_feedback($agreedfeedback);
             }
         }
@@ -147,6 +149,7 @@ class average_grade implements auto_grader {
             'grade' => $this->automatic_grade(),
             'lasteditedbyuser' => 0, // Grade was auto generated - zero here shows no user involved.
             'isfinalgrade' => 1, // This is an "agreed" final grade.
+            'isautomatic' => 1,
         ];
 
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
@@ -166,6 +169,7 @@ class average_grade implements auto_grader {
         $updatedfeedback->id = $feedback->id;
         $updatedfeedback->grade = $this->automatic_grade();
         $updatedfeedback->lasteditedbyuser = 0;
+        $updatedfeedback->isautomatic = 1;
 
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
             $updatedfeedback->feedbackcomment = $this->feedback_comments();

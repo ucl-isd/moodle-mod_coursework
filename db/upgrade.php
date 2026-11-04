@@ -499,6 +499,25 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026110300, 'coursework');
     }
 
+    if ($oldversion < 2026110301) {
+        // Define field isautomatic to be added to coursework_feedbacks.
+        $table = new xmldb_table('coursework_feedbacks');
+        $field = new xmldb_field('isautomatic', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'finalised');
+
+        // Conditionally launch add field isautomatic.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Update existing feedback records with a 0 lasteditedbyuser, which means it should be an automatic feedback.
+        $DB->set_field('coursework_feedbacks', 'isautomatic', 1, [
+            'lasteditedbyuser' => 0,
+        ]);
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026110301, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

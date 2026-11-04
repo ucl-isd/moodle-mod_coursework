@@ -492,8 +492,7 @@ class feedback extends table_base {
      * @return bool
      */
     public function is_auto_grade(): bool {
-        // Value of $this->lasteditedbyuser will be a user ID if the feedback was not auto generated.
-        return $this->is_agreed_grade() && !$this->lasteditedbyuser;
+        return (int) $this->isautomatic === 1;
     }
 
     /**

@@ -130,7 +130,7 @@ final class average_grade_no_straddle_test extends \advanced_testcase {
         $records = $DB->get_records(
             'coursework_feedbacks',
             // As it's auto graded, lasteditedbyuser should be zero (no user involved).
-            ['stageidentifier' => 'final_agreed_1', 'lasteditedbyuser' => 0],
+            ['stageidentifier' => 'final_agreed_1', 'isautomatic' => 1],
             'ID DESC',
             '*',
             0,
