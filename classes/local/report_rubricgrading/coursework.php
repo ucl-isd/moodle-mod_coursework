@@ -48,6 +48,17 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     /** @var \mod_coursework\models\coursework Coursework object */
     protected \mod_coursework\models\coursework $coursework;
 
+    /**
+     * Get the coursework object, loading it on first use.
+     * @return \mod_coursework\models\coursework
+     */
+    protected function get_coursework(): \mod_coursework\models\coursework {
+        if (!isset($this->coursework)) {
+            $this->coursework = \mod_coursework\models\coursework::get_from_id($this->cm->instance);
+        }
+        return $this->coursework;
+    }
+
     #[\Override]
     protected function load_grading_manager(): void {
         $this->gradingmanager = get_grading_manager($this->cm->context, 'mod_coursework', 'submissions');
@@ -298,11 +309,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     #[\Override]
     public function alter(stdClass &$row): bool
     {
-        if (empty($this->coursework)) {
-            $this->coursework = \mod_coursework\models\coursework::get_from_id($this->cm->instance);
-        }
-
-        $coursework = $this->coursework;
+        $coursework = $this->get_coursework();
 
         if (!PHPUNIT_TEST) {
             $feedback = feedback::get_from_id($row->feedbackid);
@@ -341,7 +348,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
             $row->idnumber = '';
             $row->username = '';
             if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
-                $row->fullname = candidateprovider_manager::instance()->get_candidate_number($this->coursework->get_course_id(), $row->userid) ??
+                $row->fullname = candidateprovider_manager::instance()->get_candidate_number($coursework->get_course_id(), $row->userid) ??
                     get_string('hidden', 'mod_coursework');
             } else {
                 $row->fullname = get_string('hidden', 'mod_coursework');
@@ -359,19 +366,17 @@ class coursework extends \report_rubricgrading\local\plugin_base {
 
     #[\Override]
     public function override_column(string $name, column $column, string $alias): bool {
-        $coursework = $this->coursework;
-        if ($name === 'grade' || preg_match('/crit\d_score/', $name)) {
-            $column
-                ->add_fields("{$alias}.submissionid, {$alias}.feedbackid, {$alias}.realstageidentifier")
-                ->add_callback(static function(?float $grade, stdClass $row) use ($coursework): string {
-                    $feedback = feedback::get_from_id($row->feedbackid);
-                    $submission = $feedback->get_submission();
-                    $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission);
-                    return marking_cell_data::get_mark_for_feedback(
-                        $coursework, feedback::get_from_id($row->feedbackid), $canseeothermarkerdetails, $grade
-                    );
-                });
+        if ($name !== 'grade' && !preg_match('/^crit\d+_score$/', $name)) {
+            return false;
         }
+        $coursework = $this->get_coursework();
+        $column
+            ->add_fields("{$alias}.submissionid, {$alias}.feedbackid, {$alias}.realstageidentifier")
+            ->add_callback(static function(?float $grade, stdClass $row) use ($coursework): string {
+                $feedback = feedback::get_from_id($row->feedbackid);
+                $canshow = $feedback->can_show($coursework, $feedback->get_submission());
+                return (string) marking_cell_data::get_mark_for_feedback($coursework, $feedback, $canshow, $grade);
+            });
         return true;
     }
 }
