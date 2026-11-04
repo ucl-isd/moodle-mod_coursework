@@ -370,10 +370,11 @@ class coursework extends \report_rubricgrading\local\plugin_base {
         $coursework = $this->get_coursework();
         $column
             ->add_fields("{$alias}.submissionid, {$alias}.feedbackid, {$alias}.realstageidentifier")
-            ->add_callback(static function (?float $grade, stdClass $row) use ($coursework): string {
+            ->add_callback(static function (?float $grade, stdClass $row) use ($coursework, $name): string {
                 $feedback = feedback::get_from_id($row->feedbackid);
                 $canshow = $feedback->can_show($coursework, $feedback->get_submission());
-                return (string) marking_cell_data::get_mark_for_feedback($coursework, $feedback, $canshow, $grade);
+                $value = ($name === 'grade') ? null : $grade;
+                return (string) marking_cell_data::get_mark_for_feedback($coursework, $feedback, $canshow, $value);
             });
         return true;
     }
