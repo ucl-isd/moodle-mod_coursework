@@ -32,9 +32,15 @@ use cm_info;
 use core\lang_string;
 use core_reportbuilder\local\report\column;
 use mod_coursework\local\report_rubricgrading\coursework;
+use mod_coursework\models\feedback;
 use stdClass;
 use xmldb_table;
 
+/**
+ * Tests for coursework rubricgrading implementation.
+ *
+ * @covers \mod_coursework\local\report_rubricgrading\coursework
+ */
 final class report_rubricgrading_test extends advanced_testcase {
     use test_helpers\factory_mixin;
 
@@ -222,6 +228,157 @@ final class report_rubricgrading_test extends advanced_testcase {
         $this->assertSame('Hopper', $row->lastnamephonetic);
         $this->assertSame('Brewster', $row->middlename);
         $this->assertSame('Amazing Grace', $row->alternatename);
+    }
+
+    public function test_override_column_ignores_other_columns(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+
+        $plugin = new coursework($this->get_coursework_cm_info());
+        $column = (new column('timegraded', null, 'rubric'))->add_field('rp.timegraded');
+
+        $this->assertFalse($plugin->override_column('timegraded', $column, 'rp'));
+        $this->assertSame(['rp.timegraded AS c_timegraded'], $column->get_fields());
+    }
+
+    public function test_grade_column_shows_mark_to_the_marker_who_created_it(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+        $feedback = $this->setup_coursework_with_one_of_two_marks();
+
+        $this->setUser($this->teacher->id);
+
+        $this->assertSame('45', $this->format_grade_column($feedback, 45.0));
+    }
+
+    public function test_grade_column_shows_mark_to_admin(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+        $feedback = $this->setup_coursework_with_one_of_two_marks();
+
+        $this->setAdminUser();
+
+        $this->assertSame('45', $this->format_grade_column($feedback, 45.0));
+    }
+
+    public function test_grade_column_hides_mark_from_agreed_grade_marker_until_initial_marks_complete(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+        $feedback = $this->setup_coursework_with_one_of_two_marks();
+        $this->allow_teachers_to_add_agreed_grades();
+
+        $this->setUser($this->otherteacher->id);
+
+        $this->assertSame(
+            get_string('mark_hidden_manager', 'mod_coursework'),
+            $this->format_grade_column($feedback, 45.0)
+        );
+    }
+
+    public function test_crit_score_column_hides_mark_from_agreed_grade_marker_until_initial_marks_complete(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+        $feedback = $this->setup_coursework_with_one_of_two_marks();
+        $this->allow_teachers_to_add_agreed_grades();
+
+        $this->setUser($this->otherteacher->id);
+
+        $this->assertSame(
+            get_string('mark_hidden_manager', 'mod_coursework'),
+            $this->format_grade_column($feedback, 3.0, 'crit1_score')
+        );
+    }
+
+    public function test_grade_column_hides_mark_from_other_initial_marker(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+        $feedback = $this->setup_coursework_with_one_of_two_marks();
+
+        $this->setUser($this->otherteacher->id);
+
+        $this->assertSame(
+            get_string('mark_hidden_teacher', 'mod_coursework'),
+            $this->format_grade_column($feedback, 45.0)
+        );
+    }
+
+    public function test_grade_column_shows_mark_to_agreed_grade_marker_once_initial_marks_complete(): void {
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        $this->resetAfterTest();
+        $feedback = $this->setup_coursework_with_one_of_two_marks();
+        $this->create_an_assessor_feedback_for_the_submission($this->otherteacher);
+        $this->allow_teachers_to_add_agreed_grades();
+
+        // A third teacher who hasn't marked, but can add the agreed grade.
+        $agreedmarker = $this->getDataGenerator()->create_user();
+        $this->enrol_as_teacher($agreedmarker);
+        $this->setUser($agreedmarker);
+
+        $this->assertSame('45', $this->format_grade_column($feedback, 45.0));
+    }
+
+    /**
+     * Create a double-marked coursework where only the first marker ($this->teacher) has marked the submission.
+     *
+     * @return feedback The first marker's feedback.
+     */
+    private function setup_coursework_with_one_of_two_marks(): feedback {
+        $this->setAdminUser();
+        $this->create_a_coursework(['numberofmarkers' => 2, 'allocationenabled' => 0, 'viewinitialgradeenabled' => 0]);
+        $this->create_a_student();
+        $this->create_a_teacher();
+        $this->create_another_teacher();
+        $this->create_a_submission_for_the_student();
+        $feedback = $this->create_an_assessor_feedback_for_the_submission($this->teacher);
+        return feedback::get_from_id($feedback->id);
+    }
+
+    /**
+     * Give the (non-editing) teacher role the capability to add agreed grades in the coursework.
+     */
+    private function allow_teachers_to_add_agreed_grades(): void {
+        global $DB;
+        $roleid = $DB->get_field('role', 'id', ['shortname' => 'teacher']);
+        assign_capability('mod/coursework:addagreedgrade', CAP_ALLOW, $roleid, $this->get_coursework()->get_context());
+    }
+
+    /**
+     * Run a pivot table row through a report column as altered by the coursework plugin.
+     *
+     * @param feedback $feedback
+     * @param float $value Column value
+     * @param string $name Column name
+     * @return string The formatted value
+     */
+    private function format_grade_column(feedback $feedback, float $value, string $name = 'grade'): string {
+        $cm = get_coursemodule_from_instance('coursework', $this->get_coursework()->id);
+        $plugin = new coursework(get_fast_modinfo($this->get_course()->id)->get_cm($cm->id));
+
+        $column = (new column($name, null, 'rubric'))
+            ->set_index(0)
+            ->add_field("rp.{$name}");
+        $this->assertTrue($plugin->override_column($name, $column, 'rp'));
+
+        return $column->format_value([
+            "c0_{$name}" => $value,
+            'c0_submissionid' => $feedback->submissionid,
+            'c0_feedbackid' => $feedback->id,
+            'c0_realstageidentifier' => $feedback->stageidentifier,
+        ]);
     }
 
     private function get_coursework_cm_info(): cm_info {
