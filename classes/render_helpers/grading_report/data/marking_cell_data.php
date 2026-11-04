@@ -36,6 +36,7 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\assessor_feedback_row;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
+use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\submission;
@@ -198,7 +199,7 @@ class marking_cell_data extends cell_data_base {
         $submission = $rowsbase->get_submission();
 
         $canshow = $feedback->can_show($this->coursework, $submission);
-        $marker->mark = $this->get_mark_for_feedback($feedback, $canshow);
+        $marker->mark = static::get_mark_for_feedback($this->coursework, $feedback, $canshow);
         // Return early if no marking.
         if (!isset($marker->mark) || ($marker->mark === '')) {
             return;
@@ -276,19 +277,19 @@ class marking_cell_data extends cell_data_base {
      * @return ?string
      * @throws coding_exception
      */
-    public function get_mark_for_feedback(feedback $feedback, bool $canshow): ?string {
+    public static function get_mark_for_feedback(coursework $coursework, feedback $feedback, bool $canshow, $value = null): ?string {
         global $USER;
 
-        $judge = new grade_judge($this->coursework);
+        $judge = new grade_judge($coursework);
 
         if ($canshow || is_siteadmin($USER->id)) {
-            return $judge->grade_to_display($feedback->get_grade());
+            return $value ?? $judge->grade_to_display($feedback->get_grade());
         }
 
         if (
             has_any_capability(
                 ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
-                $this->coursework->get_context()
+                $coursework->get_context()
             )
         ) {
             return get_string('mark_hidden_manager', 'mod_coursework');
@@ -338,7 +339,7 @@ class marking_cell_data extends cell_data_base {
             return null;
         }
 
-        $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
+        $finalgrade = static::get_mark_for_feedback($this->coursework, $finalfeedback, $canshow);
         if ($finalfeedback->is_auto_grade()) {
             $assessorname = get_string('automaticallyagreed', 'mod_coursework');
         } else if ($assessor = user::get_from_id($finalfeedback->assessorid)) {

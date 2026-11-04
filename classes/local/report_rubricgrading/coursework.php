@@ -265,6 +265,9 @@ class coursework extends \report_rubricgrading\local\plugin_base {
     #[\Override]
     public function add_report_fields(xmldb_table $xmldbtable): void {
         $xmldbtable->add_field('stageidentifier', XMLDB_TYPE_CHAR, '100');
+        $xmldbtable->add_field('submissionid', XMLDB_TYPE_INTEGER, '10');
+        $xmldbtable->add_field('feedbackid', XMLDB_TYPE_INTEGER, '10');
+        $xmldbtable->add_field('realstageidentifier', XMLDB_TYPE_CHAR, '100');
     }
 
     #[\Override]
@@ -276,8 +279,8 @@ class coursework extends \report_rubricgrading\local\plugin_base {
         } else {
             $pivotrow->stageidentifier = $row->stageidentifier;
         }
-        $pivotrow->submissionid = $row->submissionid ?? '';
-        $pivotrow->feedbackid = $row->feedbackid ?? '';
+        $pivotrow->submissionid = $row->submissionid ?? null;
+        $pivotrow->feedbackid = $row->feedbackid ?? null;
         $pivotrow->realstageidentifier = $row->stageidentifier ?? '';
     }
 
@@ -335,6 +338,8 @@ class coursework extends \report_rubricgrading\local\plugin_base {
             $row->middlename = '';
             $row->alternatename = '';
             $row->email = '';
+            $row->idnumber = '';
+            $row->username = '';
             if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
                 $row->fullname = candidateprovider_manager::instance()->get_candidate_number($this->coursework->get_course_id(), $row->userid) ??
                     get_string('hidden', 'mod_coursework');
@@ -348,6 +353,24 @@ class coursework extends \report_rubricgrading\local\plugin_base {
             $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission);
             $marker = marking_cell_data::create_marker_data_static($row->grader_id, $row->markernumber, $canseeothermarkerdetails);
             $row->graderfullname = $marker->markername;
+        }
+        return true;
+    }
+
+    #[\Override]
+    public function override_column(string $name, column $column, string $alias): bool {
+        $coursework = $this->coursework;
+        if ($name === 'grade' || preg_match('/crit\d_score/', $name)) {
+            $column
+                ->add_fields("{$alias}.submissionid, {$alias}.feedbackid, {$alias}.realstageidentifier")
+                ->add_callback(static function(?float $grade, stdClass $row) use ($coursework): string {
+                    $feedback = feedback::get_from_id($row->feedbackid);
+                    $submission = $feedback->get_submission();
+                    $canseeothermarkerdetails = $feedback->can_show($feedback->get_coursework(), $submission);
+                    return marking_cell_data::get_mark_for_feedback(
+                        $coursework, feedback::get_from_id($row->feedbackid), $canseeothermarkerdetails, $grade
+                    );
+                });
         }
         return true;
     }

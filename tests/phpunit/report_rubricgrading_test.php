@@ -53,7 +53,7 @@ final class report_rubricgrading_test extends advanced_testcase {
 
         $rowkey = $plugin->get_row_key((object)[
             'userid' => 42,
-            'markernumber' => 3,
+            'feedbackid' => 3,
         ]);
 
         $this->assertSame('42_3', $rowkey);
