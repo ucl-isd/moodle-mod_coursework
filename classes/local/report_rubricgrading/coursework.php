@@ -259,7 +259,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
 
     #[\Override]
     public function get_row_key(stdClass $row): mixed {
-        return $row->userid . '_' . $row->markernumber;
+        return $row->userid . '_' . $row->feedbackid;
     }
 
     #[\Override]
