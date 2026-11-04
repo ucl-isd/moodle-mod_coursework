@@ -372,7 +372,7 @@ class grading_table_row_base implements user_row {
      * @param string $allocatabletype
      * @return bool
      */
-    public static function is_user_row_visible(coursework $coursework, submission $submission, int $allocatableid, string $allocatabletype): bool {
+    public static function is_user_row_visible(coursework $coursework, ?submission $submission, int $allocatableid, string $allocatabletype): bool {
         global $USER;
 
         if ($coursework->allocation_enabled()) {
