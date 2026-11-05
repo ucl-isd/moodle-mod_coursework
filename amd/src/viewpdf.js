@@ -22,6 +22,7 @@
  */
 
 import Ajax from 'core/ajax';
+import Config from 'core/config';
 import {prefetchStrings} from 'core/prefetch';
 import {getString} from 'core/str';
 import {add as addToast} from 'core/toast';
@@ -35,6 +36,7 @@ var controller = {
         data.append('submissionid', controller.currentfiledataset.submissionid);
         data.append('fileid', controller.currentfiledataset.fileid);
         data.append('filename', controller.currentfiledataset.filename);
+        data.append('sesskey', Config.sesskey);
 
         const response = await fetch("../../actions/uploadannotatedsubmissionajax.php", {
             method: "POST",

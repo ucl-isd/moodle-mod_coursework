@@ -167,7 +167,9 @@ class actions_cell_data extends cell_data_base {
         if ($this->ability->can('finalise', $rowsbase->get_submission())) {
             $data->finalise = new stdClass();
             $data->finalise->url = router::instance()
-                ->get_path('finalise submission', ['submission' => $rowsbase->get_submission()], false, false);
+                ->get_path('finalise submission', ['submission' => $rowsbase->get_submission()], true, false);
+            $data->finalise->url->param('sesskey', sesskey());
+            $data->finalise->url = $data->finalise->url->out(false);
             $data->finalise->studentname = !$rowsbase->get_coursework()->hide_student_identities()
                 ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
         }
@@ -191,6 +193,7 @@ class actions_cell_data extends cell_data_base {
                 [
                     'cmid' => $rowsbase->get_course_module_id(),
                     'submissionid' => $rowsbase->get_submission_id(),
+                    'sesskey' => sesskey(),
                 ]
             );
             $data->unfinalise = new stdClass();

@@ -42,6 +42,7 @@ if (!$coursework) {
 }
 
 require_login($coursework->get_course(), false, $cm);
+require_sesskey();
 
 [$canrelease, $reason] = $coursework->can_release_marks();
 if (!$canrelease) {
