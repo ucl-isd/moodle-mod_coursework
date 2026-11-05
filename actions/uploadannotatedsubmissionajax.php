@@ -44,7 +44,7 @@ require_once($CFG->dirroot . '/webservice/lib.php');
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $fileid = required_param('fileid', PARAM_INT);
-$filename = clean_param(required_param('filename', PARAM_TEXT), PARAM_FILE);
+$filename = required_param('filename', PARAM_FILE);
 
 $submission = submission::get_from_id($submissionid);
 

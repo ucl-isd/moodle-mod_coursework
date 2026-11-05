@@ -34,7 +34,7 @@ global $DB, $PAGE, $CFG;
 $cmid = required_param('cmid', PARAM_INT);
 $submissionid = required_param('submissionid', PARAM_INT);
 
-$cm = $DB->get_record('course_modules', ['id' => $cmid], '*', MUST_EXIST);
+$cm = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
 $coursework = coursework::get_from_id($cm->instance);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 $submission = submission::get_from_id($submissionid);
