@@ -460,7 +460,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $status[] = 'ready-for-release';
         }
 
-        if (!empty($trdata->agreedmark->mark) && !empty($trdata->agreedmark->mark->draft)) {
+        if (!empty($trdata->agreedmark->mark->draft)) {
             $status[] = 'draft-agreed-mark';
         }
 
@@ -473,6 +473,6 @@ class grading_report_renderer extends plugin_renderer_base {
             }
         }
 
-        $trdata->status = implode(', ', $status);
+        $trdata->status = implode(', ', array_unique($status));
     }
 }
