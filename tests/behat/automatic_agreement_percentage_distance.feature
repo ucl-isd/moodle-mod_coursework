@@ -47,7 +47,7 @@ Feature: Automatic agreement for simple grades where percentage distance is in r
     When I am on the "Coursework" "coursework activity" page
     Then I should see "67" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I should see "Draft" in the "[data-behat-markstage='final_agreed']" "css_element"
-    And I should see "Ready for release" in the "[data-behat-markstage='final_agreed']" "css_element"
+    And I should not see "Ready for release" in the "[data-behat-markstage='final_agreed']" "css_element"
 
     When I am on the "Coursework" "coursework activity" page logged in as "manager1"
     Then I should see "67" in the "[data-behat-markstage='final_agreed']" "css_element"
