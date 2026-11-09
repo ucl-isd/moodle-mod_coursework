@@ -118,7 +118,7 @@ class average_grade implements auto_grader {
      */
     private function automatic_grade() {
 
-        $grades = $this->grades_as_percentages();
+        $grades = $this->get_grades();
 
         // calculate average
         $avggrade = array_sum($grades) / count($grades);
@@ -176,6 +176,20 @@ class average_grade implements auto_grader {
         }
 
         $DB->update_record('coursework_feedbacks', $updatedfeedback);
+    }
+
+    /**
+     * Get grades.
+     * @return array
+     */
+    protected function get_grades(): array {
+        $initialfeedbacks = $this->allocatable->get_initial_feedbacks($this->get_coursework());
+        return array_map(
+            function ($feedback) {
+                return $feedback->get_grade();
+            },
+            $initialfeedbacks
+        );
     }
 
     /**
