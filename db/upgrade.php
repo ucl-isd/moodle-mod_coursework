@@ -516,7 +516,6 @@ function xmldb_coursework_upgrade($oldversion) {
 
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2026110301, 'coursework');
-
     }
 
     if ($oldversion < 2026110900) {

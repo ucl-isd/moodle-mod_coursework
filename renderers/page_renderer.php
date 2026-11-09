@@ -128,8 +128,21 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // If there is an internal comment add that as well.
-        if ($final && $final->internalcomment) {
-            $template->feedback[] = $objrenderer->render_internal_comment($final->internalcomment);
+        if (
+            $final &&
+            $final->internalcomment &&
+            has_any_capability(
+                [
+                    'mod/coursework:addagreedgrade',
+                    'mod/coursework:addallocatedagreedgrade',
+                    'mod/coursework:addinitialgrade',
+                    'mod/coursework:viewallgradesatalltimes',
+                    'mod/coursework:administergrades',
+                ],
+                $coursework->get_context()
+            )
+        ) {
+            $template->feedback[] = $objrenderer->render_internal_comment($final->internalcomment, (int)$final->internalcommentformat);
         }
 
         $html = '';
