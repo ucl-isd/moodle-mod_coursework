@@ -89,8 +89,14 @@ class moderator_agreement_mform extends moodleform {
             ['id' => 'moderation_agreement']
         );
 
-        $mform->addElement('editor', 'modcomment', get_string('comment', 'mod_coursework'), ['id' => 'moderation_comment']);
-        $mform->setType('editor', PARAM_RAW);
+        $mform->addElement(
+            'editor',
+            'modcomment',
+            get_string('moderationcomment', 'mod_coursework'),
+            ['id' => 'moderation_comment'],
+        );
+        $mform->setType('modcomment', PARAM_RAW);
+        $mform->addHelpButton('modcomment', 'moderationcomment', 'mod_coursework');
 
         $this->add_action_buttons();
     }

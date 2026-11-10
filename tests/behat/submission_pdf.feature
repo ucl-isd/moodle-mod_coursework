@@ -58,7 +58,7 @@ Feature: Submit PDFs and have them graded and moderated
     #Then I should see "Test document for uploading" - I can't see why this won't work, but it doesn't...
     And I switch to the main frame
     And I set the field "Moderation agreement" to "Agreed"
-    And I set the field "Comment" to "Moderator explaining agreement"
+    And I set the field "Internal moderation comment (not visible to students)" to "Moderator explaining agreement"
     And I click on "Save changes" "button"
 
     Then I should see "Ready for release" in the table row containing "John1"
