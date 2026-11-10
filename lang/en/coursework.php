@@ -570,6 +570,7 @@ $string['privacy:metadata:feedbacks'] = 'Feedbacks';
 $string['privacy:metadata:grade'] = 'Grade';
 $string['privacy:metadata:groupid'] = 'ID of the group';
 $string['privacy:metadata:guideenterpercentgrades'] = 'Whether a marker wants to enter grades as percentages or not';
+$string['privacy:metadata:internalcomment'] = 'Internal comment';
 $string['privacy:metadata:modagreements'] = 'ModAgreements';
 $string['privacy:metadata:modcomment'] = 'Mod comment';
 $string['privacy:metadata:moderatorid'] = 'Moderator id';

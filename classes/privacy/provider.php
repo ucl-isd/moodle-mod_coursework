@@ -60,6 +60,7 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             'grade' => 'privacy:metadata:grade',
             'submissionid' => 'privacy:metadata:submissionid',
             'feedbackcomment' => 'privacy:metadata:feedbackcomment',
+            'internalcomment' => 'privacy:metadata:internalcomment',
         ];
         $submissions = [
             'authorid' => 'privacy:metadata:authorid',
@@ -516,6 +517,7 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             'feedbackcomment' => $feedback->feedbackcomment,
             'stageidentifier' => $feedback->stageidentifier,
             'finalised' => transform::yesno($feedback->finalised),
+            'internalcomment' => $feedback->internalcomment,
         ];
     }
     protected static function export_coursework_extension($courseworkid, $userid, $context, $path) {
