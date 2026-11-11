@@ -338,6 +338,27 @@ class submissions_controller extends controller_base {
     }
 
     /**
+     * Releases the mark for a single student submission.
+     *
+     * @return void
+     */
+    public function release_submission(): void {
+
+        global $USER;
+
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
+
+        $ability = new ability($USER->id, $this->coursework);
+        if (!$ability->can('release', $this->submission)) {
+            throw new access_denied($this->coursework);
+        }
+
+        $this->submission->publish();
+
+        redirect($courseworkpageurl, get_string('marks_released', 'mod_coursework'));
+    }
+
+    /**
      * Is the coursework open?
      * @param coursework $coursework
      * @throws coding_exception

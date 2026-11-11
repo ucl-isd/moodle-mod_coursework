@@ -99,9 +99,8 @@
             <div class="dropdown-divider"></div>
         {{/plagiarism}}
 
-        {{! Release mark - not implemented yet.}}
-        <!--
-        <a class="dropdown-item" href="#">{{#str}} release_mark, mod_coursework {{/str}}</a>
-        -->
+        {{#release}}
+            <a class="dropdown-item mark-release" data-student="{{studentname}}" href="{{release.url}}">{{#str}} release_mark, mod_coursework {{/str}}</a>
+        {{/release}}
     </div>
 </div>
