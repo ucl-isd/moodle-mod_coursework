@@ -413,7 +413,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'srsinclude' => 0,
                                   'numberofmarkers' => 1,
                                   'blindmarking' => 1,
-                                  'maxbytes' => 100000,
+                                  'maxbytes' => 0,
                                   'generalfeedback' => 0,
                                   'individualfeedback' => 0,
                                   'feedbackcomment' => '',
