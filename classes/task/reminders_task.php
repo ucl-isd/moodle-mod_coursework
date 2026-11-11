@@ -30,6 +30,21 @@ use stdClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class reminders_task extends scheduled_task {
+    /** @var string Reminder type for initial marking deadlines. */
+    public const TYPE_INITIAL = 'initial';
+
+    /** @var string Reminder type for agreed marking deadlines. */
+    public const TYPE_AGREED = 'agreed';
+
+    /** @var string Period key for deadlines due today (within the next 24 hours). */
+    public const PERIOD_TODAY = 'today';
+
+    /** @var string Period key for deadlines due within the next UPCOMING_DAYS days (excluding today). */
+    public const PERIOD_UPCOMING = 'upcoming';
+
+    /** @var int Number of days ahead to look for upcoming deadlines. */
+    public const UPCOMING_DAYS = 5;
+
     #[\Override]
     public function get_name(): string {
         return get_string('task:reminders', 'mod_coursework');
@@ -37,149 +52,106 @@ class reminders_task extends scheduled_task {
 
     #[\Override]
     public function execute(): void {
-        $this->spawn_initial_deadline_reminders();
-        $this->spawn_agreed_marking_deadline_reminders(5);
-        $this->spawn_agreed_marking_deadline_reminders();
-    }
-
-    /**
-     * Spawn the initial deadline reminder emails via adhoc task.
-     * @param int $daythreshold Number of days ahead to look for initial marking deadlines.
-     */
-    private function spawn_initial_deadline_reminders(int $daythreshold = 1): void {
-        global $DB;
-
-        // Find all the coursework activities with initial marking deadlines in the next x days depending on threshold.
         $now = time();
-        $max = strtotime('+ ' . $daythreshold . ' days');
-        $activities = $DB->get_records_select(
-            'coursework',
-            'initialmarkingdeadline >= ? AND initialmarkingdeadline <= ?',
-            [$now, $max],
-            'id',
-            'id, course'
-        );
+        $endoftoday = strtotime('+1 day', $now);
+        $endofupcoming = strtotime('+' . self::UPCOMING_DAYS . ' days', $now);
 
-        mtrace('Found ' . count($activities) . ' activities with initial marking deadlines in the next ' . $daythreshold . ' days');
+        // Windows are non-overlapping, so a deadline only ever appears once in the email.
+        $windows = [
+            self::PERIOD_TODAY => [$now, $endoftoday],
+            self::PERIOD_UPCOMING => [$endoftoday + 1, $endofupcoming],
+        ];
 
-        if (!$activities) {
-            return;
-        }
-
+        // Build up all the reminder data per user, so each user only gets a single email.
         $data = [];
-        $courseworks = [];
-        $courses = [];
-        $markers = [];
-
-        // Loop through each activity and work out who needs the reminder and what stats to include in the message.
-        foreach ($activities as $activity) {
-            // Load activity object.
-            if (!array_key_exists($activity->id, $courseworks)) {
-                $courseworks[$activity->id] = \mod_coursework\models\coursework::get_from_id($activity->id);
-            }
-
-            // Load the course and its markers if we haven't come across this one yet.
-            if (!array_key_exists($activity->course, $courses)) {
-                $context = \core\context\module::instance($courseworks[$activity->id]->get_course_module()->id);
-                $courses[$activity->course] = get_course($activity->course);
-                $markers[$activity->course] = get_users_by_capability($context, 'mod/coursework:addinitialgrade');
-            }
-
-            // If either the course or the users is empty for some reason, just skip this activity.
-            if (!$courses[$activity->course] || !$markers[$activity->course]) {
-                mtrace('Skipping activity ' . $activity->id . ' as course or markers are empty');
-                continue;
-            }
-
-            // Get the reminder data for this activity.
-            $activitydata = $this->get_data_for_initial_marking_deadline_reminders(
-                $courseworks[$activity->id],
-                $courses[$activity->course],
-                $markers[$activity->course]
-            );
-
-            foreach ($activitydata as $userid => $userdata) {
-                if ($userdata['unmarked'] > 0) {
-                    $data[$userid][$activity->id] = $userdata;
+        foreach ([self::TYPE_INITIAL, self::TYPE_AGREED] as $type) {
+            foreach ($windows as $period => [$from, $to]) {
+                foreach ($this->get_reminder_data($type, $from, $to) as $userid => $activities) {
+                    $data[$userid][$type][$period] = $activities;
                 }
             }
         }
 
-        mtrace('Found ' . count($data) . ' users who need reminders');
+        mtrace('Found ' . count($data) . ' users who need marking reminders');
 
-        // Build adhoc tasks to spawn.
-        foreach ($data as $userid => $useractivitydata) {
-            mtrace('Spawning initial_marking_reminder task for user ' . $userid);
+        foreach ($data as $userid => $userdata) {
+            mtrace('Spawning marking_reminder task for user ' . $userid);
             mailer::queue(
-                'initial_marking_reminder',
+                'marking_reminder',
                 null,
                 null,
                 $userid,
                 null,
                 [
-                    'data' => $useractivitydata,
-                    'period' => $daythreshold,
+                    'data' => $userdata,
+                    'upcomingdays' => self::UPCOMING_DAYS,
                 ]
             );
         }
     }
 
     /**
-     * Spawn the agreed-mark reminder emails via adhoc task.
-     * @param int $daythreshold Number of days ahead to look for agreed marking deadlines.
+     * Find the users who need reminding about a given type of marking deadline within a time window.
+     *
+     * @param string $type One of the TYPE_ constants.
+     * @param int $from Start of the deadline window (inclusive).
+     * @param int $to End of the deadline window (inclusive).
+     * @return array Keyed by user id, then coursework id, containing ['unmarked' => int].
      */
-    private function spawn_agreed_marking_deadline_reminders(int $daythreshold = 1): void {
+    private function get_reminder_data(string $type, int $from, int $to): array {
         global $DB;
 
-        $now = time();
-        $max = strtotime('+ ' . $daythreshold . ' days');
+        if ($type === self::TYPE_AGREED) {
+            $field = 'agreedgrademarkingdeadline';
+            $capabilities = ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'];
+        } else {
+            $field = 'initialmarkingdeadline';
+            $capabilities = 'mod/coursework:addinitialgrade';
+        }
+
         $activities = $DB->get_records_select(
             'coursework',
-            'agreedgrademarkingdeadline >= ? AND agreedgrademarkingdeadline <= ?',
-            [$now, $max],
+            "{$field} >= ? AND {$field} <= ?",
+            [$from, $to],
             'id',
             'id, course'
         );
 
-        mtrace('Found ' . count($activities) . ' activities with agreed marking deadlines in the next ' . $daythreshold . ' days');
-
-        if (!$activities) {
-            return;
-        }
+        mtrace('Found ' . count($activities) . " activities with {$type} marking deadlines between " .
+            userdate($from) . ' and ' . userdate($to));
 
         $data = [];
-        $courseworks = [];
         $courses = [];
-        $markers = [];
 
         foreach ($activities as $activity) {
-            if (!array_key_exists($activity->id, $courseworks)) {
-                $courseworks[$activity->id] = \mod_coursework\models\coursework::get_from_id($activity->id);
+            $coursework = coursework::get_from_id($activity->id);
+            if (!array_key_exists($activity->course, $courses)) {
+                $courses[$activity->course] = get_course($activity->course);
             }
 
-            if (!array_key_exists($activity->course, $courses)) {
-                $context = \core\context\module::instance($courseworks[$activity->id]->get_course_module()->id);
-                $courses[$activity->course] = get_course($activity->course);
-                $markers[$activity->course] = get_users_by_capability(
-                    $context,
-                    [
-                        'mod/coursework:addagreedgrade',
-                        'mod/coursework:addallocatedagreedgrade',
-                    ]
+            $context = \core\context\module::instance($coursework->get_course_module()->id);
+            $markers = get_users_by_capability($context, $capabilities);
+
+            // If either the course or the users is empty for some reason, just skip this activity.
+            if (!$courses[$activity->course] || !$markers) {
+                mtrace('Skipping activity ' . $activity->id . ' as course or markers are empty');
+                continue;
+            }
+
+            if ($type === self::TYPE_AGREED) {
+                $activitydata = $this->get_data_for_agreed_marking_deadline_reminders(
+                    $coursework,
+                    $courses[$activity->course],
+                    $markers
+                );
+            } else {
+                $activitydata = $this->get_data_for_initial_marking_deadline_reminders(
+                    $coursework,
+                    $courses[$activity->course],
+                    $markers
                 );
             }
 
-            if (!$courses[$activity->course] || !$markers[$activity->course]) {
-                mtrace('Skipping activity ' . $activity->id . ' as course or markers are empty');
-                continue;
-            }
-
-            $activitydata = $this->get_data_for_agreed_marking_deadline_reminders(
-                $courseworks[$activity->id],
-                $courses[$activity->course],
-                $markers[$activity->course]
-            );
-
             foreach ($activitydata as $userid => $userdata) {
                 if ($userdata['unmarked'] > 0) {
                     $data[$userid][$activity->id] = $userdata;
@@ -187,22 +159,7 @@ class reminders_task extends scheduled_task {
             }
         }
 
-        mtrace('Found ' . count($data) . ' users who need reminders');
-
-        foreach ($data as $userid => $useractivitydata) {
-            mtrace('Spawning agreed_marking_reminder task for user ' . $userid);
-            mailer::queue(
-                'agreed_marking_reminder',
-                null,
-                null,
-                $userid,
-                null,
-                [
-                    'data' => $useractivitydata,
-                    'period' => $daythreshold,
-                ]
-            );
-        }
+        return $data;
     }
 
     /**
@@ -304,14 +261,16 @@ class reminders_task extends scheduled_task {
                    AND s.finalisedstatus = :finalisedstatus
                    AND NOT EXISTS (
                        SELECT 1
-                         FROM {coursework_feedbacks} f2
-                        WHERE f2.submissionid = s.id
-                          AND f2.stageidentifier = :stageidentifier
+                         FROM {coursework_feedbacks} f
+                        WHERE f.submissionid = s.id
+                          AND f.stageidentifier = :stageidentifier
+                          AND f.finalised = :feedbackfinalised
                    )
         ", [
             'courseworkid' => $coursework->id,
             'finalisedstatus' => \mod_coursework\models\submission::FINALISED_STATUS_FINALISED,
             'stageidentifier' => 'final_agreed_1',
+            'feedbackfinalised' => 1,
         ]);
 
         foreach ($users as $user) {
