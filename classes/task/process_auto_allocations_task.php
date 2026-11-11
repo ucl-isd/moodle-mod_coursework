@@ -32,6 +32,21 @@ use mod_coursework\models\coursework;
 
 class process_auto_allocations_task extends adhoc_task {
     /**
+     * Constructor.
+     *
+     * The task manager instantiates adhoc tasks with no arguments when loading them from the queue, so
+     * $courseworkid must remain optional.
+     *
+     * @param int|null $courseworkid The coursework to process auto allocations for.
+     */
+    public function __construct(?int $courseworkid = null) {
+        if ($courseworkid !== null) {
+            $this->set_userid(get_admin()->id);
+            $this->set_custom_data(['courseworkid' => $courseworkid]);
+        }
+    }
+
+    /**
      * Get a descriptive name for this task (shown to admins).
      *
      * @return string

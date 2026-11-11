@@ -92,12 +92,9 @@ class mod_coursework_observer {
         }
 
         $processautoallocationssync = get_config('mod_coursework', 'process_auto_allocations_sync');
-        $adminid = get_admin()->id;
 
         foreach ($courseworks as $coursework) {
-            $task = new process_auto_allocations_task();
-            $task->set_userid($adminid);
-            $task->set_custom_data(['courseworkid' => $coursework->id]);
+            $task = new process_auto_allocations_task($coursework->id);
 
             if ($processautoallocationssync) {
                 $task->execute();
