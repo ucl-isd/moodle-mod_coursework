@@ -182,6 +182,21 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Render an internal marker comment.
+     * @param string $text
+     * @param int $format
+     * @return string
+     */
+    public function render_internal_comment(string $text, int $format): string {
+        return $this->render_from_template(
+            'mod_coursework/internal_comment',
+            [
+                'text' => format_text($text, $format),
+            ]
+        );
+    }
+
+    /**
      * Render advanced grading for students.
      *
      * @param coursework $coursework
