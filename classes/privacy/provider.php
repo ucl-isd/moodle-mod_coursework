@@ -281,7 +281,6 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             static::export_coursework_submissions($coursework, $user, $context, []);
             static::export_coursework_extension($coursework->id, $user->id, $context, []);
             static::export_person_deadlines($coursework->id, $user->id, $context, []);
-            static::export_plagiarism_flags($coursework->id, $context, []);
         }
     }
     public static function delete_data_for_all_users_in_context(context $context) {
@@ -417,6 +416,7 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             if ($feedbacks) {
                 self::export_submissions_feedbacks($feedbacks, $context, $path);
             }
+            static::export_plagiarism_flags($context, $submission->id, $path);
         }
     }
     protected static function export_submission_files($context, $submissionid, $currentpath) {
@@ -562,17 +562,17 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
             ->export_data(array_merge($path, [get_string('privacy:person_deadlines', 'mod_coursework')]), (object) $persondeadlinedata);
     }
 
-    protected static function export_plagiarism_flags($courseworkid, $context, $path) {
-        $plagiarism = self::get_plagiarism_flags($courseworkid);
+    protected static function export_plagiarism_flags($context, $submissionid, $path) {
+        $plagiarism = self::get_plagiarism_flags($submissionid);
         if ($plagiarism) {
             self::export_plagiarism_flags_data($plagiarism, $context, $path);
         }
     }
 
-    protected static function get_plagiarism_flags($courseworkid) {
+    protected static function get_plagiarism_flags($submissionid) {
         global $DB;
 
-        $param = ['courseworkid' => $courseworkid];
+        $param = ['submissionid' => $submissionid];
 
         return $DB->get_record('coursework_plagiarism_flags', $param);
     }
@@ -582,7 +582,7 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
         $status = self::format_plagiarism_status($plagiarism->status);
 
         $plagiarismdata = [
-            'comment' => transform::datetime($plagiarism->comment),
+            'comment' => $plagiarism->comment,
             'status' => $status,
             'timecreated' => transform::datetime($plagiarism->timecreated),
             'timemodified' => transform::datetime($plagiarism->timemodified),
