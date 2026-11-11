@@ -191,14 +191,8 @@ abstract class base {
                 'courseworkid' => $this->get_courseworkid(),
                 'stageidentifier' => $this->identifier(),
                 'allocatableid' => $allocatable->id,
+                'allocatabletype' => $allocatable->type(),
             ]);
-
-            // If this is an old allocation, we've swtiched to group mode and there's a collision of id's
-            // so we will tidy up. (Unlikely I know but mdlshield spotted it).
-            if (!empty($allocation) && $allocation->allocatabletype !== $allocatable->type()) {
-                $allocation->destroy();
-                $allocation = null;
-            }
         }
 
         if (empty($allocation)) {
