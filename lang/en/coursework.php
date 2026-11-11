@@ -437,6 +437,7 @@ $string['membershidden'] = 'Members are hidden';
 $string['messageprovider:coursework_submission'] = 'Staff notification of coursework submission';
 $string['messageprovider:deadlinechanged'] = 'Notice that a coursework deadline has changed';
 $string['messageprovider:feedback_released'] = 'Notice that a coursework feedback has been released';
+$string['messageprovider:marking_reminder'] = 'Daily marking deadline reminder for markers';
 $string['messageprovider:student_deadline_reminder'] = 'Student coursework deadline reminder';
 $string['messageprovider:submission_receipt'] = 'Receipt of coursework submission';
 $string['minimumis'] = 'Minimum: {$a}';
@@ -607,28 +608,18 @@ $string['relativeinitialmarkingdeadline'] = "Relative initial marking deadline";
 $string['relativeinitialmarkingdeadline_help'] = "Set the amount of time that initial marking should be completed by relative to submission time";
 $string['release_mark'] = 'Release mark';
 $string['release_marks'] = 'Release the marks';
-$string['reminder:email:agreed:body'] = 'Dear Colleague,
- <br><br>
- Our records indicate that you have outstanding marking agreement activity for the assessments below.
- <br><br>
- The following assessments are due for agreed marking {$a->due}:
- <br><br>
- <b>Agreed Marking Required:</b>
- <br><br>
- {$a->list}';
 $string['reminder:email:agreed:item'] = ' - {$a} submissions awaiting agreed final marking';
-$string['reminder:email:agreed:subject'] = 'Outstanding Moodle Agreed Marking: Action Required';
-$string['reminder:email:initial:body'] = 'Dear Colleague,
+$string['reminder:email:agreed:today'] = 'Agreed marking due today:';
+$string['reminder:email:agreed:upcoming'] = 'Agreed marking due within the next {$a} days:';
+$string['reminder:email:body'] = 'Dear Colleague,
 <br><br>
 Our records indicate that you have outstanding marking activity for the assessments below.
 <br><br>
-The following assessments are due for initial marking {$a->due}:
-<br><br>
-<b>Marking Required:</b>
-<br><br>
-{$a->list}';
+{$a}';
 $string['reminder:email:initial:item'] = ' - {$a} submissions awaiting marking and agreement';
-$string['reminder:email:initial:subject'] = 'Outstanding Moodle Marking: Action Required';
+$string['reminder:email:initial:today'] = 'Initial marking due today:';
+$string['reminder:email:initial:upcoming'] = 'Initial marking due within the next {$a} days:';
+$string['reminder:email:subject'] = 'Outstanding Moodle Marking: Action Required';
 $string['remove_filter'] = 'Remove filter: ';
 $string['removeappraisal'] = 'Remove moderator outcome';
 $string['removefeedback'] = 'Remove feedback';
@@ -819,6 +810,5 @@ $string['viewmembers'] = 'View members';
 $string['viewsubmission'] = 'View submission - {$a}';
 $string['week'] = 'Week';
 $string['weeks'] = 'Weeks';
-$string['withinxdays'] = 'within the next {$a} days';
 $string['yesrenamefile'] = 'Yes (you are unable to change this setting as a submission has been made)';
 $string['youmustagreetotheterms'] = 'You must agree to the following terms before submitting:';

@@ -133,13 +133,16 @@ final class task_test extends \advanced_testcase {
         $subjects = array_map(fn($message) => $message->subject, $messages);
         $this->assertContains('Outstanding Moodle Marking: Action Required', $subjects);
 
-        // Confirm that each teacher received the email about 2 submissions needing marking.
+        // Confirm that each teacher received the email about 2 submissions needing marking today.
         foreach ($messages as $message) {
-            $this->assertStringContainsString('2 submissions awaiting marking and agreement', $message->body);
+            $body = $this->normalise_body($message->body);
+            $this->assertStringContainsString('Initial marking due today', $body);
+            $this->assertStringContainsString('2 submissions awaiting marking and agreement', $body);
+            $this->assertStringNotContainsString('Agreed marking due', $body);
         }
     }
 
-    public function test_reminders_task_ignores_courseworks_outside_the_24_hour_window(): void {
+    public function test_reminders_task_ignores_courseworks_outside_the_reminder_window(): void {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
@@ -151,7 +154,7 @@ final class task_test extends \advanced_testcase {
         $courseworkoutsidewindow = $this->getDataGenerator()->create_module('coursework', [
             'course' => $course->id,
             'allocationenabled' => 0,
-            'initialmarkingdeadline' => time() + 3 * DAYSECS,
+            'initialmarkingdeadline' => time() + 7 * DAYSECS,
         ]);
 
         // Add 2 teachers and 1 student.
@@ -179,9 +182,14 @@ final class task_test extends \advanced_testcase {
         $task->execute();
         $this->runAdhocTasks(mail_task::class);
 
-        // Confirm that only 2 messages are received, not 4.
+        // Confirm that only 2 messages are received (1 per teacher) and they only mention the in-window coursework.
         $messages = $sink->get_messages();
         $this->assertCount(2, $messages);
+        foreach ($messages as $message) {
+            $body = $this->normalise_body($message->body);
+            $this->assertStringContainsString($courseworkinwindow->name, $body);
+            $this->assertStringNotContainsString($courseworkoutsidewindow->name, $body);
+        }
     }
 
     public function test_reminders_task_only_sends_to_allocated_markers_when_allocation_is_enabled(): void {
@@ -300,19 +308,17 @@ final class task_test extends \advanced_testcase {
 
         $messages = $sink->get_messages();
 
-        // The reason this is 6 and not 3, is that the reminders task has 2 methods for agreed marking. One for
-        // due "today" and one for "within 5 days", so these will appear in both.
-        $this->assertCount(6, $messages);
-        foreach ($messages as $num => $message) {
-            // The first 3 will be for the "within 5 days", the next 3 will be for "Today".
-            if ($num > 2) {
-                $this->assertStringContainsString('due for agreed marking Today', $message->body);
-                $this->assertStringContainsString('3 submissions awaiting agreed final marking', $message->body);
-            }
+        // One summary email per marker.
+        $this->assertCount(3, $messages);
+        foreach ($messages as $message) {
+            $body = $this->normalise_body($message->body);
+            $this->assertStringContainsString('Agreed marking due today', $body);
+            $this->assertStringContainsString('3 submissions awaiting agreed final marking', $body);
+            $this->assertStringNotContainsString('Agreed marking due within the next', $body);
         }
     }
 
-    public function test_reminders_task_ignores_agreed_marking_courseworks_outside_the_24_hour_window(): void {
+    public function test_reminders_task_ignores_agreed_marking_courseworks_outside_the_reminder_window(): void {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
@@ -371,9 +377,11 @@ final class task_test extends \advanced_testcase {
 
         $messages = $sink->get_messages();
 
-        // Same reason here why 2 not 1.
-        $this->assertCount(2, $messages);
-        $this->assertStringContainsString('1 submissions awaiting agreed final marking', $messages[0]->body);
+        $this->assertCount(1, $messages);
+        $body = $this->normalise_body($messages[0]->body);
+        $this->assertStringContainsString('1 submissions awaiting agreed final marking', $body);
+        $this->assertStringContainsString($courseworkinwindow->name, $body);
+        $this->assertStringNotContainsString($courseworkoutsidewindow->name, $body);
     }
 
     public function test_reminders_task_only_sends_to_allocated_markers_for_agreed_marking_when_allocation_is_enabled(): void {
@@ -437,10 +445,11 @@ final class task_test extends \advanced_testcase {
 
         $messages = $sink->get_messages();
 
-        // Same reason as in previous test for this being 4 not 2.
-        $this->assertCount(4, $messages);
-        $this->assertEquals($markerassigned->email, $messages[0]->to);
-        $this->assertEquals($markerwithfeedback->email, $messages[1]->to);
+        $this->assertCount(2, $messages);
+        $this->assertEqualsCanonicalizing(
+            [$markerassigned->email, $markerwithfeedback->email],
+            array_map(fn($message) => $message->to, $messages)
+        );
     }
 
     public function test_reminders_task_sends_agreed_marking_reminders_for_markers_with_unmarked_agreed_submissions_with_threshold(): void {
@@ -496,8 +505,95 @@ final class task_test extends \advanced_testcase {
         $messages = $sink->get_messages();
         $this->assertCount(2, $messages);
         foreach ($messages as $message) {
-            $this->assertStringContainsString('due for agreed marking within the next 5 days', $message->body);
-            $this->assertStringContainsString('2 submissions awaiting agreed final marking', $message->body);
+            $body = $this->normalise_body($message->body);
+            $this->assertStringContainsString('Agreed marking due within the next 5 days', $body);
+            $this->assertStringContainsString('2 submissions awaiting agreed final marking', $body);
+            $this->assertStringNotContainsString('Agreed marking due today', $body);
         }
+    }
+
+    public function test_reminders_task_sends_single_summary_email_covering_all_reminder_types(): void {
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $initialtoday = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'name' => 'Initial today coursework',
+            'allocationenabled' => 0,
+            'initialmarkingdeadline' => time() + 12 * HOURSECS,
+        ]);
+        $initialupcoming = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'name' => 'Initial upcoming coursework',
+            'allocationenabled' => 0,
+            'initialmarkingdeadline' => time() + 3 * DAYSECS,
+        ]);
+        $agreedtoday = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'name' => 'Agreed today coursework',
+            'allocationenabled' => 0,
+            'numberofmarkers' => 2,
+            'agreedgrademarkingdeadline' => time() + 12 * HOURSECS,
+        ]);
+        $agreedupcoming = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'name' => 'Agreed upcoming coursework',
+            'allocationenabled' => 0,
+            'numberofmarkers' => 2,
+            'agreedgrademarkingdeadline' => time() + 4 * DAYSECS,
+        ]);
+
+        // Managers have both the initial and agreed marking capabilities.
+        $marker = $this->getDataGenerator()->create_and_enrol($course, 'manager');
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+        foreach ([$initialtoday, $initialupcoming, $agreedtoday, $agreedupcoming] as $coursework) {
+            $generator->create_submission([
+                'courseworkid' => $coursework->id,
+                'allocatableid' => $student->id,
+                'allocatabletype' => 'user',
+                'finalisedstatus' => 1,
+            ], $coursework);
+        }
+
+        $sink = $this->redirectEmails();
+        $task = new reminders_task();
+        $task->execute();
+        $this->runAdhocTasks(mail_task::class);
+
+        // Only one email, containing all four sections.
+        $messages = $sink->get_messages();
+        $this->assertCount(1, $messages);
+        $this->assertEquals($marker->email, $messages[0]->to);
+        $this->assertEquals('Outstanding Moodle Marking: Action Required', $messages[0]->subject);
+
+        $body = $this->normalise_body($messages[0]->body);
+        $sections = [
+            'Initial marking due today' => $initialtoday->name,
+            'Initial marking due within the next 5 days' => $initialupcoming->name,
+            'Agreed marking due today' => $agreedtoday->name,
+            'Agreed marking due within the next 5 days' => $agreedupcoming->name,
+        ];
+        // Each section heading should appear in order, followed by its coursework.
+        $offset = 0;
+        foreach ($sections as $heading => $name) {
+            $headingpos = strpos($body, $heading, $offset);
+            $this->assertNotFalse($headingpos, "Missing or out of order section '{$heading}'");
+            $namepos = strpos($body, $name, $headingpos);
+            $this->assertNotFalse($namepos, "Missing coursework '{$name}' under '{$heading}'");
+            $offset = $namepos;
+        }
+    }
+
+    /**
+     * Collapse an email body down to a single line, so line wrapping and quoted-printable encoding
+     * don't break string assertions.
+     * @param string $body
+     * @return string
+     */
+    private function normalise_body(string $body): string {
+        $body = quoted_printable_decode($body);
+        return preg_replace('/\s+/', ' ', $body);
     }
 }

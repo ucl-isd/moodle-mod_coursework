@@ -45,7 +45,7 @@ class mail_task extends \core\task\adhoc_task {
         }
 
         // Coursework must be set unless we're doing the marker reminders.
-        if (!in_array($data->type, ['initial_marking_reminder', 'agreed_marking_reminder'])) {
+        if ($data->type !== 'marking_reminder') {
             if (!isset($data->coursework)) {
                 mtrace('Task is missing required custom data');
                 return;
@@ -105,8 +105,8 @@ class mail_task extends \core\task\adhoc_task {
                 }
                 $this->send_submission_notification($coursework, $user);
                 break;
-            case 'initial_marking_reminder':
-                if (!isset($data->user)) {
+            case 'marking_reminder':
+                if (!isset($data->user, $data->extra->data)) {
                     mtrace('Task is missing required custom data');
                     return;
                 }
@@ -114,18 +114,7 @@ class mail_task extends \core\task\adhoc_task {
                 if (!$user) {
                     return;
                 }
-                $this->send_initial_marking_reminder($user, (array)$data->extra);
-                break;
-            case 'agreed_marking_reminder':
-                if (!isset($data->user)) {
-                    mtrace('Task is missing required custom data');
-                    return;
-                }
-                $user = $this->load_user($data->user);
-                if (!$user) {
-                    return;
-                }
-                $this->send_agreed_marking_reminder($user, (array)$data->extra);
+                $this->send_marking_reminder($user, $data->extra);
                 break;
             default:
                 throw new \coding_exception('Unknown type');
@@ -176,67 +165,51 @@ class mail_task extends \core\task\adhoc_task {
     }
 
     /**
-     * Send email notification for initial marking reminder.
+     * Send a single summary email to a marker covering all their initial and agreed marking reminders.
      * @param user $user
-     * @param array $extra
+     * @param \stdClass $extra
      */
-    private function send_initial_marking_reminder(user $user, array $extra): void {
-        $subject = get_string('reminder:email:initial:subject', 'mod_coursework');
-        $body = get_string('reminder:email:initial:body', 'mod_coursework', [
-            'list' => $this->build_activity_list((array)$extra['data'], 'initial_marking_reminder'),
-            'due' => $this->build_due_date($extra['period'] ?? null),
-        ]);
-        $mailer = new mailer();
-        $mailer->send_initial_marking_reminder($user, $subject, $body);
-    }
-
-    /**
-     * Send email notification for agreed marking reminder.
-     * @param user $user
-     * @param array $extra
-     */
-    private function send_agreed_marking_reminder(user $user, array $extra): void {
-        $subject = get_string('reminder:email:agreed:subject', 'mod_coursework');
-        $body = get_string('reminder:email:agreed:body', 'mod_coursework', [
-           'list' => $this->build_activity_list((array)$extra['data'], 'agreed_marking_reminder'),
-           'due' => $this->build_due_date($extra['period'] ?? null),
-        ]);
-        $mailer = new mailer();
-        $mailer->send_agreed_marking_reminder($user, $subject, $body);
-    }
-
-    /**
-     * Build the due date string for the reminder message body.
-     * @param int|null $period
-     * @return string
-     */
-    private function build_due_date(?int $period = null): string {
-        if ($period && $period > 1) {
-            return get_string('withinxdays', 'mod_coursework', $period);
-        } else {
-            return get_string('today', 'mod_coursework');
+    private function send_marking_reminder(user $user, \stdClass $extra): void {
+        $upcomingdays = (int)($extra->upcomingdays ?? reminders_task::UPCOMING_DAYS);
+        $sections = [];
+        foreach ([reminders_task::TYPE_INITIAL, reminders_task::TYPE_AGREED] as $type) {
+            foreach ([reminders_task::PERIOD_TODAY, reminders_task::PERIOD_UPCOMING] as $period) {
+                $activities = (array)($extra->data->{$type}->{$period} ?? []);
+                $list = $this->build_activity_list($activities, $type);
+                if ($list === '') {
+                    continue;
+                }
+                $heading = get_string("reminder:email:{$type}:{$period}", 'mod_coursework', $upcomingdays);
+                $sections[] = \html_writer::tag('b', $heading) . '<br><br>' . $list;
+            }
         }
+
+        if (!$sections) {
+            mtrace("No outstanding marking reminders for user {$user->id}, skipping notification.");
+            return;
+        }
+
+        $subject = get_string('reminder:email:subject', 'mod_coursework');
+        $body = get_string('reminder:email:body', 'mod_coursework', implode('<br><br>', $sections));
+        $mailer = new mailer();
+        $mailer->send_marking_reminder($user, $subject, $body);
     }
 
     /**
      * Build HTML content for activity list.
-     * @param array $extra
-     * @param string $type
+     * @param array $activitydata Keyed by coursework id, containing the unmarked count.
+     * @param string $type One of the reminders_task::TYPE_ constants.
      * @return string
      */
-    private function build_activity_list(array $extra, string $type): string {
+    private function build_activity_list(array $activitydata, string $type): string {
         $activities = [];
-        foreach ($extra as $courseworkid => $count) {
+        foreach ($activitydata as $courseworkid => $count) {
             $coursework = $this->load_coursework((int)$courseworkid);
             if (!$coursework) {
                 continue;
             }
             $unmarked = is_array($count) ? ($count['unmarked'] ?? 0) : ($count->unmarked ?? 0);
-            $itemstring = get_string(
-                $type === 'agreed_marking_reminder' ? 'reminder:email:agreed:item' : 'reminder:email:initial:item',
-                'mod_coursework',
-                $unmarked
-            );
+            $itemstring = get_string("reminder:email:{$type}:item", 'mod_coursework', $unmarked);
             $activities[] = \html_writer::link(
                 new \moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]),
                 format_string($coursework->name),
