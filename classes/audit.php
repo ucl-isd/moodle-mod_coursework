@@ -115,14 +115,20 @@ class audit {
         // Stats per marker.
         $markerstats = $this->get_marker_statistics($markingsummary['submissions']);
 
-        // Moderation data per moderator.
-        $moderatorstats = $this->get_moderation_data();
+        if ($this->coursework->moderation_agreement_enabled()) {
+            // Moderation data per moderator.
+            $moderatorstats = $this->get_moderation_data();
 
-        // Moderation summary.
-        $moderationsummary = $this->get_moderation_summary($moderatorstats);
+            // Moderation summary.
+            $moderationsummary = $this->get_moderation_summary($moderatorstats);
 
-        // Moderation sample.
-        $moderationsample = $this->get_moderation_sample($markerstats, $moderatorstats);
+            // Moderation sample.
+            $moderationsample = $this->get_moderation_sample($markerstats, $moderatorstats);
+        } else {
+            $moderatorstats = [];
+            $moderationsummary = [];
+            $moderationsample = [];
+        }
 
         // Merge all the data into one object for the template.
         $data = (object)array_merge(
@@ -134,6 +140,10 @@ class audit {
             $moderationsample,
             $this->get_boundary_end_marks(),
         );
+
+        if ($this->coursework->moderation_agreement_enabled()) {
+            $data->moderation_agreement_enabled = true;
+        }
 
         if (isset($this->form)) {
             $data->form = $this->form->render();

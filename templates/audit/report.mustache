@@ -103,98 +103,100 @@
     </tbody>
 </table>
 
-<h3>{{#str}} moderationsummary, mod_coursework {{/str}}</h3>
-<table id="grading-audit-moderation" class="table table-striped">
-    <thead>
-        <tr>
-            <th>{{#str}} submissionsmoderated, mod_coursework {{/str}}</th>
-            <th>{{#str}} agreedbymoderator, mod_coursework {{/str}}</th>
-            <th>{{#str}} disagreedbymoderator, mod_coursework {{/str}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#moderation_stats}}
+{{#moderation_agreement_enabled}}
+    <h3>{{#str}} moderationsummary, mod_coursework {{/str}}</h3>
+    <table id="grading-audit-moderation" class="table table-striped">
+        <thead>
             <tr>
-                <td>{{total}}</td>
-                <td>{{total_agreed}}</td>
-                <td>{{total_disagreed}}</td>
+                <th>{{#str}} submissionsmoderated, mod_coursework {{/str}}</th>
+                <th>{{#str}} agreedbymoderator, mod_coursework {{/str}}</th>
+                <th>{{#str}} disagreedbymoderator, mod_coursework {{/str}}</th>
             </tr>
-        {{/moderation_stats}}
-    </tbody>
-</table>
-
-<h3>{{#str}} moderationsample, mod_coursework {{/str}}</h3>
-<table id="grading-audit-moderationsample" class="table table-striped">
-    <thead>
-        <tr>
-            <th>{{#str}} sample, mod_coursework {{/str}}</th>
-            {{#marker_stats_headers}}
-                <th>{{.}}</th>
-            {{/marker_stats_headers}}
-            <th>{{#str}} total, mod_coursework {{/str}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#moderation_sample}}
-            {{#marked}}
+        </thead>
+        <tbody>
+            {{#moderation_stats}}
                 <tr>
-                    <td>{{#str}} marked, mod_coursework {{/str}}</td>
+                    <td>{{total}}</td>
+                    <td>{{total_agreed}}</td>
+                    <td>{{total_disagreed}}</td>
+                </tr>
+            {{/moderation_stats}}
+        </tbody>
+    </table>
+
+    <h3>{{#str}} moderationsample, mod_coursework {{/str}}</h3>
+    <table id="grading-audit-moderationsample" class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{#str}} sample, mod_coursework {{/str}}</th>
+                {{#marker_stats_headers}}
+                    <th>{{.}}</th>
+                {{/marker_stats_headers}}
+                <th>{{#str}} total, mod_coursework {{/str}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#moderation_sample}}
+                {{#marked}}
+                    <tr>
+                        <td>{{#str}} marked, mod_coursework {{/str}}</td>
+                        {{#boundaries}}
+                            <td>{{.}}</td>
+                        {{/boundaries}}
+                        {{^boundaries}}
+                            {{#grade_boundaries}}
+                                <td>0</td>
+                            {{/grade_boundaries}}
+                        {{/boundaries}}
+                        <td>{{total}}</td>
+                    </tr>
+                {{/marked}}
+                {{#moderated}}
+                    <tr>
+                        <td>{{#str}} moderated, mod_coursework {{/str}}</td>
+                        {{#boundaries}}
+                            <td>{{.}}</td>
+                        {{/boundaries}}
+                        {{^boundaries}}
+                            {{#grade_boundaries}}
+                                <td>0</td>
+                            {{/grade_boundaries}}
+                        {{/boundaries}}
+                        <td>{{total}}</td>
+                    </tr>
+                {{/moderated}}
+            {{/moderation_sample}}
+        </tbody>
+    </table>
+
+    <h3>{{#str}} moderatorstats, mod_coursework {{/str}}</h3>
+    <table id="grading-audit-moderators" class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{#str}} assessor, mod_coursework {{/str}}</th>
+                {{#marker_stats_headers}}
+                    <th>{{.}}</th>
+                {{/marker_stats_headers}}
+                <th>{{#str}} stats:totalmoderated, mod_coursework {{/str}}</th>
+                <th>{{#str}} agreed, mod_coursework {{/str}}</th>
+                <th>{{#str}} disagreed, mod_coursework {{/str}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#moderator_stats}}
+                <tr>
+                    <td>{{name}}</td>
                     {{#boundaries}}
                         <td>{{.}}</td>
                     {{/boundaries}}
-                    {{^boundaries}}
-                        {{#grade_boundaries}}
-                            <td>0</td>
-                        {{/grade_boundaries}}
-                    {{/boundaries}}
                     <td>{{total}}</td>
+                    <td>{{agreed}}</td>
+                    <td>{{disagreed}}</td>
                 </tr>
-            {{/marked}}
-            {{#moderated}}
-                <tr>
-                    <td>{{#str}} moderated, mod_coursework {{/str}}</td>
-                    {{#boundaries}}
-                        <td>{{.}}</td>
-                    {{/boundaries}}
-                    {{^boundaries}}
-                        {{#grade_boundaries}}
-                            <td>0</td>
-                        {{/grade_boundaries}}
-                    {{/boundaries}}
-                    <td>{{total}}</td>
-                </tr>
-            {{/moderated}}
-        {{/moderation_sample}}
-    </tbody>
-</table>
-
-<h3>{{#str}} moderatorstats, mod_coursework {{/str}}</h3>
-<table id="grading-audit-moderators" class="table table-striped">
-    <thead>
-        <tr>
-            <th>{{#str}} assessor, mod_coursework {{/str}}</th>
-            {{#marker_stats_headers}}
-                <th>{{.}}</th>
-            {{/marker_stats_headers}}
-            <th>{{#str}} stats:totalmoderated, mod_coursework {{/str}}</th>
-            <th>{{#str}} agreed, mod_coursework {{/str}}</th>
-            <th>{{#str}} disagreed, mod_coursework {{/str}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#moderator_stats}}
-            <tr>
-                <td>{{name}}</td>
-                {{#boundaries}}
-                    <td>{{.}}</td>
-                {{/boundaries}}
-                <td>{{total}}</td>
-                <td>{{agreed}}</td>
-                <td>{{disagreed}}</td>
-            </tr>
-        {{/moderator_stats}}
-    </tbody>
-</table>
+            {{/moderator_stats}}
+        </tbody>
+    </table>
+{{/moderation_agreement_enabled}}
 
 <h3>{{#str}} boundarymarks, mod_coursework {{/str}}</h3>
 <table id="grading-audit-boundarymarks" class="table table-striped">
@@ -202,7 +204,9 @@
         <tr>
             <th>{{#str}} mark, mod_coursework {{/str}}</th>
             <th>{{#str}} student, mod_coursework {{/str}}</th>
+            {{#moderation_agreement_enabled}}
             <th>{{#str}} moderated, mod_coursework {{/str}}</th>
+            {{/moderation_agreement_enabled}}
         </tr>
     </thead>
     <tbody>
@@ -212,7 +216,9 @@
                     <a href="{{{url}}}">{{grade}}</a>
                 </td>
                 <td>{{for}}</td>
-                <td>{{#agreement}} {{#str}} yes, core {{/str}} - {{.}} {{/agreement}}{{^agreement}} {{#str}} no, core {{/str}}{{/agreement}}</td>
+                {{#moderation_agreement_enabled}}
+                    <td>{{#agreement}} {{#str}} yes, core {{/str}} - {{.}} {{/agreement}}{{^agreement}} {{#str}} no, core {{/str}}{{/agreement}}</td>
+                {{/moderation_agreement_enabled}}
             </tr>
         {{/boundary_marks}}
     </tbody>
