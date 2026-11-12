@@ -305,7 +305,7 @@ final class task_test extends \advanced_testcase {
         foreach ($messages as $message) {
             $body = $this->normalise_body($message->body);
             $this->assertStringContainsString('Agreed marking due today', $body);
-            $this->assertStringContainsString('3 submissions awaiting agreed final marking', $body);
+            $this->assertStringContainsString('3 submission(s) awaiting agreed final marking', $body);
             $this->assertStringNotContainsString('Agreed marking due within the next', $body);
         }
     }
@@ -371,7 +371,7 @@ final class task_test extends \advanced_testcase {
 
         $this->assertCount(1, $messages);
         $body = $this->normalise_body($messages[0]->body);
-        $this->assertStringContainsString('1 submissions awaiting agreed final marking', $body);
+        $this->assertStringContainsString('1 submission(s) awaiting agreed final marking', $body);
         $this->assertStringContainsString($courseworkinwindow->name, $body);
         $this->assertStringNotContainsString($courseworkoutsidewindow->name, $body);
     }
@@ -499,7 +499,7 @@ final class task_test extends \advanced_testcase {
         foreach ($messages as $message) {
             $body = $this->normalise_body($message->body);
             $this->assertStringContainsString('Agreed marking due within the next 5 days', $body);
-            $this->assertStringContainsString('2 submissions awaiting agreed final marking', $body);
+            $this->assertStringContainsString('2 submission(s) awaiting agreed final marking', $body);
             $this->assertStringNotContainsString('Agreed marking due today', $body);
         }
     }
