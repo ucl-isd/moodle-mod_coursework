@@ -149,3 +149,43 @@ Feature: Filtering the submissions table.
     And I should see "Brian Brianson"
     And I should see "Chris Christenson"
     And I should see "Dave Davidson"
+
+  Scenario: Filtering the submissions table by draft marking and draft agreed mark.
+    Given the following "activity" exists:
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | CW3        |
+      | numberofmarkers | 2          |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | CW3        | 1               |
+      | student2    | CW3        | 1               |
+      | student3    | CW3        | 1               |
+      | student4    | CW3        | 1               |
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment | finalised |
+      | student1    | CW3        | teacher1 | assessor_1      | 50    | Blah            | 0         |
+      | student2    | CW3        | teacher1 | assessor_1      | 50    | Blah            | 1         |
+      | student2    | CW3        | teacher2 | assessor_2      | 60    | Blah            | 1         |
+      | student2    | CW3        | teacher1 | final_agreed_1  | 55    | Blah            | 0         |
+      | student3    | CW3        | teacher1 | assessor_1      | 50    | Blah            | 1         |
+      | student3    | CW3        | teacher2 | assessor_2      | 60    | Blah            | 1         |
+      | student3    | CW3        | teacher1 | final_agreed_1  | 55    | Blah            | 1         |
+      | student4    | CW3        | teacher1 | assessor_1      | 50    | Blah            | 0         |
+      | student4    | CW3        | teacher2 | assessor_2      | 60    | Blah            | 0         |
+    And I am on the "CW3" "coursework activity" page logged in as "admin"
+    When I click on "Filter submissions" "button"
+    And I click on "Draft marking" "checkbox"
+    And I click on "Apply" "button"
+    Then I should see "Andy Andrewson"
+    And I should not see "Brian Brianson"
+    And I should not see "Chris Christenson"
+    And I should see "Dave Davidson"
+    And I click on "Reset filters" "button"
+    And I click on "Filter submissions" "button"
+    And I click on "Draft agreed mark" "checkbox"
+    And I click on "Apply" "button"
+    Then I should not see "Andy Andrewson"
+    And I should see "Brian Brianson"
+    And I should not see "Chris Christenson"
+    And I should not see "Dave Davidson"
