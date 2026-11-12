@@ -374,6 +374,10 @@ class feedback_controller extends controller_base {
         $submission = $teacherfeedback->get_submission();
         $coursework = $submission->get_coursework();
 
+        if ((int)$teacherfeedback->assessorid === 0) {
+            $teacherfeedback->assessorid = $USER->id;
+        }
+
         $notifier = new grading_report_notifier($coursework);
         // remove feedback comments and associated feedback files if 'Remove feedback' button pressed
         if ($this->params['remove']) {
