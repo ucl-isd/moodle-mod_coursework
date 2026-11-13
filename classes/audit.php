@@ -33,6 +33,8 @@ use mod_coursework\event\moderator_appraisal_updated;
 use mod_coursework\forms\moderator_stats_form;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
+use mod_coursework\stages\assessor;
+use mod_coursework\stages\final_agreed;
 use mod_coursework\stages\moderator;
 use stdClass;
 
@@ -812,6 +814,8 @@ class audit {
             $params['upper' . $key] = $val;
         }
 
+        $params['stage'] = $this->coursework->get_max_markers() > 1 ? final_agreed::STAGE_FINAL_AGREED_1 : assessor::STAGE_ASSESSOR_1;
+
         $marks = $DB->get_records_sql(
             "SELECT f.id, {$cast} as grade, s.id as submissionid, s.allocatabletype, s.allocatableid, ma.agreement
                FROM {coursework_feedbacks} f
@@ -820,7 +824,8 @@ class audit {
           LEFT JOIN {coursework_mod_agreements} ma ON ma.feedbackid = f.id
               WHERE (" . implode(' OR ', $where) . ")
                 AND c.id = :courseworkid
-                AND f.finalised = 1",
+                AND f.finalised = 1
+                AND f.stageidentifier = :stage",
             $params
         );
 
