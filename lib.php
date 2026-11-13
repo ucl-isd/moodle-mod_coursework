@@ -928,7 +928,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
     if (
         has_capability('mod/coursework:moderate', $context)
         && $coursework->uses_numeric_grade()
-        && $coursework->get_max_markers() === 1
     ) {
         $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
         $navref->add(
