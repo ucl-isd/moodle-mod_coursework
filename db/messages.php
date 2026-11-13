@@ -47,4 +47,5 @@ $messageproviders = [
     ],
     'student_deadline_reminder' => [
     ],
+    'marking_reminder' => [],
 ];

@@ -440,6 +440,7 @@ $string['membershidden'] = 'Members are hidden';
 $string['messageprovider:coursework_submission'] = 'Staff notification of coursework submission';
 $string['messageprovider:deadlinechanged'] = 'Notice that a coursework deadline has changed';
 $string['messageprovider:feedback_released'] = 'Notice that a coursework feedback has been released';
+$string['messageprovider:marking_reminder'] = 'Marker coursework marking deadline reminder';
 $string['messageprovider:student_deadline_reminder'] = 'Student coursework deadline reminder';
 $string['messageprovider:submission_receipt'] = 'Receipt of coursework submission';
 $string['minimumis'] = 'Minimum: {$a}';
@@ -612,6 +613,18 @@ $string['relativeinitialmarkingdeadline'] = "Relative initial marking deadline";
 $string['relativeinitialmarkingdeadline_help'] = "Set the amount of time that initial marking should be completed by relative to submission time";
 $string['release_mark'] = 'Release mark';
 $string['release_marks'] = 'Release the marks';
+$string['reminder:email:agreed:item'] = ' - {$a} submission(s) awaiting agreed final marking';
+$string['reminder:email:agreed:today'] = 'Agreed marking due today:';
+$string['reminder:email:agreed:upcoming'] = 'Agreed marking due within the next {$a} days:';
+$string['reminder:email:body'] = 'Dear Colleague,
+<br><br>
+Our records indicate that you have outstanding marking for the assessments below.
+<br><br>
+{$a}';
+$string['reminder:email:initial:item'] = ' - {$a} submissions awaiting marking and agreement';
+$string['reminder:email:initial:today'] = 'Initial marking due today:';
+$string['reminder:email:initial:upcoming'] = 'Initial marking due within the next {$a} days:';
+$string['reminder:email:subject'] = 'Outstanding Moodle Marking: Action Required';
 $string['remove_filter'] = 'Remove filter: ';
 $string['removeappraisal'] = 'Remove moderator outcome';
 $string['removefeedback'] = 'Remove feedback';
@@ -751,6 +764,7 @@ $string['tableheadplagiarismalert'] = 'Plagiarism alert';
 $string['tableheadstatus'] = 'Status';
 $string['tableheadsubmissiondate'] = 'Submission date';
 $string['tableheadtime'] = 'Submitted';
+$string['task:reminders'] = 'Reminder notifications task';
 $string['termsagreement'] = 'Terms Agreement';
 $string['threeweeksoption'] = '3 weeks';
 $string['timedays'] = 'd';

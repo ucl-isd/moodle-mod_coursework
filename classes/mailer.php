@@ -46,7 +46,7 @@ class mailer {
     /**
      * @param coursework $coursework
      */
-    public function __construct($coursework) {
+    public function __construct($coursework = null) {
         $this->coursework = $coursework;
     }
 
@@ -250,6 +250,27 @@ class mailer {
     }
 
     /**
+     * Send the daily marking reminder summary email to the user.
+     * @param user $user
+     * @param string $subject
+     * @param string $body
+     */
+    public function send_marking_reminder(user $user, string $subject, string $body): void {
+        $eventdata = new message();
+        $eventdata->component = 'mod_coursework';
+        $eventdata->name = 'marking_reminder';
+        $eventdata->userfrom = core_user::get_noreply_user();
+        $eventdata->userto = $user->get_raw_record();
+        $eventdata->subject = $subject;
+        $eventdata->fullmessage = html_to_text($body);
+        $eventdata->fullmessageformat = FORMAT_HTML;
+        $eventdata->fullmessagehtml = $body;
+        $eventdata->smallmessage = html_to_text($body);
+        $eventdata->notification = 1;
+        message_send($eventdata);
+    }
+
+    /**
      * Queue an adhoc task to send the relevant email notification.
      * @param string $type
      * @param int $courseworkid
@@ -259,7 +280,7 @@ class mailer {
      */
     public static function queue(
         string $type,
-        int $courseworkid,
+        ?int $courseworkid = null,
         ?int $submissionid = null,
         ?int $userid = null,
         ?bool $notify = null,
