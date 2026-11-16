@@ -339,6 +339,10 @@ class marking_cell_data extends cell_data_base {
             return null;
         }
 
+        // Can it be released?
+        $ready = !$rowsbase->get_submission()->is_published() &&
+            $rowsbase->get_submission()->ready_to_publish();
+
         $finalgrade = static::get_mark_for_feedback($this->coursework, $finalfeedback, $canshow);
         if ($finalfeedback->is_auto_grade()) {
             $assessorname = get_string('automaticallyagreed', 'mod_coursework');

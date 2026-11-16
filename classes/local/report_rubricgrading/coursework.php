@@ -124,7 +124,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0 AND stu.suspended = 0
                  LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
                  LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
                  LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
@@ -193,7 +193,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0 AND stu.suspended = 0
                  LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
                  LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
                  LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
@@ -260,7 +260,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0 AND stu.suspended = 0
                  LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
                  LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
                  LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
