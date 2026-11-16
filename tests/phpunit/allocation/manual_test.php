@@ -63,9 +63,9 @@ final class manual_test extends \advanced_testcase {
 
         // Allocate teacher1 as first marker and teacher2 as second marker.
         $stage = $this->coursework->get_stage('assessor_1');
-        $stage->make_manual_allocation($student, $teacher1);
+        $stage->make_allocation($student, $teacher1);
         $stage = $this->coursework->get_stage('assessor_2');
-        $stage->make_manual_allocation($student, $teacher2);
+        $stage->make_allocation($student, $teacher2);
 
         // Teacher1 is a manager so can leave feedback for both stages.
         $this->create_an_assessor_feedback_for_the_submission($teacher1);

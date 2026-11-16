@@ -22,6 +22,7 @@ namespace mod_coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 
 /**
@@ -93,47 +94,50 @@ final class auto_allocator_test extends \advanced_testcase {
     }
 
     public function test_process_allocations_does_not_alter_manual_allocations(): void {
-        $params = [
+        $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            (object)['id' => 555]
+        );
+
+        $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
+        $allocator->process_allocations();
+
+        $this->assertTrue(\mod_coursework\models\allocation::exists([
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'assessorid' => 555,
             'ismanual' => 1,
-        ];
-        $otherallocation = \mod_coursework\models\allocation::build($params);
-        $otherallocation->save();
-
-        $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
-        $allocator->process_allocations();
-
-        $this->assertTrue(\mod_coursework\models\allocation::exists($params));
+        ]));
     }
 
     public function test_process_allocations_alters_non_manual_allocations(): void {
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-            'assessorid' => 555,
-        ];
-        $otherallocation = \mod_coursework\models\allocation::build($params);
-        $otherallocation->save();
+        $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            (object)['id' => 555],
+            false,
+            false
+        );
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
 
-        $this->assertFalse(\mod_coursework\models\allocation::exists($params));
+        $this->assertFalse(\mod_coursework\models\allocation::exists([
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $this->student->id,
+            'allocatabletype' => 'user',
+            'assessorid' => 555,
+            'ismanual' => 0,
+        ]));
     }
 
     public function test_process_allocations_alters_non_manual_allocations_with_submissions(): void {
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-            'assessorid' => 555,
-        ];
-        $otherallocation = \mod_coursework\models\allocation::build($params);
-        $otherallocation->save();
+        $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            (object)['id' => 555],
+            false,
+            false
+        );
 
         $submission = new \mod_coursework\models\submission();
         $submission->courseworkid = $this->coursework->id;
@@ -144,19 +148,20 @@ final class auto_allocator_test extends \advanced_testcase {
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
 
-        $this->assertFalse(\mod_coursework\models\allocation::exists($params));
+        $this->assertFalse(\mod_coursework\models\allocation::exists([
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $this->student->id,
+            'allocatabletype' => 'user',
+            'assessorid' => 555,
+            'ismanual' => 0,
+        ]));
     }
 
     public function test_process_allocations_does_not_alter_non_manual_allocations_with_feedback(): void {
-        $allocationparams = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-            'stageidentifier' => 'assessor_1',
-            'assessorid' => 555,
-        ];
-        $otherallocation = \mod_coursework\models\allocation::build($allocationparams);
-        $otherallocation->save();
+        $this->coursework->get_stage('assessor_1')->make_allocation(
+            $this->coursework->get_allocatable_from_id($this->student->id),
+            (object)['id' => 555]
+        );
 
         $submission = new \mod_coursework\models\submission();
         $submission->courseworkid = $this->coursework->id;
@@ -164,17 +169,23 @@ final class auto_allocator_test extends \advanced_testcase {
         $submission->allocatabletype = 'user';
         $submission->save();
 
-        $feedbackparams = [
+        \mod_coursework\models\feedback::create([
             'submissionid' => $submission->id,
             'assessorid' => 555,
             'stageidentifier' => 'assessor_1',
-        ];
-        \mod_coursework\models\feedback::create($feedbackparams);
+        ]);
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
 
-        $this->assertTrue(\mod_coursework\models\allocation::exists($allocationparams));
+        $this->assertTrue(\mod_coursework\models\allocation::exists([
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $this->student->id,
+            'allocatabletype' => 'user',
+            'stageidentifier' => 'assessor_1',
+            'assessorid' => 555,
+            'ismanual' => 1,
+        ]));
     }
 
     private function set_coursework_to_single_marker() {

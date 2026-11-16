@@ -535,7 +535,7 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026110900, 'coursework');
     }
 
-    if ($oldversion < 2026111100) {
+    if ($oldversion < 2026111600) {
         // Change the default for coursework.maxbytes from 100000 to 0 (use the course limit).
         $table = new xmldb_table('coursework');
         $field = new xmldb_field('maxbytes', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'blindmarking');
@@ -547,6 +547,28 @@ function xmldb_coursework_upgrade($oldversion) {
         $DB->set_field('coursework', 'maxbytes', 0, ['maxbytes' => 100000]);
 
         // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026111600, 'coursework');
+    }
+
+    if ($oldversion < 2026111100) {
+        $table = new xmldb_table('coursework');
+
+        foreach (['processenrol', 'processunenrol'] as $field) {
+            $upgradefield = new xmldb_field($field);
+
+            if ($dbman->field_exists($table, $upgradefield)) {
+                // Any courseworks still flagged for reallocation by the old scheduled tasks need an adhoc task
+                // queued instead, otherwise the pending reallocation would be lost when the field is dropped.
+                $courseworkids = $DB->get_fieldset_select('coursework', 'id', "$field = 1");
+                foreach ($courseworkids as $courseworkid) {
+                    $task = new \mod_coursework\task\process_auto_allocations_task($courseworkid);
+                    \core\task\manager::queue_adhoc_task($task, true);
+                }
+
+                $dbman->drop_field($table, $upgradefield);
+            }
+        }
+
         upgrade_mod_savepoint(true, 2026111100, 'coursework');
     }
 
