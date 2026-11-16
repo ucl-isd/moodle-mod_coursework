@@ -20,7 +20,7 @@
         <FIELD NAME="numberofmarkers" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="How many feedback grades should each submission have before it can be published?"/>
         <FIELD NAME="finalstagegrading" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Grading method for final stage"/>
         <FIELD NAME="blindmarking" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="flag: do we want to prevent markers from knowing the students' name"/>
-        <FIELD NAME="maxbytes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100000" SEQUENCE="false"/>
+        <FIELD NAME="maxbytes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum upload size in bytes; 0 means use the course limit"/>
         <FIELD NAME="generalfeedback" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="unix timestamp for when the general assignment feedback should be available"/>
         <FIELD NAME="individualfeedback" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="unix timestamp for when the general assignment feedback should be available"/>
         <FIELD NAME="feedbackcomment" TYPE="text" NOTNULL="false" SEQUENCE="false"/>

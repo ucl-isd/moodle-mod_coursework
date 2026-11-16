@@ -535,6 +535,21 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026110900, 'coursework');
     }
 
+    if ($oldversion < 2026111100) {
+        // Change the default for coursework.maxbytes from 100000 to 0 (use the course limit).
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('maxbytes', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'blindmarking');
+        $dbman->change_field_default($table, $field);
+
+        // Before CTP-4979 the maxbytes field was disabled when Turnitin was enabled, so it wasn't submitted and the
+        // old column default of 100000 bytes (97.7 KB) was stored. The settings form can't produce this value, so
+        // reset these instances to use the course limit.
+        $DB->set_field('coursework', 'maxbytes', 0, ['maxbytes' => 100000]);
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026111100, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
