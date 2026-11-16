@@ -525,14 +525,36 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     }
                 }
 
+                // Allow copying this marker's criterion mark and remark into the agreed form,
+                // when the agreed stage uses the same method.
+                if (
+                    $currentfilling
+                    && !$template->differentfinalgradingmethod
+                    && !str_starts_with($markerinfo->stage, 'final_agreed')
+                ) {
+                    $marker->copytoagreed = (object)[
+                        'score' => $marker->score,
+                        'remark' => $currentfilling['remark'] ?? '',
+                        'arialabel' => get_string('copytoagreedlabel', 'mod_coursework', (object)[
+                            'marker' => $markerinfo->label,
+                            'criterion' => $criterionitem->name,
+                        ]),
+                    ];
+                }
+
                 $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
                 $marker->percent = (int)round($percentraw);
+                $marker->fillingid = $currentfilling['levelid'] ?? null;
                 $criterionitem->markers[] = $marker;
             }
             $template->reviewcriteria[] = $criterionitem;
         }
 
         $template->markersdata = $markersdata;
+        $template->method = match(get_class($gradingcontroller)) {
+            'gradingform_rubric_controller', 'gradingform_rubric_ranges_controller' => 'rubric',
+            'gradingform_guide_controller' => 'marking_guide'
+        };
         return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 

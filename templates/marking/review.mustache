@@ -27,7 +27,12 @@
                         "score": "8.00",
                         "maxscore": "10.00",
                         "percent": 80,
-                        "remark": "<p>The structure was logical and the argument was mostly clear.</p>"
+                        "remark": "<p>The structure was logical and the argument was mostly clear.</p>",
+                        "copytoagreed": {
+                            "score": "8",
+                            "remark": "The structure was logical and the argument was mostly clear.",
+                            "arialabel": "Copy Marker 1 mark and feedback for Criterion 1 to agreed"
+                        }
                     },
                     {
                         "label": "Marker 2",
@@ -86,6 +91,19 @@
                         </div>
                         {{/remark}}
 
+                        {{#copytoagreed}}
+                        <div class="mt-1 small">
+                            <button type="button" class="btn btn-link btn-sm p-0"
+                                data-action="copy-to-agreed"
+                                data-score="{{score}}"
+                                data-remark="{{remark}}"
+                                data-fillingid="{{fillingid}}"
+                                aria-label="{{arialabel}}">
+                                <i class="fa-solid fa-copy"></i>
+                                {{#str}} copytoagreed, mod_coursework {{/str}}
+                            </button>
+                        </div>
+                        {{/copytoagreed}}
                     </div>
                     {{/markers}}
                 </div>
@@ -129,6 +147,6 @@
 
 {{#js}}
 require(['mod_coursework/agree_marks'], function(agree_marks) {
-    agree_marks.init({ 'differentfinalgradingmethod': {{differentfinalgradingmethod}} });
+    agree_marks.init({ 'differentfinalgradingmethod': {{differentfinalgradingmethod}}, 'method': '{{method}}' });
 });
 {{/js}}

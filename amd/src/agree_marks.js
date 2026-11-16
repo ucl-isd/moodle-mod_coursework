@@ -63,4 +63,41 @@ export const init = async(args) => {
         el.textContent = title + ': ';
     });
 
+    // "Copy to agreed" links (marking guide): copy a marker's criterion mark and remark into the agreed form inputs.
+    document.addEventListener('click', (e) => {
+        const button = e.target.closest('[data-action="copy-to-agreed"]');
+        if (!button) {
+            return;
+        }
+        e.preventDefault();
+
+        const row = button.closest('tr.criterion');
+        if (!row) {
+            return;
+        }
+
+        if (args.method === 'marking_guide') {
+            const scoreInput = row.querySelector('td.score input');
+            if (scoreInput && button.dataset.score !== '') {
+                scoreInput.value = button.dataset.score;
+                scoreInput.dispatchEvent(new Event('input', {bubbles: true}));
+                scoreInput.dispatchEvent(new Event('change', {bubbles: true}));
+            }
+        } else if (args.method === 'rubric') {
+            if (button.dataset.fillingid !== '') {
+                const radioInput = row.querySelector(`td.levels input[type="radio"][value="${button.dataset.fillingid}"]`);
+                if (radioInput && radioInput.checked === false) {
+                    radioInput.closest('.level').click();
+                }
+            }
+        }
+
+        const remarkInput = row.querySelector('td.remark textarea');
+        if (remarkInput) {
+            remarkInput.value = button.dataset.remark;
+            remarkInput.dispatchEvent(new Event('input', {bubbles: true}));
+            remarkInput.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+    });
+
 };
