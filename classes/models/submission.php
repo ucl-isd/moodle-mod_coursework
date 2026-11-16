@@ -512,10 +512,15 @@ class submission extends table_base implements renderable {
 
         // Get all other feedbacks whose stageidentifier is not "final_agreed_1"
         // In case of loops, we would like empty array instead of false.
-        return feedback::get_cached_objects(
+        $feedbacks = feedback::get_cached_objects(
             $this->courseworkid,
             ['submissionid' => $this->id, 'stageidentifier_index' => 'others']
         );
+
+        // Sort by stage identifier ascending (natural order so assessor_10 follows assessor_9), preserving keys.
+        uasort($feedbacks, fn($a, $b) => strnatcmp($a->stageidentifier, $b->stageidentifier));
+
+        return $feedbacks;
     }
 
     /**
