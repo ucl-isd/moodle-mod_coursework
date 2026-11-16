@@ -131,17 +131,24 @@ final class audit_test extends \advanced_testcase {
                 'allocatabletype' => 'user',
             ], $coursework);
 
-            $grade = [69.0, 69.99, 70.0, 69.98][$index];
             $finalised = $index < 3;
-            $this->getDataGenerator()->get_plugin_generator('mod_coursework')->create_feedback((object)[
-                'assessorid' => $user->id,
-                'submissionid' => $submission->id,
-                'grade' => $grade,
-                'finalised' => $finalised,
-                'ismoderation' => 0,
-                'stageidentifier' => 'assessor_1',
-                'courseworkid' => $coursework->id,
-            ]);
+
+            foreach (['assessor_1', 'assessor_2', 'final_agreed_1'] as $stage) {
+                if ($stage === 'final_agreed_1') {
+                    $grade = [39.0, 39.99, 40.0, 39.98][$index];
+                } else {
+                    $grade = [69.0, 69.99, 70.0, 69.98][$index];
+                }
+                $this->getDataGenerator()->get_plugin_generator('mod_coursework')->create_feedback((object)[
+                    'assessorid' => $user->id,
+                    'submissionid' => $submission->id,
+                    'grade' => $grade,
+                    'finalised' => $finalised,
+                    'ismoderation' => 0,
+                    'stageidentifier' => $stage,
+                    'courseworkid' => $coursework->id,
+                ]);
+            }
         }
 
         $audit = $this->get_testable_audit($cm->id);
@@ -162,7 +169,11 @@ final class audit_test extends \advanced_testcase {
         $this->assertCount(2, $data['boundary_marks']);
         $this->assertNotContains(70.0, $grades);
         $this->assertNotContains(69.98, $grades);
-        $this->assertContains(69.99, $grades);
-        $this->assertContains(69.0, $grades);
+        $this->assertNotContains(69.99, $grades);
+        $this->assertNotContains(69.0, $grades);
+        $this->assertNotContains(39.98, $grades);
+        $this->assertNotContains(40.0, $grades);
+        $this->assertContains(39.99, $grades);
+        $this->assertContains(39.0, $grades);
     }
 }

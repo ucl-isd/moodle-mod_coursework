@@ -33,6 +33,8 @@ use mod_coursework\event\moderator_appraisal_updated;
 use mod_coursework\forms\moderator_stats_form;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
+use mod_coursework\stages\assessor;
+use mod_coursework\stages\final_agreed;
 use mod_coursework\stages\moderator;
 use stdClass;
 
@@ -115,14 +117,20 @@ class audit {
         // Stats per marker.
         $markerstats = $this->get_marker_statistics($markingsummary['submissions']);
 
-        // Moderation data per moderator.
-        $moderatorstats = $this->get_moderation_data();
+        if ($this->coursework->moderation_agreement_enabled()) {
+            // Moderation data per moderator.
+            $moderatorstats = $this->get_moderation_data();
 
-        // Moderation summary.
-        $moderationsummary = $this->get_moderation_summary($moderatorstats);
+            // Moderation summary.
+            $moderationsummary = $this->get_moderation_summary($moderatorstats);
 
-        // Moderation sample.
-        $moderationsample = $this->get_moderation_sample($markerstats, $moderatorstats);
+            // Moderation sample.
+            $moderationsample = $this->get_moderation_sample($markerstats, $moderatorstats);
+        } else {
+            $moderatorstats = [];
+            $moderationsummary = [];
+            $moderationsample = [];
+        }
 
         // Merge all the data into one object for the template.
         $data = (object)array_merge(
@@ -134,6 +142,10 @@ class audit {
             $moderationsample,
             $this->get_boundary_end_marks(),
         );
+
+        if ($this->coursework->moderation_agreement_enabled()) {
+            $data->moderation_agreement_enabled = true;
+        }
 
         if (isset($this->form)) {
             $data->form = $this->form->render();
@@ -802,6 +814,8 @@ class audit {
             $params['upper' . $key] = $val;
         }
 
+        $params['stage'] = $this->coursework->get_max_markers() > 1 ? final_agreed::STAGE_FINAL_AGREED_1 : assessor::STAGE_ASSESSOR_1;
+
         $marks = $DB->get_records_sql(
             "SELECT f.id, {$cast} as grade, s.id as submissionid, s.allocatabletype, s.allocatableid, ma.agreement
                FROM {coursework_feedbacks} f
@@ -810,7 +824,8 @@ class audit {
           LEFT JOIN {coursework_mod_agreements} ma ON ma.feedbackid = f.id
               WHERE (" . implode(' OR ', $where) . ")
                 AND c.id = :courseworkid
-                AND f.finalised = 1",
+                AND f.finalised = 1
+                AND f.stageidentifier = :stage",
             $params
         );
 
