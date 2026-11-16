@@ -60,12 +60,20 @@
                             <label class="custom-control-label" for="filter-need-marking">{{#str}}need_marking, mod_coursework{{/str}}</label>
                         </div>
                         <div class="pb-1 custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="filter-draft-marking" data-filter-type="status" data-filter-value="draft-marking">
+                            <label class="custom-control-label" for="filter-draft-marking">{{#str}}draft_marking, mod_coursework{{/str}}</label>
+                        </div>
+                        <div class="pb-1 custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="filter-need-agreement" data-filter-type="status" data-filter-value="need-agreement">
                             <label class="custom-control-label" for="filter-need-agreement">{{#str}}need_agreed_mark, mod_coursework{{/str}}</label>
                         </div>
                         <div class="pb-1 custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="filter-ready-for-release" data-filter-type="status" data-filter-value="ready-for-release">
                             <label class="custom-control-label" for="filter-ready-for-release">{{#str}}ready_release, mod_coursework{{/str}}</label>
+                        </div>
+                        <div class="pb-1 custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="filter-draft-agreed-mark" data-filter-type="status" data-filter-value="draft-agreed-mark">
+                            <label class="custom-control-label" for="filter-draft-agreed-mark">{{#str}}draft_agreed_mark, mod_coursework{{/str}}</label>
                         </div>
                         {{#hasgradeboundaries}}
                             <h4 class="badge badge-dark">{{#str}}gradeboundaries, mod_coursework{{/str}}</h4>

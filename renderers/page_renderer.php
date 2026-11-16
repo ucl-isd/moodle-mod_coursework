@@ -412,6 +412,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Form part.
         $template->markingform = $simpleform->render();
 
+        $this->page->requires->js_call_amd('mod_coursework/number_input_scroll', 'init');
+
         if ($advancedmarking) {
             if ($isguide) {
                 $this->page->requires->js_call_amd(

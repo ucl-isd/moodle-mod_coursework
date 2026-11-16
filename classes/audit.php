@@ -27,13 +27,13 @@ namespace mod_coursework;
 
 use context_module;
 use core\context\module;
-use mod_coursework\auto_grader\average_grade_no_straddle;
 use mod_coursework\event\moderator_appraisal_created;
 use mod_coursework\event\moderator_appraisal_deleted;
 use mod_coursework\event\moderator_appraisal_updated;
 use mod_coursework\forms\moderator_stats_form;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
+use mod_coursework\stages\moderator;
 use stdClass;
 
 /**
@@ -803,7 +803,7 @@ class audit {
         }
 
         $marks = $DB->get_records_sql(
-            "SELECT f.id, {$cast} as grade, s.allocatabletype, s.allocatableid, ma.agreement
+            "SELECT f.id, {$cast} as grade, s.id as submissionid, s.allocatabletype, s.allocatableid, ma.agreement
                FROM {coursework_feedbacks} f
                JOIN {coursework_submissions} s ON f.submissionid = s.id
                JOIN {coursework} c ON s.courseworkid = c.id
@@ -827,7 +827,18 @@ class audit {
                 $obj['for'] = \mod_coursework\models\group::get_from_id($mark->allocatableid)?->name();
             }
             $obj['agreement'] = $mark->agreement;
-            $obj['url'] = new \moodle_url('/mod/coursework/actions/feedbacks/edit.php', ['feedbackid' => $mark->id]);
+            if ($this->coursework->moderation_agreement_enabled() && !$obj['agreement']) {
+                $obj['url'] = new \moodle_url(
+                    '/mod/coursework/actions/moderations/new.php',
+                    [
+                        'submissionid' => $mark->submissionid,
+                        'feedbackid' => $mark->id,
+                        'stageidentifier' => moderator::STAGE_MODERATOR_1,
+                    ]
+                );
+            } else {
+                $obj['url'] = new \moodle_url('/mod/coursework/actions/feedbacks/show.php', ['feedbackid' => $mark->id]);
+            }
             $data['boundary_marks'][] = $obj;
         }
 

@@ -51,7 +51,7 @@ Feature: View moderation feedback
     And I should see "Blah" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
 
     Given I set the field "Moderation agreement" to "Agreed"
-    And I set the field "Comment" to "Moderator explaining agreement"
+    And I set the field "Internal moderation comment (not visible to students)" to "Moderator explaining agreement"
     And I click on "Save changes" "button"
 
     When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
@@ -75,7 +75,7 @@ Feature: View moderation feedback
     And I am on the "Coursework" "coursework activity" page logged in as "moderator1"
     And I click on "Agree marking" "link"
     And I set the field "Moderation agreement" to "Disagreed"
-    And I set the field "Comment" to "Moderator explaining disagreement"
+    And I set the field "Internal moderation comment (not visible to students)" to "Moderator explaining disagreement"
     And I click on "Save changes" "button"
 
     When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
