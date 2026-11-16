@@ -109,7 +109,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->feedback[] = $this->render_comparison_view(
                 $coursework,
                 $previousfeedbacks,
-                $isguide
+                $isguide,
+                false,
             );
             // If we ARE using a different method at the end, now we need to append that rendered correctly.
             if ($differentfinal && $final) {
@@ -450,7 +451,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param bool $isguide
      * @return string HTML.
      */
-    protected function render_comparison_view(coursework $coursework, array $previousfeedbacks, bool $isguide): string {
+    protected function render_comparison_view(coursework $coursework, array $previousfeedbacks, bool $isguide, bool $editing = true): string {
         $gradingcontroller = $coursework->get_advanced_grading_active_controller();
         $gradingdefinition = $gradingcontroller->get_definition();
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
@@ -531,6 +532,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     $currentfilling
                     && !$template->differentfinalgradingmethod
                     && !str_starts_with($markerinfo->stage, 'final_agreed')
+                    && $editing
                 ) {
                     $marker->copytoagreed = (object)[
                         'score' => $marker->score,
@@ -551,10 +553,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         $template->markersdata = $markersdata;
-        $template->method = match(get_class($gradingcontroller)) {
-            'gradingform_rubric_controller', 'gradingform_rubric_ranges_controller' => 'rubric',
-            'gradingform_guide_controller' => 'marking_guide'
-        };
+        $template->method = $isguide ? 'marking_guide' : 'rubric';
         return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 
