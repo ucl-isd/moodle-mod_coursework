@@ -62,6 +62,25 @@ class coursework extends \report_rubricgrading\local\plugin_base {
         $this->gradingmanager = get_grading_manager($this->cm->context, 'mod_coursework', 'submissions');
     }
 
+    /**
+     * Get an SQL condition restricting the given user alias to users enrolled on the coursework's course.
+     *
+     * Relies on the course_modules table being aliased as "cm" in the outer query.
+     *
+     * @param string $useralias Alias of the user table in the outer query.
+     * @return string
+     */
+    protected function get_sql_enrolled(string $useralias): string {
+        return "EXISTS (
+                    SELECT 1
+                      FROM {user_enrolments} ue
+                      JOIN {enrol} e ON e.id = ue.enrolid
+                     WHERE ue.userid = {$useralias}.id
+                       AND e.courseid = cm.course
+                       AND ue.status = 0
+                )";
+    }
+
     #[\Override]
     protected function get_sql_rubric(): string {
         global $DB;
@@ -124,10 +143,12 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0 AND stu.suspended = 0
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user'
                  LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
                  LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
-                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
+                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid
+                 WHERE (cws.allocatabletype = 'user' AND stu.deleted = 0 AND {$this->get_sql_enrolled('stu')})
+                 OR (cws.allocatabletype = 'group' AND gstu.deleted = 0 AND {$this->get_sql_enrolled('gstu')})
                  ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
@@ -193,10 +214,12 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0 AND stu.suspended = 0
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user'
                  LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
                  LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
-                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
+                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid
+                 WHERE (cws.allocatabletype = 'user' AND stu.deleted = 0 AND {$this->get_sql_enrolled('stu')})
+                 OR (cws.allocatabletype = 'group' AND gstu.deleted = 0 AND {$this->get_sql_enrolled('gstu')})
                  ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
@@ -260,10 +283,12 @@ class coursework extends \report_rubricgrading\local\plugin_base {
                  JOIN {course_modules}               cm   ON cm.id   = ctx.instanceid AND cm.id  = :cmid
                  JOIN {coursework}                   cw   ON cw.id  = cm.instance
                  JOIN {user}                         grdr ON grdr.id = cwf.assessorid
-                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user' AND stu.deleted = 0 AND stu.suspended = 0
+                 LEFT JOIN {user}                    stu  ON stu.id  = cws.allocatableid AND cws.allocatabletype = 'user'
                  LEFT JOIN {groups}                  grp  ON grp.id = cws.allocatableid AND cws.allocatabletype = 'group'
                  LEFT JOIN {groups_members}          gmem ON gmem.groupid = grp.id
-                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid AND gstu.deleted = 0
+                 LEFT JOIN {user}                    gstu ON gstu.id = gmem.userid
+                 WHERE (cws.allocatabletype = 'user' AND stu.deleted = 0 AND {$this->get_sql_enrolled('stu')})
+                 OR (cws.allocatabletype = 'group' AND gstu.deleted = 0 AND {$this->get_sql_enrolled('gstu')})
                  ORDER BY stu.lastname, stu.firstname, gstu.lastname, gstu.firstname, cwf.stageidentifier, grc.sortorder";
     }
 
@@ -373,7 +398,7 @@ class coursework extends \report_rubricgrading\local\plugin_base {
             ->add_callback(static function (?float $grade, stdClass $row) use ($coursework, $name): string {
                 $feedback = feedback::get_from_id($row->feedbackid);
                 $canshow = $feedback->can_show($coursework, $feedback->get_submission());
-                $value = ($name === 'grade') ? null : $grade;
+                $value = ($name === 'grade') ? null : ($grade ?? '');
                 return (string) marking_cell_data::get_mark_for_feedback($coursework, $feedback, $canshow, $value);
             });
         return true;

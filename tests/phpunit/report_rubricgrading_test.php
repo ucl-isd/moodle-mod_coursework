@@ -44,6 +44,15 @@ use xmldb_table;
 final class report_rubricgrading_test extends advanced_testcase {
     use test_helpers\factory_mixin;
 
+    /** @var int Grading definition id created by setup_graded_coursework(). */
+    private int $gradingdefinitionid;
+
+    /** @var int Grading criterion id created by setup_graded_coursework(). */
+    private int $gradingcriterionid;
+
+    /** @var int Grading level id created by setup_graded_coursework() (not used by marking guide). */
+    private int $gradinglevelid;
+
     private function check_report_rubricgrading_installed(): bool {
         $path = \core_component::get_component_directory('report_rubricgrading');
         return !is_null($path);
@@ -329,6 +338,289 @@ final class report_rubricgrading_test extends advanced_testcase {
         $this->setUser($agreedmarker);
 
         $this->assertSame('45', $this->format_grade_column($feedback, 45.0));
+    }
+
+    /**
+     * Grading methods supported by the report.
+     *
+     * @return array
+     */
+    public static function grading_method_provider(): array {
+        return [
+            'rubric' => ['rubric'],
+            'rubric_ranges' => ['rubric_ranges'],
+            'guide' => ['guide'],
+        ];
+    }
+
+    /**
+     * Deleted users with individual submissions are excluded from the report.
+     *
+     * @dataProvider grading_method_provider
+     * @param string $method Grading method.
+     */
+    public function test_get_sql_excludes_deleted_users(string $method): void {
+        global $DB;
+        $this->setup_graded_coursework($method);
+        $this->create_a_student();
+        $this->create_another_student();
+        $this->add_graded_submission($this->student->id, 'user');
+        $this->add_graded_submission($this->otherstudent->id, 'user');
+
+        $this->assertEqualsCanonicalizing(
+            [(int)$this->student->id, (int)$this->otherstudent->id],
+            $this->get_report_user_ids()
+        );
+
+        // Flag as deleted directly, as delete_user() would also unenrol them.
+        $DB->set_field('user', 'deleted', 1, ['id' => $this->otherstudent->id]);
+
+        $this->assertSame([(int)$this->student->id], $this->get_report_user_ids());
+    }
+
+    /**
+     * Unenrolled users with individual submissions are excluded from the report.
+     *
+     * @dataProvider grading_method_provider
+     * @param string $method Grading method.
+     */
+    public function test_get_sql_excludes_unenrolled_users(string $method): void {
+        global $DB;
+        $this->setup_graded_coursework($method);
+        $this->create_a_student();
+        $this->create_another_student();
+        $this->add_graded_submission($this->student->id, 'user');
+        $this->add_graded_submission($this->otherstudent->id, 'user');
+
+        $this->assertEqualsCanonicalizing(
+            [(int)$this->student->id, (int)$this->otherstudent->id],
+            $this->get_report_user_ids()
+        );
+
+        $instance = $DB->get_record('enrol', ['courseid' => $this->get_course()->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        enrol_get_plugin('manual')->unenrol_user($instance, $this->otherstudent->id);
+
+        $this->assertSame([(int)$this->student->id], $this->get_report_user_ids());
+    }
+
+    /**
+     * Deleted members of a group are excluded from the report for a group submission.
+     *
+     * @dataProvider grading_method_provider
+     * @param string $method Grading method.
+     */
+    public function test_get_sql_excludes_deleted_group_members(string $method): void {
+        global $DB;
+        $this->setup_graded_coursework($method);
+        $this->setup_group_with_two_students();
+        $this->add_graded_submission($this->get_group()->id, 'group');
+
+        $this->assertEqualsCanonicalizing(
+            [(int)$this->student->id, (int)$this->otherstudent->id],
+            $this->get_report_user_ids()
+        );
+
+        // Flag as deleted directly, as delete_user() would also remove the group membership.
+        $DB->set_field('user', 'deleted', 1, ['id' => $this->otherstudent->id]);
+
+        $this->assertSame([(int)$this->student->id], $this->get_report_user_ids());
+    }
+
+    /**
+     * Unenrolled members of a group are excluded from the report for a group submission.
+     *
+     * @dataProvider grading_method_provider
+     * @param string $method Grading method.
+     */
+    public function test_get_sql_excludes_unenrolled_group_members(string $method): void {
+        global $DB;
+        $this->setup_graded_coursework($method);
+        $this->setup_group_with_two_students();
+        $this->add_graded_submission($this->get_group()->id, 'group');
+
+        $this->assertEqualsCanonicalizing(
+            [(int)$this->student->id, (int)$this->otherstudent->id],
+            $this->get_report_user_ids()
+        );
+
+        // Remove the enrolment directly, as unenrol_user() would also remove the group membership.
+        $enrolids = $DB->get_fieldset_select('enrol', 'id', 'courseid = ?', [$this->get_course()->id]);
+        [$insql, $params] = $DB->get_in_or_equal($enrolids);
+        $params[] = $this->otherstudent->id;
+        $DB->delete_records_select('user_enrolments', "enrolid {$insql} AND userid = ?", $params);
+
+        $this->assertSame([(int)$this->student->id], $this->get_report_user_ids());
+    }
+
+    /**
+     * Create a coursework using the given advanced grading method, with a single criterion and level.
+     *
+     * Sets $this->coursework, $this->teacher, $this->gradingdefinitionid, $this->gradingcriterionid
+     * and $this->gradinglevelid.
+     *
+     * @param string $method Grading method.
+     */
+    private function setup_graded_coursework(string $method): void {
+        global $DB;
+        if (!$this->check_report_rubricgrading_installed()) {
+            $this->markTestSkipped('report_rubricgrading plugin is not installed.');
+        }
+        if (is_null(\core_component::get_plugin_directory('gradingform', $method))) {
+            $this->markTestSkipped("gradingform_{$method} plugin is not installed.");
+        }
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $this->create_a_coursework();
+        $this->create_a_teacher();
+
+        $manager = get_grading_manager($this->get_coursework()->get_context(), 'mod_coursework', 'submissions');
+        $manager->set_active_method($method);
+        $areaid = $DB->get_field('grading_areas', 'id', [
+            'contextid' => $this->get_coursework()->get_context()->id,
+            'component' => 'mod_coursework',
+            'areaname' => 'submissions',
+        ], MUST_EXIST);
+
+        $now = time();
+        $this->gradingdefinitionid = $DB->insert_record('grading_definitions', [
+            'areaid' => $areaid,
+            'method' => $method,
+            'name' => 'Test definition',
+            'status' => 20, // Ready for use.
+            'timecreated' => $now,
+            'usercreated' => $this->teacher->id,
+            'timemodified' => $now,
+            'usermodified' => $this->teacher->id,
+        ]);
+
+        switch ($method) {
+            case 'rubric':
+                $this->gradingcriterionid = $DB->insert_record('gradingform_rubric_criteria', [
+                    'definitionid' => $this->gradingdefinitionid,
+                    'sortorder' => 1,
+                    'description' => 'Criterion 1',
+                ]);
+                $this->gradinglevelid = $DB->insert_record('gradingform_rubric_levels', [
+                    'criterionid' => $this->gradingcriterionid,
+                    'score' => 5,
+                    'definition' => 'Level 1',
+                ]);
+                break;
+            case 'rubric_ranges':
+                $this->gradingcriterionid = $DB->insert_record('gradingform_rubric_ranges_c', [
+                    'definitionid' => $this->gradingdefinitionid,
+                    'sortorder' => 1,
+                    'description' => 'Criterion 1',
+                ]);
+                $this->gradinglevelid = $DB->insert_record('gradingform_rubric_ranges_l', [
+                    'criterionid' => $this->gradingcriterionid,
+                    'score' => 5,
+                    'definition' => 'Level 1',
+                ]);
+                break;
+            case 'guide':
+                $this->gradingcriterionid = $DB->insert_record('gradingform_guide_criteria', [
+                    'definitionid' => $this->gradingdefinitionid,
+                    'sortorder' => 1,
+                    'shortname' => 'Criterion 1',
+                    'maxscore' => 10,
+                ]);
+                break;
+        }
+    }
+
+    /**
+     * Create a group containing $this->student and $this->otherstudent.
+     */
+    private function setup_group_with_two_students(): void {
+        $this->create_a_student();
+        $this->create_another_student();
+        $this->create_a_group();
+        $this->add_student_to_the_group();
+        $this->add_the_other_student_to_the_group();
+    }
+
+    /**
+     * Create a submission marked by $this->teacher, with an active grading instance and a filling for the criterion.
+     *
+     * @param int $allocatableid User or group id.
+     * @param string $allocatabletype 'user' or 'group'.
+     */
+    private function add_graded_submission(int $allocatableid, string $allocatabletype): void {
+        global $DB;
+        $generator = $this->get_coursework_generator();
+
+        $submission = $generator->create_submission((object)[
+            'courseworkid' => $this->get_coursework()->id,
+            'allocatableid' => $allocatableid,
+            'allocatabletype' => $allocatabletype,
+            'userid' => $allocatabletype === 'user' ? $allocatableid : $this->student->id,
+            'createdby' => $allocatabletype === 'user' ? $allocatableid : $this->student->id,
+            'lastupdatedby' => $allocatabletype === 'user' ? $allocatableid : $this->student->id,
+        ], $this->get_coursework());
+
+        $feedback = $generator->create_feedback((object)[
+            'submissionid' => $submission->id,
+            'assessorid' => $this->teacher->id,
+            'stageidentifier' => 'assessor_1',
+            'grade' => 45,
+            'finalised' => 1,
+        ]);
+
+        $instanceid = $DB->insert_record('grading_instances', [
+            'definitionid' => $this->gradingdefinitionid,
+            'raterid' => $this->teacher->id,
+            'itemid' => $feedback->id,
+            'status' => 1, // Active.
+            'timemodified' => time(),
+        ]);
+
+        $method = $DB->get_field('grading_definitions', 'method', ['id' => $this->gradingdefinitionid]);
+        switch ($method) {
+            case 'rubric':
+                $DB->insert_record('gradingform_rubric_fillings', [
+                    'instanceid' => $instanceid,
+                    'criterionid' => $this->gradingcriterionid,
+                    'levelid' => $this->gradinglevelid,
+                    'remark' => 'Remark',
+                ]);
+                break;
+            case 'rubric_ranges':
+                $DB->insert_record('gradingform_rubric_ranges_f', [
+                    'instanceid' => $instanceid,
+                    'criterionid' => $this->gradingcriterionid,
+                    'levelid' => $this->gradinglevelid,
+                    'grade' => 5,
+                    'remark' => 'Remark',
+                ]);
+                break;
+            case 'guide':
+                $DB->insert_record('gradingform_guide_fillings', [
+                    'instanceid' => $instanceid,
+                    'criterionid' => $this->gradingcriterionid,
+                    'score' => 5,
+                    'remark' => 'Remark',
+                ]);
+                break;
+        }
+    }
+
+    /**
+     * Run the report SQL for the current coursework and return the distinct student ids it includes.
+     *
+     * @return int[]
+     */
+    private function get_report_user_ids(): array {
+        global $DB;
+        $cm = get_coursemodule_from_instance('coursework', $this->get_coursework()->id);
+        $plugin = new coursework(get_fast_modinfo($this->get_course()->id)->get_cm($cm->id));
+
+        $userids = [];
+        foreach ($DB->get_records_sql($plugin->get_sql(), ['cmid' => $cm->id]) as $row) {
+            $userids[] = (int)($row->allocatabletype === 'group' ? $row->group_member_id : $row->userid);
+        }
+        return array_values(array_unique($userids));
     }
 
     /**
