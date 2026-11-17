@@ -94,9 +94,14 @@ export const init = async(args) => {
 
         const remarkInput = row.querySelector('td.remark textarea');
         if (remarkInput) {
-            remarkInput.value = button.dataset.remark;
-            remarkInput.dispatchEvent(new Event('input', {bubbles: true}));
-            remarkInput.dispatchEvent(new Event('change', {bubbles: true}));
+            // Append the feedback, but not if it's already there exactly.
+            const current = remarkInput.value.trim();
+            const remark = button.dataset.remark.trim();
+            if (!current.includes(remark)) {
+                remarkInput.value = current === '' ? remark : `${current}\n\n${remark}`;
+                remarkInput.dispatchEvent(new Event('input', {bubbles: true}));
+                remarkInput.dispatchEvent(new Event('change', {bubbles: true}));
+            }
         }
     });
 
