@@ -1,8 +1,9 @@
 @mod @mod_coursework @mod_coursework_copy_to_agreed
-Feature: Copy a marker's criterion marks and feedback to the agreed mark
+Feature: Copy a marker's criterion feedback and calculate average marks for the agreed mark
   In order to agree marks more quickly
   As a user agreeing marks with a marking guide or rubric
-  I need to be able to copy an individual marker's criterion mark and feedback into the agreed marking form
+  I need to be able to copy an individual marker's criterion feedback into the agreed marking form
+  And calculate the average criterion mark when using a marking guide
 
   Background:
     Given the following "course" exists:
@@ -24,7 +25,7 @@ Feature: Copy a marker's criterion marks and feedback to the agreed mark
       | student1    | Rubric CW  | 1               |
 
   @javascript
-  Scenario: Copy marker criterion marks and feedback to agreed when using a marking guide
+  Scenario: Copy marker feedback and calculate the average mark to agreed when using a marking guide
     Given I am on the "Guide CW" "coursework activity" page logged in as "admin"
     And I select "Advanced grading" from secondary navigation
     And I set the field "Change active grading method to" to "Marking guide"
@@ -53,33 +54,56 @@ Feature: Copy a marker's criterion marks and feedback to the agreed mark
     And the field "Mark (0–5)" matches value ""
     And the field "G2 criterion remark" matches value ""
     And the field "Mark (0–10)" matches value ""
-    # Copy marker 2 for G1.
-    When I click on "button[aria-label='Copy Marker 2 mark and feedback for G1 to agreed']" "css_element"
+    # Copy marker 2 for G1: only the feedback is copied, not the mark.
+    When I click on "button[aria-label='Copy Marker 2 feedback for G1 to agreed']" "css_element"
     Then the field "G1 criterion remark" matches value "Marker two G1 comment"
-    And the field "Mark (0–5)" matches value "1"
+    And the field "Mark (0–5)" matches value ""
     # Other criteria are not affected.
     And the field "G2 criterion remark" matches value ""
     And the field "Mark (0–10)" matches value ""
-    # Copying another marker replaces what is there.
-    When I click on "button[aria-label='Copy Marker 1 mark and feedback for G1 to agreed']" "css_element"
-    Then the field "G1 criterion remark" matches value "Marker one G1 comment"
-    And the field "Mark (0–5)" matches value "2"
-    # Copy marker 1 for G2, then edit the copied values before saving.
-    When I click on "button[aria-label='Copy Marker 1 mark and feedback for G2 to agreed']" "css_element"
-    Then the field "G2 criterion remark" matches value "Marker one G2 comment"
-    And the field "Mark (0–10)" matches value "8"
+    # Copying another marker appends their feedback.
+    When I click on "button[aria-label='Copy Marker 1 feedback for G1 to agreed']" "css_element"
+    Then the field "G1 criterion remark" matches multiline:
+      """
+      Marker two G1 comment
+
+      Marker one G1 comment
+      """
+    And the field "Mark (0–5)" matches value ""
+    # Copying the same feedback again does not duplicate it.
+    When I click on "button[aria-label='Copy Marker 1 feedback for G1 to agreed']" "css_element"
+    Then the field "G1 criterion remark" matches multiline:
+      """
+      Marker two G1 comment
+
+      Marker one G1 comment
+      """
+    # Calculate the average mark for G1 only: (2 + 1) / 2 = 1.5.
+    When I click on "Calculate average grade" "link" in the "G1" "table_row"
+    Then the field "Mark (0–5)" matches value "1.5"
+    And the field "Mark (0–10)" matches value ""
+    # Calculating the average does not touch feedback.
+    And the field "G2 criterion remark" matches value ""
+    # Calculate the average mark for G2: (8 + 4) / 2 = 6.
+    When I click on "Calculate average grade" "link" in the "G2" "table_row"
+    Then the field "Mark (0–10)" matches value "6"
     And I set the field "G2 criterion remark" to "Agreed G2 comment"
     When I press "Save and finalise"
-    # (2 + 8) / 15 = 66.67%.
-    Then I should see "66.67" in the "[data-behat-markstage='final_agreed']" "css_element"
+    # (1.5 + 6) / 15 = 50%.
+    Then I should see "50" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I click on "[data-behat-markstage='final_agreed'] a" "css_element"
-    And the field "G1 criterion remark" matches value "Marker one G1 comment"
-    And the field "Mark (0–5)" matches value "2"
+    And the field "G1 criterion remark" matches multiline:
+      """
+      Marker two G1 comment
+
+      Marker one G1 comment
+      """
+    And the field "Mark (0–5)" matches value "1.5"
     And the field "G2 criterion remark" matches value "Agreed G2 comment"
-    And the field "Mark (0–10)" matches value "8"
+    And the field "Mark (0–10)" matches value "6"
 
   @javascript
-  Scenario: Copy marker criterion levels and feedback to agreed when using a rubric
+  Scenario: Copy marker feedback only to agreed when using a rubric
     Given I am on the "Rubric CW" "coursework activity" page logged in as "admin"
     And I select "Advanced grading" from secondary navigation
     And I set the field "Change active grading method to" to "Rubric"
@@ -107,37 +131,28 @@ Feature: Copy a marker's criterion marks and feedback to the agreed mark
     And I press "Save and finalise"
     When I follow "Agree marking"
     And I wait until the page is ready
-    Then the rubric level with "1" points is not checked for criterion "R1"
+    # The average grade calculation is only offered for marking guides.
+    Then I should not see "Calculate average grade"
+    And the rubric level with "1" points is not checked for criterion "R1"
     And the rubric level with "3" points is not checked for criterion "R1"
     And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R1:')]" matches value ""
-    # Copy marker 2 for R1.
-    When I click on "button[aria-label='Copy Marker 2 mark and feedback for R1 to agreed']" "css_element"
-    Then the rubric level with "1" points is checked for criterion "R1"
-    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R1:')]" matches value "Marker two R1 comment"
+    # Copy marker 2 for R1: only the feedback is copied, no level is selected.
+    When I click on "button[aria-label='Copy Marker 2 feedback for R1 to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R1:')]" matches value "Marker two R1 comment"
+    And the rubric level with "1" points is not checked for criterion "R1"
+    And the rubric level with "2" points is not checked for criterion "R1"
+    And the rubric level with "3" points is not checked for criterion "R1"
     # Other criteria are not affected.
     And the rubric level with "1" points is not checked for criterion "R2"
     And the rubric level with "2" points is not checked for criterion "R2"
     And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R2:')]" matches value ""
-    # Copying another marker replaces what is there.
-    When I click on "button[aria-label='Copy Marker 1 mark and feedback for R1 to agreed']" "css_element"
-    Then the rubric level with "3" points is checked for criterion "R1"
-    And the rubric level with "1" points is not checked for criterion "R1"
-    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R1:')]" matches value "Marker one R1 comment"
-    # Copying the level that is already selected keeps it selected.
-    When I click on "button[aria-label='Copy Marker 1 mark and feedback for R1 to agreed']" "css_element"
-    Then the rubric level with "3" points is checked for criterion "R1"
-    When I click on "button[aria-label='Copy Marker 2 mark and feedback for R2 to agreed']" "css_element"
-    Then the rubric level with "2" points is checked for criterion "R2"
-    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R2:')]" matches value "Marker two R2 comment"
-    When I press "Save and finalise"
-    # (3 + 2) / 6 = 83.33%.
-    Then I should see "83.33" in the "[data-behat-markstage='final_agreed']" "css_element"
-    And I click on "[data-behat-markstage='final_agreed'] a" "css_element"
-    And I wait until the page is ready
-    And the rubric level with "3" points is checked for criterion "R1"
-    And the rubric level with "2" points is checked for criterion "R2"
-    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R1:')]" matches value "Marker one R1 comment"
-    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R2:')]" matches value "Marker two R2 comment"
+    # Copying the same feedback again does not duplicate it.
+    When I click on "button[aria-label='Copy Marker 2 feedback for R1 to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R1:')]" matches value "Marker two R1 comment"
+    When I click on "button[aria-label='Copy Marker 1 feedback for R2 to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion R2:')]" matches value "Marker one R2 comment"
+    And the rubric level with "1" points is not checked for criterion "R2"
+    And the rubric level with "3" points is not checked for criterion "R2"
 
   @javascript
   Scenario: Copy to agreed is not offered when the agreed stage uses a different grading method

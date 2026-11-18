@@ -64,7 +64,7 @@ const setUpUI = (markLabelText) => {
             }
 
             // Insert at the top of the cell.
-            cell.insertBefore(scoreLabel, cell.firstChild);
+            scoreInput.before(scoreLabel);
 
             // 3. Clean up the old overhanging div.
             maxScoreDiv.remove();
