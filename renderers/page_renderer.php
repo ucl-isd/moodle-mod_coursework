@@ -451,7 +451,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param bool $isguide
      * @return string HTML.
      */
-    protected function render_comparison_view(coursework $coursework, array $previousfeedbacks, bool $isguide, bool $editing = true): string {
+    protected function render_comparison_view(
+        coursework $coursework,
+        array $previousfeedbacks,
+        bool $isguide,
+        bool $editing = true
+    ): string {
         $gradingcontroller = $coursework->get_advanced_grading_active_controller();
         $gradingdefinition = $gradingcontroller->get_definition();
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;

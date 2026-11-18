@@ -63,44 +63,73 @@ export const init = async(args) => {
         el.textContent = title + ': ';
     });
 
-    // "Copy to agreed" links (marking guide): copy a marker's criterion mark and remark into the agreed form inputs.
+    // Append a "Calculate grade" button to the marks for each criterion.
+    const table = document.querySelector('#advancedgrading-criteria');
+    if (table && args.method === 'marking_guide') {
+        const cells = table.querySelectorAll('td.score');
+        const linktext = await getString('calculateavggrade', 'mod_coursework');
+        cells.forEach(cell => {
+            const link = document.createElement('a');
+            link.href = '#';
+            link.dataset.action = 'calculate-avg-grade';
+            const icon = document.createElement('i');
+            icon.classList.add('fa', 'fa-calculator', 'me-1');
+            link.append(icon, linktext);
+            cell.prepend(link);
+        });
+    }
+
+    // "Copy to agreed" buttons copy a marker's criterion feedback; "Calculate average grade" links fill in the average mark.
     document.addEventListener('click', (e) => {
-        const button = e.target.closest('[data-action="copy-to-agreed"]');
+        // Use closest() so clicks on the icon inside the button/link are handled too.
+        const button = e.target.closest('[data-action]');
         if (!button) {
             return;
         }
-        e.preventDefault();
 
-        const row = button.closest('tr.criterion');
-        if (!row) {
-            return;
-        }
-
-        if (args.method === 'marking_guide') {
-            const scoreInput = row.querySelector('td.score input');
-            if (scoreInput && button.dataset.score !== '') {
-                scoreInput.value = button.dataset.score;
-                scoreInput.dispatchEvent(new Event('input', {bubbles: true}));
-                scoreInput.dispatchEvent(new Event('change', {bubbles: true}));
+        // Copy feedback.
+        if (button.dataset.action === 'copy-to-agreed') {
+            e.preventDefault();
+            const row = button.closest('tr.criterion');
+            if (!row) {
+                return;
             }
-        } else if (args.method === 'rubric') {
-            if (button.dataset.fillingid !== '') {
-                const radioInput = row.querySelector(`td.levels input[type="radio"][value="${button.dataset.fillingid}"]`);
-                if (radioInput && radioInput.checked === false) {
-                    radioInput.closest('.level').click();
+            const remarkInput = row.querySelector('td.remark textarea');
+            if (remarkInput) {
+                // Append the feedback, but not if it's already there exactly.
+                const current = remarkInput.value.trim();
+                const remark = button.dataset.remark.trim();
+                if (!current.includes(remark)) {
+                    remarkInput.value = current === '' ? remark : `${current}\n\n${remark}`;
+                    remarkInput.dispatchEvent(new Event('input', {bubbles: true}));
+                    remarkInput.dispatchEvent(new Event('change', {bubbles: true}));
                 }
             }
-        }
+        } else if (button.dataset.action === 'calculate-avg-grade') {
+            e.preventDefault();
+            const row = button.closest('tr.criterion');
+            if (!row) {
+                return;
+            }
 
-        const remarkInput = row.querySelector('td.remark textarea');
-        if (remarkInput) {
-            // Append the feedback, but not if it's already there exactly.
-            const current = remarkInput.value.trim();
-            const remark = button.dataset.remark.trim();
-            if (!current.includes(remark)) {
-                remarkInput.value = current === '' ? remark : `${current}\n\n${remark}`;
-                remarkInput.dispatchEvent(new Event('input', {bubbles: true}));
-                remarkInput.dispatchEvent(new Event('change', {bubbles: true}));
+            const elements = row.querySelectorAll('[data-action="copy-to-agreed"]');
+            const scores = [];
+            elements.forEach(el => {
+                const score = el.dataset.score;
+                if (score !== '') {
+                    scores.push(score);
+                }
+            });
+            const avg = scores.reduce((a, b) => a + parseFloat(b), 0) / scores.length;
+
+            // Marking guide.
+            if (args.method === 'marking_guide') {
+                const scoreInput = row.querySelector('td.score input');
+                if (scoreInput) {
+                    scoreInput.value = avg;
+                    scoreInput.dispatchEvent(new Event('input', {bubbles: true}));
+                    scoreInput.dispatchEvent(new Event('change', {bubbles: true}));
+                }
             }
         }
     });
