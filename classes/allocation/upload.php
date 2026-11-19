@@ -16,6 +16,7 @@
 
 namespace mod_coursework\allocation;
 
+use core\context\user as context_user;
 use csv_import_reader;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
@@ -42,6 +43,39 @@ class upload {
 
     public function __construct($coursework) {
         $this->coursework = $coursework;
+    }
+
+    /**
+     * Validate the csv and create the allocations for all lines that passed validation.
+     *
+     * @param string $content
+     * @param string $encoding
+     * @param string $delimiter
+     * @return array|bool|string validation errors keyed by line, or false if none.
+     */
+    public function validate_and_process(string $content, string $encoding, string $delimiter): array|bool|string {
+        $processingresults = $this->validate_csv($content, $encoding, $delimiter);
+        $this->process_csv($content, $encoding, $delimiter, $processingresults);
+        return $processingresults;
+    }
+
+    /**
+     * Read back an uploaded allocations file from the current user's draft area.
+     *
+     * @param int $draftitemid
+     * @return string
+     * @throws moodle_exception if no file is found.
+     */
+    public static function get_draft_file_content(int $draftitemid): string {
+        global $USER;
+
+        $usercontext = context_user::instance($USER->id);
+        $files = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id DESC', false);
+        $file = reset($files);
+        if (!$file) {
+            throw new moodle_exception('allocationsfilenotfound', 'mod_coursework');
+        }
+        return $file->get_content();
     }
 
     /**
