@@ -42,6 +42,7 @@ final class task_test extends \advanced_testcase {
         $this->resetAfterTest();
         // This is required because the email redirection and capture fails under postgres due to transactions.
         $this->preventResetByRollback();
+        set_config('process_auto_allocations_sync', 0, 'mod_coursework');
     }
 
     /**
@@ -213,6 +214,7 @@ final class task_test extends \advanced_testcase {
             'assessorid' => $markerassigned->id,
             'stageidentifier' => 'assessor_1',
         ]);
+
         $generator->create_allocation([
             'courseworkid' => $coursework->id,
             'allocatableid' => $student->id,
