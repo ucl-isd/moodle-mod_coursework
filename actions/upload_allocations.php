@@ -20,6 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\allocation\marker_role;
 use mod_coursework\allocation\upload;
 use mod_coursework\models\coursework;
 
@@ -54,28 +55,55 @@ if (!has_any_capability($gradingsheetcapabilities, $PAGE->context)) {
 }
 
 $allocationsuploadform = new upload_allocations_form($coursemoduleid);
+$pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+$csvimport = new upload($coursework);
 
 if ($allocationsuploadform->is_cancelled()) {
     redirect("$CFG->wwwroot/mod/coursework/view.php?id=$coursemoduleid");
 }
 
-if ($data = $allocationsuploadform->get_data()) {
-    // Perform checks on data
+$markerroleconfirmed = optional_param('confirmmarkerrole', false, PARAM_BOOL);
+if ($markerroleconfirmed) {
+    require_sesskey();
+    $draftitemid = required_param('draftitemid', PARAM_INT);
+    $encoding = required_param('encoding', PARAM_ALPHANUMEXT);
+    $delimiter = required_param('delimiter_name', PARAM_ALPHA);
+    $content = upload::get_draft_file_content($draftitemid);
+    $data = (object)['encoding' => $encoding, 'delimiter_name' => $delimiter];
 
+    // Recalculate who needs the role from the file itself rather than trusting submitted user ids.
+    $markerrole = new marker_role($coursework);
+    $markerrole->assign(array_keys($markerrole->get_users_requiring_role($content, $encoding, $delimiter)));
+} else if ($data = $allocationsuploadform->get_data()) {
     $content = $allocationsuploadform->get_file_content('allocationsdata');
 
-    $csvimport = new upload($coursework);
+    $markerrole = new marker_role($coursework);
+    $userswithoutrole = $markerrole->can_assign()
+        ? $markerrole->get_users_requiring_role($content, $data->encoding, $data->delimiter_name)
+        : [];
+    if ($userswithoutrole) {
+        $confirmurl = new moodle_url($PAGE->url, [
+            'confirmmarkerrole' => 1,
+            'draftitemid' => $data->allocationsdata,
+            'encoding' => $data->encoding,
+            'delimiter_name' => $data->delimiter_name,
+        ]);
+        echo $pagerenderer->confirm_marker_role_assignment(
+            $userswithoutrole,
+            $markerrole->get_role_name(),
+            $confirmurl,
+            $PAGE->url,
+        );
+        exit;
+    }
+}
 
-    $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
-
-    // Process
-    $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $procsessingresults);
-    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+if (!empty($data)) {
+    $procsessingresults = $csvimport->validate_and_process($content, $data->encoding, $data->delimiter_name);
     echo $pagerenderer->process_csv_upload($procsessingresults, $content, $csvtype);
 
     $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework->id]);
     $cache->purge();
 } else {
-    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->csv_upload($allocationsuploadform, $csvtype);
 }

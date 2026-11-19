@@ -23,6 +23,7 @@
 use mod_coursework\candidateprovider_manager;
 use mod_coursework\admin_setting_autogradeboundaries;
 use mod_coursework\auto_grader\average_grade_no_straddle;
+use mod_coursework\allocation\marker_role;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -312,6 +313,21 @@ if ($ADMIN->fulltree) {
 
     $options = [ 'username' => get_string('username'), 'email' => get_string('email')];
     $settings->add(new admin_setting_configselect('mod_coursework/allocation_identifier', get_string('allocationidentifier', 'coursework'), get_string('allocationidentifier_desc', 'coursework'), 'username', $options));
+
+    $settings->add(new admin_setting_configselect(
+        'mod_coursework/markerrole',
+        get_string('markerrole', 'mod_coursework'),
+        get_string('markerrole_desc', 'mod_coursework'),
+        0,
+        fn(): array => marker_role::get_role_options(),
+    ));
+
+    $settings->add(new admin_setting_pickroles(
+        'mod_coursework/teachingroles',
+        get_string('teachingroles', 'mod_coursework'),
+        get_string('teachingroles_desc', 'mod_coursework'),
+        ['editingteacher', 'teacher'],
+    ));
 
     // Default per page.
     $options = ['3' => '3', '10' => '10', '20' => '20', '30' => '30', '40' => '40', '50' => '50', '100' => '100'];
