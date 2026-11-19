@@ -141,7 +141,6 @@ class reminders_task extends scheduled_task {
             if ($type === self::TYPE_AGREED) {
                 $activitydata = $this->get_data_for_agreed_marking_deadline_reminders(
                     $coursework,
-                    $courses[$activity->course],
                     $markers
                 );
             } else {
@@ -169,7 +168,11 @@ class reminders_task extends scheduled_task {
      * @param array $users
      * @return array
      */
-    private function get_data_for_initial_marking_deadline_reminders(coursework $coursework, stdClass $course, array $users): array {
+    private function get_data_for_initial_marking_deadline_reminders(
+        coursework $coursework,
+        stdClass $course,
+        array $users
+    ): array {
         global $DB;
 
         $return = [];
@@ -181,7 +184,11 @@ class reminders_task extends scheduled_task {
                 $unmarked = $DB->count_records_sql("
                 SELECT COUNT(s.id) as total
                   FROM {coursework_allocation_pairs} ap
-                  JOIN {coursework_submissions} s ON (s.courseworkid = ap.courseworkid AND s.allocatabletype = ap.allocatabletype AND s.allocatableid = ap.allocatableid)
+                  JOIN {coursework_submissions} s ON (
+                            s.courseworkid = ap.courseworkid
+                            AND s.allocatabletype = ap.allocatabletype
+                            AND s.allocatableid = ap.allocatableid
+                      )
              LEFT JOIN {coursework_feedbacks} f ON (f.submissionid = s.id AND f.stageidentifier = ap.stageidentifier)
                  WHERE ap.courseworkid = :courseworkid
                        AND ap.assessorid = :assessorid
@@ -217,7 +224,7 @@ class reminders_task extends scheduled_task {
      * @param array $users
      * @return array
      */
-    private function get_data_for_agreed_marking_deadline_reminders(coursework $coursework, stdClass $course, array $users): array {
+    private function get_data_for_agreed_marking_deadline_reminders(coursework $coursework, array $users): array {
         global $DB;
 
         $return = [];
