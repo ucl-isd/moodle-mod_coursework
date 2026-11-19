@@ -27,10 +27,8 @@ namespace mod_coursework;
 
 use core\task\manager;
 use mod_coursework\task\process_auto_allocations_task;
-use mod_coursework\task\enrol_task;
 use mod_coursework\task\mail_task;
 use mod_coursework\task\reminders_task;
-use mod_coursework\task\unenrol_task;
 
 /**
  * Unit tests for mod/coursework/lib.php.
