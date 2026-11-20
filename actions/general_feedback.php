@@ -35,9 +35,7 @@ require_login($course, false, $cm);
 
 $coursework = coursework::get_from_id($cm->instance, MUST_EXIST);
 
-if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
-    throw new moodle_exception('access_denied', 'coursework');
-}
+require_capability('mod/coursework:addgeneralfeedback', $PAGE->context);
 
 $url = '/mod/coursework/actions/general_feedback.php';
 $link = new moodle_url($url, ['cmid' => $cmid]);
@@ -48,6 +46,7 @@ $PAGE->set_title($title);
 $customdata = new stdClass();
 $customdata->id = $coursework->id();
 $customdata->cmid = $cmid;
+$customdata->deadline = $coursework->deadline;
 
 $gradingform = new general_feedback_form(null, $customdata);
 
@@ -64,16 +63,12 @@ if ($gradingform->is_cancelled()) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading($title);
 
-    // N.B. generalfeedback here is actually the release date when set.
-    if ($coursework->generalfeedback) {
-        echo '<p>' .
-        get_string('publishedtostudentsfrom', 'mod_coursework', userdate($coursework->generalfeedback, get_string('strftimedatetime', 'langconfig')))
-        . '</p>';
-    }
-
     echo '<p>' . get_string('generalfeedbackinfo', 'mod_coursework') . '</p>';
 
     $customdata->feedbackcomment_editor['text'] = $coursework->get_general_feedback() ?? '';
+    if ($coursework->generalfeedback) {
+        $customdata->generalfeedback = $coursework->generalfeedback;
+    }
     $gradingform->set_data($customdata);
     $gradingform->display();
     echo $OUTPUT->footer();

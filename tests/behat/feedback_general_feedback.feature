@@ -40,3 +40,15 @@ Feature: general feedback
     And I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should see "Feedback for all students"
     And I should see "Some general feedback comments"
+
+  Scenario: the release date is set on the feedback for all students page, not in the settings
+    Given I am on the "Coursework" "coursework activity editing" page logged in as "manager1"
+    Then I should not see "Release date of feedback for all students"
+    And I am on the "Coursework" "coursework activity" page
+    And I navigate to "Feedback for all students" in current page administration
+    And I should see "Release date of feedback for all students"
+    And the field "generalfeedback[enabled]" matches value "1"
+    When I set the field "generalfeedback[year]" to "##+1 year##%Y##"
+    And I press "Save changes"
+    And I am on the "Coursework" "coursework activity" page logged in as "student1"
+    Then I should not see "Some general feedback comments"
