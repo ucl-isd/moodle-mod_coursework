@@ -29,20 +29,35 @@ use mod_coursework\models\user;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mail_task extends \core\task\adhoc_task {
+    /** @var array Storage of data we don't want to keep loading again and again. */
+    private array $loadeddata = [];
+
     /**
      * Execute the task.
      */
     public function execute(): void {
         $data = $this->get_custom_data();
-        if (!isset($data->type, $data->coursework)) {
+
+        // Type must always be set.
+        if (!isset($data->type)) {
             mtrace('Task is missing required custom data');
             return;
         }
-        $coursework = coursework::get_from_id($data->coursework);
-        if (!$coursework) {
-            mtrace("Coursework {$data->coursework} no longer exists, skipping {$data->type} notification.");
-            return;
+
+        // Coursework must be set unless we're doing the marker reminders.
+        if ($data->type !== 'marking_reminder') {
+            if (!isset($data->coursework)) {
+                mtrace('Task is missing required custom data');
+                return;
+            }
+            $coursework = coursework::get_from_id($data->coursework);
+            if (!$coursework) {
+                mtrace("Coursework {$data->coursework} no longer exists, skipping {$data->type} notification.");
+                return;
+            }
         }
+
+        // Work out which type of mail task we're doing.
         switch ($data->type) {
             case 'submission_receipt':
                 if (!isset($data->submission, $data->user)) {
@@ -90,6 +105,17 @@ class mail_task extends \core\task\adhoc_task {
                 }
                 $this->send_submission_notification($coursework, $user);
                 break;
+            case 'marking_reminder':
+                if (!isset($data->user, $data->extra->data)) {
+                    mtrace('Task is missing required custom data');
+                    return;
+                }
+                $user = $this->load_user($data->user);
+                if (!$user) {
+                    return;
+                }
+                $this->send_marking_reminder($user, $data->extra);
+                break;
             default:
                 throw new \coding_exception('Unknown type');
         }
@@ -119,6 +145,77 @@ class mail_task extends \core\task\adhoc_task {
             mtrace("Submission {$submissionid} no longer exists, skipping notification.");
         }
         return $submission;
+    }
+
+    /**
+     * Load coursework object.
+     * @param int $courseworkid
+     * @return coursework|null
+     */
+    private function load_coursework(int $courseworkid): ?coursework {
+        if (isset($this->loadeddata['coursework'][$courseworkid])) {
+            return $this->loadeddata['coursework'][$courseworkid];
+        }
+        $coursework = coursework::get_from_id($courseworkid);
+        if (!$coursework) {
+            return null;
+        }
+        $this->loadeddata['coursework'][$courseworkid] = $coursework;
+        return $this->loadeddata['coursework'][$courseworkid];
+    }
+
+    /**
+     * Send a single summary email to a marker covering all their initial and agreed marking reminders.
+     * @param user $user
+     * @param \stdClass $extra
+     */
+    private function send_marking_reminder(user $user, \stdClass $extra): void {
+        $upcomingdays = (int)($extra->upcomingdays ?? reminders_task::UPCOMING_DAYS);
+        $sections = [];
+        foreach ([reminders_task::TYPE_INITIAL, reminders_task::TYPE_AGREED] as $type) {
+            foreach ([reminders_task::PERIOD_TODAY, reminders_task::PERIOD_UPCOMING] as $period) {
+                $activities = (array)($extra->data->{$type}->{$period} ?? []);
+                $list = $this->build_activity_list($activities, $type);
+                if ($list === '') {
+                    continue;
+                }
+                $heading = get_string("reminder:email:{$type}:{$period}", 'mod_coursework', $upcomingdays);
+                $sections[] = \html_writer::tag('b', $heading) . '<br><br>' . $list;
+            }
+        }
+
+        if (!$sections) {
+            mtrace("No outstanding marking reminders for user {$user->id}, skipping notification.");
+            return;
+        }
+
+        $subject = get_string('reminder:email:subject', 'mod_coursework');
+        $body = get_string('reminder:email:body', 'mod_coursework', implode('<br><br>', $sections));
+        $mailer = new mailer();
+        $mailer->send_marking_reminder($user, $subject, $body);
+    }
+
+    /**
+     * Build HTML content for activity list.
+     * @param array $activitydata Keyed by coursework id, containing the unmarked count.
+     * @param string $type One of the reminders_task::TYPE_ constants.
+     * @return string
+     */
+    private function build_activity_list(array $activitydata, string $type): string {
+        $activities = [];
+        foreach ($activitydata as $courseworkid => $count) {
+            $coursework = $this->load_coursework((int)$courseworkid);
+            if (!$coursework) {
+                continue;
+            }
+            $unmarked = is_array($count) ? ($count['unmarked'] ?? 0) : ($count->unmarked ?? 0);
+            $itemstring = get_string("reminder:email:{$type}:item", 'mod_coursework', $unmarked);
+            $activities[] = \html_writer::link(
+                new \moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]),
+                format_string($coursework->name),
+            ) . $itemstring;
+        }
+        return implode('<br>', $activities);
     }
 
     /**
