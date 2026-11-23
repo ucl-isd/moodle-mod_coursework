@@ -63,6 +63,7 @@ class audit_testable extends audit {
     protected function get_boundaries(): array {
         return [
             [0, 0.99],
+            [1, 39.99],
             [60, 69.99],
             [70, 100],
         ];
