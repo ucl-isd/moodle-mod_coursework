@@ -202,9 +202,96 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
+     * The agreed feedback must be used as the final feedback, not the first marker's feedback.
+     *
+     * @covers \mod_coursework\models\submission::get_final_stage_identifier
+     * @covers \mod_coursework\models\submission::get_final_feedback
+     * @covers \mod_coursework\models\submission::get_final_grade
+     */
+    public function test_agreed_feedback_prioritised_when_not_in_sample(): void {
+        $this->create_a_student();
+        $submission = $this->create_finalised_submission_with_two_marks($this->student, 50, 70);
+        $agreedfeedback = $this->get_coursework_generator()->create_feedback((object)[
+            'submissionid'    => $submission->id,
+            'assessorid'      => $this->teacher->id,
+            'stageidentifier' => 'final_agreed_1',
+            'grade'           => 60,
+            'isfinalgrade'    => 1,
+            'ismoderation'    => 0,
+            'finalised'       => 1,
+        ]);
+
+        $submission = submission::get_from_id($submission->id);
+
+        $this->assertEquals('final_agreed_1', $submission->get_final_stage_identifier());
+        $this->assertEquals($agreedfeedback->id, $submission->get_final_feedback()->id);
+        $this->assertEquals(60, $submission->get_final_grade());
+    }
+
+    /**
+     * Double marking without sampling, both markers mark, then switched to three markers with sampling,
+     * marks are agreed and released.
+     *
+     * @covers \mod_coursework\models\submission::publish
+     */
+    public function test_agreed_grade_released_to_gradebook_when_sampling_enabled_after_marking(): void {
+        global $DB;
+
+        $this->create_a_coursework([
+            'numberofmarkers'   => 2,
+            'samplingenabled'   => 0,
+            'allocationenabled' => 0,
+            'grade'             => 100,
+        ]);
+        $this->create_a_student();
+        $submission = $this->create_finalised_submission_with_two_marks($this->student, 50, 70);
+
+        $this->coursework->update_attribute('numberofmarkers', 3);
+        $this->coursework->update_attribute('samplingenabled', 1);
+
+        $this->get_coursework_generator()->create_feedback((object)[
+            'submissionid'    => $submission->id,
+            'assessorid'      => $this->teacher->id,
+            'stageidentifier' => 'final_agreed_1',
+            'grade'           => 60,
+            'isfinalgrade'    => 1,
+            'ismoderation'    => 0,
+            'finalised'       => 1,
+        ]);
+
+        $submission = submission::get_from_id($submission->id);
+        $submission->publish();
+
+        $gradeitem = $DB->get_record(
+            'grade_items',
+            ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id],
+        );
+        $grade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $this->student->id]);
+
+        $this->assertEquals(60, $grade->rawgrade);
+        $this->assertEquals(60, $grade->finalgrade);
+    }
+
+    /**
+     * Submission not in the sample with only the first marker's feedback uses that feedback as final.
+     *
+     * @covers \mod_coursework\models\submission::get_final_stage_identifier
+     * @covers \mod_coursework\models\submission::get_final_grade
+     */
+    public function test_first_marker_feedback_is_final_when_not_in_sample_and_not_agreed(): void {
+        $this->create_a_student();
+        $submission = $this->create_finalised_submission_with_one_mark($this->student, 50);
+
+        $submission = submission::get_from_id($submission->id);
+
+        $this->assertEquals('assessor_1', $submission->get_final_stage_identifier());
+        $this->assertEquals(50, $submission->get_final_grade());
+    }
+
+    /**
      * Create a finalised submission for the given student and add two finalised marker feedbacks
      */
-    private function create_finalised_submission_with_two_marks(models\user $student, int $grade1, int $grade2): void {
+    private function create_finalised_submission_with_two_marks(models\user $student, int $grade1, int $grade2): object {
 
         $submission = $this->get_coursework_generator()->create_submission(
             (object) [
@@ -235,6 +322,7 @@ final class sampling_agree_test extends \advanced_testcase {
             'ismoderation'     => 0,
             'finalised'        => 1,
         ]);
+        return $submission;
     }
 
     /**

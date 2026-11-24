@@ -623,7 +623,14 @@ class submission extends table_base implements renderable {
                 ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
             );
 
-            if ($includedinsample) {
+            // Agreed feedback always takes priority if it exists, e.g. where several markers marked the
+            // submission before sampling was enabled, so it was agreed without being in the sample.
+            $agreedfeedbackexists = feedback::cached_objects_exist(
+                $coursework->id,
+                ['submissionid' => $this->id, 'stageidentifier' => 'final_agreed_1']
+            );
+
+            if ($includedinsample || $agreedfeedbackexists) {
                 return 'final_agreed_1';
             } else {
                 return 'assessor_1';
