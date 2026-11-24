@@ -54,6 +54,39 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Check whether a rubric level is selected in a rubric that is being filled in.
+     *
+     * The core "the level with ... points is not selected for the rubric criterion" step only works when viewing a
+     * graded rubric, as on the grading form an unselected radio has no checked attribute, so its XPath never matches.
+     *
+     * @Then /^the rubric level with "(?P<points_number>\d+)" points (?P<isnot>is|is not) checked for criterion "(?P<criterion_string>(?:[^"]|\\")*)"$/
+     * @param int $points
+     * @param string $isnot "is" or "is not".
+     * @param string $criterionname
+     * @throws \Behat\Mink\Exception\ExpectationException
+     */
+    public function the_rubric_level_is_checked_for_criterion(int $points, string $isnot, string $criterionname) {
+        $criterion = behat_context_helper::escape($criterionname);
+        $xpath = "//tr[contains(concat(' ', normalize-space(@class), ' '), ' criterion ')]" .
+            "[./td[contains(concat(' ', normalize-space(@class), ' '), ' description ')][normalize-space(text())=$criterion]]" .
+            "//td[contains(concat(' ', normalize-space(@class), ' '), ' level ')]" .
+            "[.//span[@class='scorevalue'][normalize-space(text())='$points']]";
+
+        $level = $this->find('xpath', $xpath);
+        $radio = $level->find('css', 'input[type="radio"]');
+
+        $checked = $level->hasClass('checked') && $radio && $radio->isChecked();
+        $expected = ($isnot === 'is');
+
+        if ($checked !== $expected) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "The \"$points\" points level for criterion \"$criterionname\" " . ($checked ? 'is' : 'is not') . ' checked',
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
      * Convert page names to URLs for steps like 'When I am on the "[identifier]" "[page type]" page'.
      *
      * Recognised page names are:

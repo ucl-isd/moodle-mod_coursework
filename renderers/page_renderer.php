@@ -109,7 +109,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->feedback[] = $this->render_comparison_view(
                 $coursework,
                 $previousfeedbacks,
-                $isguide
+                $isguide,
+                false,
             );
             // If we ARE using a different method at the end, now we need to append that rendered correctly.
             if ($differentfinal && $final) {
@@ -450,7 +451,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param bool $isguide
      * @return string HTML.
      */
-    protected function render_comparison_view(coursework $coursework, array $previousfeedbacks, bool $isguide): string {
+    protected function render_comparison_view(
+        coursework $coursework,
+        array $previousfeedbacks,
+        bool $isguide,
+        bool $editing = true
+    ): string {
         $gradingcontroller = $coursework->get_advanced_grading_active_controller();
         $gradingdefinition = $gradingcontroller->get_definition();
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
@@ -525,14 +531,34 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     }
                 }
 
+                // Allow copying this marker's criterion mark and remark into the agreed form,
+                // when the agreed stage uses the same method.
+                if (
+                    $currentfilling
+                    && !$template->differentfinalgradingmethod
+                    && !str_starts_with($markerinfo->stage, 'final_agreed')
+                    && $editing
+                ) {
+                    $marker->copytoagreed = (object)[
+                        'score' => $marker->score,
+                        'remark' => $currentfilling['remark'] ?? '',
+                        'arialabel' => get_string('copytoagreedlabel', 'mod_coursework', (object)[
+                            'marker' => $markerinfo->label,
+                            'criterion' => $criterionitem->name,
+                        ]),
+                    ];
+                }
+
                 $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
                 $marker->percent = (int)round($percentraw);
+                $marker->fillingid = $currentfilling['levelid'] ?? null;
                 $criterionitem->markers[] = $marker;
             }
             $template->reviewcriteria[] = $criterionitem;
         }
 
         $template->markersdata = $markersdata;
+        $template->method = $isguide ? 'marking_guide' : 'rubric';
         return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 
