@@ -427,14 +427,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     ]
                 );
             }
-        } else {
-            $this->page->requires->js_call_amd(
-                'mod_coursework/rubric',
-                'init',
-                [
-                    'feedbackfor' => get_string('feedbackfor', 'coursework'),
-                ]
-            );
         }
 
         // Standard bit.

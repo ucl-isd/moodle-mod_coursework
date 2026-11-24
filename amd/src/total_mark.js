@@ -81,6 +81,26 @@ const calculateRubric = () => {
     updateUi(runningTotal, runningMax);
 };
 
+const calculateRubricRanges = () => {
+    const rubric = document.querySelector('.gradingform_rubric_ranges');
+    if (!rubric) {
+        return;
+    }
+
+    let runningTotal = 0;
+    let runningMax = 0;
+
+    rubric.querySelectorAll('.criterion').forEach(row => {
+        const points = row.querySelector('.points input.rangegrade');
+        if (points) {
+            runningTotal += parseFloat(points.value) || 0;
+            runningMax += parseFloat(points.getAttribute('max')) || 0;
+        }
+    });
+
+    updateUi(runningTotal, runningMax);
+};
+
 /**
  * Calculate totals for Marking Guide.
  */
@@ -113,6 +133,7 @@ const calculateGuide = () => {
 const initGradingTracker = () => {
     const rubric = document.querySelector('.gradingform_rubric');
     const guide = document.querySelector('.gradingform_guide');
+    const rubric_ranges = document.querySelector('.gradingform_rubric_ranges');
 
     if (rubric) {
         const observer = new MutationObserver(calculateRubric);
@@ -122,6 +143,22 @@ const initGradingTracker = () => {
             attributeFilter: ['class']
         });
         calculateRubric();
+    }
+
+    if (rubric_ranges) {
+        const observer = new MutationObserver(calculateRubricRanges);
+        observer.observe(rubric_ranges, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ['class']
+        });
+        // Typed mark that stays within the already-selected level, so no class change happens.
+        document.addEventListener('change', (e) => {
+            if (e.target.closest('.gradingform_rubric_ranges .points input.rangegrade')) {
+                calculateRubricRanges();
+            }
+        });
+        calculateRubricRanges();
     }
 
     if (guide) {
