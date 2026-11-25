@@ -67,17 +67,23 @@ export const init = async(args) => {
 
     // Append a "Calculate grade" button to the marks for each criterion.
     const table = document.querySelector('#advancedgrading-criteria');
-    if (table && args.method === 'guide') {
-        const cells = table.querySelectorAll('td.score');
+    if (table && (args.method === 'guide' || args.method === 'rubric_ranges')) {
+        if (args.method === 'guide') {
+            var cells = table.querySelectorAll('td.score');
+        } else if (args.method === 'rubric_ranges') {
+            var cells = table.querySelectorAll('td.points');
+        }
         const linktext = await getString('calculateavggrade', 'mod_coursework');
         cells.forEach(cell => {
+            const div = document.createElement('div');
             const link = document.createElement('a');
             link.href = '#';
             link.dataset.action = 'calculate-avg-grade';
             const icon = document.createElement('i');
             icon.classList.add('fa', 'fa-calculator', 'me-1');
             link.append(icon, linktext);
-            cell.prepend(link);
+            div.append(link);
+            cell.prepend(div);
         });
     }
 
@@ -134,12 +140,16 @@ export const init = async(args) => {
 
             // Marking guide.
             if (args.method === 'guide') {
-                const scoreInput = row.querySelector('td.score input');
-                if (scoreInput) {
-                    scoreInput.value = avg;
-                    scoreInput.dispatchEvent(new Event('input', {bubbles: true}));
-                    scoreInput.dispatchEvent(new Event('change', {bubbles: true}));
-                }
+                var input = row.querySelector('td.score input');
+            } else if (args.method === 'rubric_ranges') {
+                var input = row.querySelector('td.points input');
+            } else {
+                var input = false;
+            }
+            if (input) {
+                input.value = avg;
+                input.dispatchEvent(new Event('input', {bubbles: true}));
+                input.dispatchEvent(new Event('change', {bubbles: true}));
             }
         }
     });
