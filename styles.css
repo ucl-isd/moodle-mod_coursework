@@ -132,18 +132,18 @@ Coursework.
                 text-wrap: nowrap; /* stylelint-disable-line */
                 font-style: normal;
                 font-size: small;
-                color: var(--dark);
+                color: var(--bs-dark, var(--dark));
                 max-height: 2rem;
                 border-radius: 10rem;
             }
 
             /* Rubric selected level styles. */
             &:has(.radio input[type="radio"]:checked) {
-                background-color: var(--light);
+                background-color: var(--bs-light, var(--light));
 
                 .score {
                     /* Score rounded pill success styles. */
-                    background-color: var(--success);
+                    background-color: var(--bs-success, var(--success));
                     color: white;
                 }
 
@@ -153,7 +153,7 @@ Coursework.
             }
             &:has(.radio) {
                 &:hover {
-                    background-color: var(--light);
+                    background-color: var(--bs-light, var(--light));
                     cursor: pointer;
                 }
             }
@@ -243,7 +243,7 @@ Coursework.
                 text-align: right;
                 input:required {
                     &:user-invalid {
-                        border: 2px solid var(--danger);
+                        border: 2px solid var(--bs-danger, var(--danger));
                         padding-right: 1.5rem;
                         background: url([[pix:i/risk_dataloss]]) no-repeat center right 0.5rem / 1rem 1rem;
                     }
@@ -275,7 +275,7 @@ Coursework.
         display: block;
         padding: .5rem;
         margin-top: .5rem;
-        background-color: var(--light);
+        background-color: var(--bs-light, var(--light));
 
         .tii_links_container {
             padding: 0;
@@ -291,7 +291,7 @@ Coursework.
 
             /* Resubmit - style as link. */
             [id^=pp_resubmit] {
-                color: var(--primary);
+                color: var(--bs-primary, var(--primary));
                 &:hover {
                     text-decoration: underline;
                 }
@@ -317,8 +317,8 @@ Coursework.
         .chat-bubble-bordered {
             position: relative;
             background-color: white;
-            border: 2px solid var(--dark);
-            box-shadow: .3em .3em 0 0 var(--dark);
+            border: 2px solid var(--bs-dark, var(--dark));
+            box-shadow: .3em .3em 0 0 var(--bs-dark, var(--dark));
             padding: 1rem;
             margin-top: 25px; /* Added space at the top for the arrow */
         }
@@ -331,7 +331,7 @@ Coursework.
             height: 0;
             border-left: 1rem solid transparent;  /* Base of the outer triangle */
             border-right: 1rem solid transparent; /* Base of the outer triangle */
-            border-bottom: 1.1rem solid var(--dark); /* Color of the border, pointing up */
+            border-bottom: 1.1rem solid var(--bs-dark, var(--dark)); /* Color of the border, pointing up */
             top: -18px; /* Position above the bubble, accounting for border and triangle height */
             left: 1rem; /* Horizontal position from the left */
             z-index: 1;
@@ -351,15 +351,15 @@ Coursework.
         }
     }
     &.path-mod-coursework-actions-feedbacks #id_removefeedbackbutton {
-        color: var(--white);
-        background-color: var(--danger);
-        border-color: var(--danger);
+        color: var(--bs-white, var(--white));
+        background-color: var(--bs-danger, var(--danger));
+        border-color: var(--bs-danger, var(--danger));
     }
 
     &#page-mod-coursework-actions-audit #id_submitremove {
-        color: var(--white);
-        background-color: var(--danger);
-        border-color: var(--danger);
+        color: var(--bs-white, var(--white));
+        background-color: var(--bs-danger, var(--danger));
+        border-color: var(--bs-danger, var(--danger));
     }
 
 
@@ -424,15 +424,15 @@ body:has(.navbar.fixed-top) .sticky-top {
 }
 
 :where(.path-mod-coursework .visually-hidden) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
 }
 
 :where(.path-mod-coursework .form-switch .form-check-input) {
@@ -440,11 +440,11 @@ body:has(.navbar.fixed-top) .sticky-top {
     height: 1em;
     appearance: none;
     background-color: var(--white);
-    background-image: radial-gradient(circle, var(--secondary) 55%, transparent 60%);
+    background-image: radial-gradient(circle, var(--gray) 55%, transparent 60%);
     background-position: left center;
     background-repeat: no-repeat;
     background-size: 1em 1em;
-    border: 1px solid var(--secondary);
+    border: 1px solid var(--gray);
     border-radius: 2em;
 }
 
@@ -462,4 +462,10 @@ body:has(.navbar.fixed-top) .sticky-top {
     .form-check-input {
         margin-left: -2.5em;
     }
+}
+
+/* Bootstrap 4 pill badges have more padding than other badges. The variable is only set by Bootstrap 5. */
+.path-mod-coursework .badge.rounded-pill {
+    padding-left: var(--bs-badge-padding-x, .6em);
+    padding-right: var(--bs-badge-padding-x, .6em);
 }
