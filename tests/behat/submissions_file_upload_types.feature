@@ -41,4 +41,5 @@ Feature: Restricting the types of files that students can upload
     Given I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_image.png" file to "Upload a file" filemanager
-    Then I should see "filetype cannot be accepted"
+    # Wording differs between Moodle 4.5 and Moodle 5.0 onwards.
+    Then "//*[text()[contains(., 'filetype cannot be accepted') or contains(., 'is not an accepted file type')]]" "xpath_element" should be visible
