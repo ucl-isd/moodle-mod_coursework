@@ -133,7 +133,7 @@ const calculateGuide = () => {
 const initGradingTracker = () => {
     const rubric = document.querySelector('.gradingform_rubric');
     const guide = document.querySelector('.gradingform_guide');
-    const rubric_ranges = document.querySelector('.gradingform_rubric_ranges');
+    const rubricRanges = document.querySelector('.gradingform_rubric_ranges');
 
     if (rubric) {
         const observer = new MutationObserver(calculateRubric);
@@ -145,9 +145,9 @@ const initGradingTracker = () => {
         calculateRubric();
     }
 
-    if (rubric_ranges) {
+    if (rubricRanges) {
         const observer = new MutationObserver(calculateRubricRanges);
-        observer.observe(rubric_ranges, {
+        observer.observe(rubricRanges, {
             attributes: true,
             subtree: true,
             attributeFilter: ['class']

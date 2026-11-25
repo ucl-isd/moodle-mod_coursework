@@ -39,7 +39,9 @@ const setUpUI = (markLabelText) => {
 
     scoreCells.forEach(cell => {
         const scoreInput = cell.querySelector('input');
-        const maxScoreDiv = cell.querySelector('div');
+        // The max score div directly follows the input. Don't just use the first div in the cell, as other JS
+        // (e.g. the agree marks "Calculate average grade" link) may have prepended its own.
+        const maxScoreDiv = scoreInput?.nextElementSibling?.tagName === 'DIV' ? scoreInput.nextElementSibling : null;
 
         if (scoreInput && maxScoreDiv) {
             // Extract only numbers/decimals from the max score text.

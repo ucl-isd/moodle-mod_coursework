@@ -68,10 +68,11 @@ export const init = async(args) => {
     // Append a "Calculate grade" button to the marks for each criterion.
     const table = document.querySelector('#advancedgrading-criteria');
     if (table && (args.method === 'guide' || args.method === 'rubric_ranges')) {
+        let cells = [];
         if (args.method === 'guide') {
-            var cells = table.querySelectorAll('td.score');
+            cells = table.querySelectorAll('td.score');
         } else if (args.method === 'rubric_ranges') {
-            var cells = table.querySelectorAll('td.points');
+            cells = table.querySelectorAll('td.points');
         }
         const linktext = await getString('calculateavggrade', 'mod_coursework');
         cells.forEach(cell => {
@@ -103,14 +104,7 @@ export const init = async(args) => {
                 return;
             }
 
-            if (row.querySelector('td.remark textarea')) {
-                var remarkInput = row.querySelector('td.remark textarea');
-            } else if (row.querySelector('td.points div.remark textarea')) {
-                var remarkInput = row.querySelector('td.points div.remark textarea');
-            } else {
-                var remarkInput = false;
-            }
-
+            const remarkInput = row.querySelector('td.remark textarea, td.points div.remark textarea');
             if (remarkInput) {
                 // Append the feedback, but not if it's already there exactly.
                 const current = remarkInput.value.trim();
@@ -138,14 +132,15 @@ export const init = async(args) => {
             });
             const avg = scores.reduce((a, b) => a + parseFloat(b), 0) / scores.length;
 
+            let input = false;
+
             // Marking guide.
             if (args.method === 'guide') {
-                var input = row.querySelector('td.score input');
+                input = row.querySelector('td.score input');
             } else if (args.method === 'rubric_ranges') {
-                var input = row.querySelector('td.points input');
-            } else {
-                var input = false;
+                input = row.querySelector('td.points input');
             }
+
             if (input) {
                 input.value = avg;
                 input.dispatchEvent(new Event('input', {bubbles: true}));

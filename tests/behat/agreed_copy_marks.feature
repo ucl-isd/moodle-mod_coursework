@@ -186,9 +186,7 @@ Feature: Copy a marker's criterion feedback and calculate average marks for the 
     And I press "Save and finalise"
     When I follow "Agree marking"
     And I wait until the page is ready
-    # The average grade calculation is only offered for marking guides.
-    Then I should not see "Calculate average grade"
-    And the mark of the "Knowledge" ranged criterion should be ""
+    Then the mark of the "Knowledge" ranged criterion should be ""
     And no level of the "Knowledge" ranged criterion should be selected
     And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" matches value ""
     # Copy marker 2 for Knowledge: only the feedback is copied, no mark is set.
@@ -219,8 +217,19 @@ Feature: Copy a marker's criterion feedback and calculate average marks for the 
     When I click on "button[aria-label='Copy Marker 2 feedback for Analysis to agreed']" "css_element"
     Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" matches value "Marker two Analysis comment"
     And the mark of the "Analysis" ranged criterion should be ""
-    # The copied feedback is saved with the agreed mark.
-    And I set the mark of the "Knowledge" ranged criterion to "20"
+    # Calculate the average mark for Knowledge only: (25 + 15) / 2 = 20, which selects the matching level.
+    When I click on "Calculate average grade" "link" in the "Knowledge" "table_row"
+    Then the mark of the "Knowledge" ranged criterion should be "20"
+    And the "Pass" level of the "Knowledge" ranged criterion should be selected
+    And the mark of the "Analysis" ranged criterion should be ""
+    And no level of the "Analysis" ranged criterion should be selected
+    # Calculating the average does not touch feedback.
+    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" matches value "Marker two Analysis comment"
+    # Calculate the average mark for Analysis: (5 + 28) / 2 = 16.5.
+    When I click on "Calculate average grade" "link" in the "Analysis" "table_row"
+    Then the mark of the "Analysis" ranged criterion should be "16.5"
+    And the "Pass" level of the "Analysis" ranged criterion should be selected
+    # The calculated mark can still be changed before saving.
     And I set the mark of the "Analysis" ranged criterion to "16"
     When I press "Save and finalise"
     # (20 + 16) / 60 = 60%.
