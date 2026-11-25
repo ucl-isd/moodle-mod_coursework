@@ -22,14 +22,15 @@
  */
 
 export const init = () => {
-    // Wrap the points in a div so we can move it right.
-    const inputs = document.querySelectorAll('.gradingform_rubric_ranges table td.points input.rangegrade');
-    for (const input of inputs) {
-        const text = input.nextSibling;
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('text-end');
-        input.before(wrapper);
-        wrapper.append(input);
-        wrapper.append(text);
+    // Move the points to the right. The input must stay a direct child of the cell, as the ranged rubric's own JS
+    // finds the levels from the input's parent, so align the cell instead of wrapping the input.
+    const cells = document.querySelectorAll('.gradingform_rubric_ranges table td.points');
+    for (const cell of cells) {
+        if (!cell.querySelector('input.rangegrade')) {
+            continue;
+        }
+        cell.classList.add('text-end');
+        // Keep the remark box aligned as normal.
+        cell.querySelector('.remark')?.classList.add('text-start');
     }
 };
