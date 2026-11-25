@@ -225,7 +225,8 @@ Coursework.
 
         /* Grading tables. */
         .gradingform_guide,
-        .gradingform_rubric {
+        .gradingform_rubric,
+        .gradingform_rubric_ranges {
             display: block;
             width: 100%;
 

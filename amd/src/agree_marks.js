@@ -45,7 +45,9 @@ export const init = async(args) => {
     }
 
     const targetCells = document.querySelectorAll(
-        '.gradingform_rubric .description, #advancedgrading-criteria .descriptionreadonly'
+        '.gradingform_rubric .description,' +
+        '#advancedgrading-criteria .descriptionreadonly,' +
+        '.gradingform_rubric_ranges .description'
     );
 
     sourceBlocks.forEach((block, index) => {
@@ -65,7 +67,7 @@ export const init = async(args) => {
 
     // Append a "Calculate grade" button to the marks for each criterion.
     const table = document.querySelector('#advancedgrading-criteria');
-    if (table && args.method === 'marking_guide') {
+    if (table && args.method === 'guide') {
         const cells = table.querySelectorAll('td.score');
         const linktext = await getString('calculateavggrade', 'mod_coursework');
         cells.forEach(cell => {
@@ -94,7 +96,15 @@ export const init = async(args) => {
             if (!row) {
                 return;
             }
-            const remarkInput = row.querySelector('td.remark textarea');
+
+            if (row.querySelector('td.remark textarea')) {
+                var remarkInput = row.querySelector('td.remark textarea');
+            } else if (row.querySelector('td.points div.remark textarea')) {
+                var remarkInput = row.querySelector('td.points div.remark textarea');
+            } else {
+                var remarkInput = false;
+            }
+
             if (remarkInput) {
                 // Append the feedback, but not if it's already there exactly.
                 const current = remarkInput.value.trim();
@@ -123,7 +133,7 @@ export const init = async(args) => {
             const avg = scores.reduce((a, b) => a + parseFloat(b), 0) / scores.length;
 
             // Marking guide.
-            if (args.method === 'marking_guide') {
+            if (args.method === 'guide') {
                 const scoreInput = row.querySelector('td.score input');
                 if (scoreInput) {
                     scoreInput.value = avg;
