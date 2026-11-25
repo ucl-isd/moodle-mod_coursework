@@ -990,12 +990,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         switch ($submission->get_state(true)) {
             case submission::NOT_SUBMITTED:
-                $template->submission->badge = 'warning';
+                $template->submission->badge = 'bg-warning text-dark';
                 $template->submission->status = get_string('statusnotsubmitted', 'mod_coursework');
                 break;
 
             case submission::SUBMITTED:
-                $template->submission->badge = 'warning';
+                $template->submission->badge = 'bg-warning text-dark';
 
                 if ($submission->get_coursework()->allowearlyfinalisation) {
                     $template->submission->status = get_string('statusnotsubmitted', 'mod_coursework');
@@ -1006,20 +1006,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 break;
 
             case submission::FINALISED:
-                $template->submission->badge = 'warning';
+                $template->submission->badge = 'bg-warning text-dark';
                 $template->submission->status = get_string('submitted', 'mod_coursework');
                 break;
 
             case submission::PARTIALLY_GRADED:
             case submission::FULLY_GRADED:
             case submission::FINAL_GRADED:
-                $template->submission->badge = 'warning';
+                $template->submission->badge = 'bg-warning text-dark';
                 $template->submission->status = get_string('statusinmarking', 'mod_coursework');
 
                 break;
 
             case submission::PUBLISHED:
-                $template->submission->badge = 'success';
+                $template->submission->badge = 'bg-success text-white';
                 $template->submission->status = get_string('statusreleased', 'mod_coursework');
                 break;
         }

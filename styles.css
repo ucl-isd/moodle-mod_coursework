@@ -264,7 +264,7 @@ Coursework.
         display: none !important;
     }
 
-    /* SHAME - not able to add btn-block in php. */
+    /* SHAME - not able to add full width button in php. */
     #coursework-finalise-submission .btn {
         display: block !important;
         width: 100%;
@@ -411,5 +411,55 @@ body:has(.navbar.fixed-top) .sticky-top {
             border: none;
             border-bottom: 1rem solid;
         }
+    }
+}
+
+/*
+ * Bootstrap 5 classes which are not part of the Moodle 4.5 Bootstrap 5 bridge.
+ * Zero specificity (:where) so that the theme's own rules always win in Moodle 5.0 onwards.
+ * Remove this block once Moodle 4.5 is no longer supported.
+ */
+:where(.path-mod-coursework .fw-bold) {
+    font-weight: 700;
+}
+
+:where(.path-mod-coursework .visually-hidden) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+:where(.path-mod-coursework .form-switch .form-check-input) {
+    width: 2em;
+    height: 1em;
+    appearance: none;
+    background-color: var(--white);
+    background-image: radial-gradient(circle, var(--secondary) 55%, transparent 60%);
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 1em 1em;
+    border: 1px solid var(--secondary);
+    border-radius: 2em;
+}
+
+:where(.path-mod-coursework .form-switch .form-check-input:checked) {
+    background-color: var(--primary);
+    background-image: radial-gradient(circle, var(--white) 55%, transparent 60%);
+    background-position: right center;
+    border-color: var(--primary);
+}
+
+/* These match the Bootstrap 5 values, but have to override Bootstrap 4's .form-check in Moodle 4.5. */
+.path-mod-coursework .form-switch {
+    padding-left: 2.5em;
+
+    .form-check-input {
+        margin-left: -2.5em;
     }
 }

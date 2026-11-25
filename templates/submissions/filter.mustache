@@ -41,9 +41,9 @@
 <form id="filter-form" action="#" method="get">
     <div class="d-flex pb-3">
         {{! Filter options. }}
-        <div class="dropdown mr-2">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filter-submissions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{#str}} filtersubmissions, mod_coursework {{/str}}">
-            <i class="fa-solid fa-sliders mr-2"></i>
+        <div class="dropdown me-2">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filter-submissions" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{#str}} filtersubmissions, mod_coursework {{/str}}">
+            <i class="fa-solid fa-sliders me-2"></i>
                 <span id="filter-button-text-display">
                 {{#str}}filter, mod_coursework{{/str}}
                 </span>
@@ -54,69 +54,69 @@
             {{#hasmarkers}} style="width: 600px;" {{/hasmarkers}}>
                 <div class="row">
                     <div class="col">
-                        <h4 class="badge badge-dark">{{#str}}marking, mod_coursework{{/str}}</h4>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-need-marking" data-filter-type="status" data-filter-value="need-marking">
-                            <label class="custom-control-label" for="filter-need-marking">{{#str}}need_marking, mod_coursework{{/str}}</label>
+                        <h4 class="badge bg-dark text-white">{{#str}}marking, mod_coursework{{/str}}</h4>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-need-marking" data-filter-type="status" data-filter-value="need-marking">
+                            <label class="form-check-label" for="filter-need-marking">{{#str}}need_marking, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-draft-marking" data-filter-type="status" data-filter-value="draft-marking">
-                            <label class="custom-control-label" for="filter-draft-marking">{{#str}}draft_marking, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-draft-marking" data-filter-type="status" data-filter-value="draft-marking">
+                            <label class="form-check-label" for="filter-draft-marking">{{#str}}draft_marking, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-need-agreement" data-filter-type="status" data-filter-value="need-agreement">
-                            <label class="custom-control-label" for="filter-need-agreement">{{#str}}need_agreed_mark, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-need-agreement" data-filter-type="status" data-filter-value="need-agreement">
+                            <label class="form-check-label" for="filter-need-agreement">{{#str}}need_agreed_mark, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-ready-for-release" data-filter-type="status" data-filter-value="ready-for-release">
-                            <label class="custom-control-label" for="filter-ready-for-release">{{#str}}ready_release, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-ready-for-release" data-filter-type="status" data-filter-value="ready-for-release">
+                            <label class="form-check-label" for="filter-ready-for-release">{{#str}}ready_release, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-draft-agreed-mark" data-filter-type="status" data-filter-value="draft-agreed-mark">
-                            <label class="custom-control-label" for="filter-draft-agreed-mark">{{#str}}draft_agreed_mark, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-draft-agreed-mark" data-filter-type="status" data-filter-value="draft-agreed-mark">
+                            <label class="form-check-label" for="filter-draft-agreed-mark">{{#str}}draft_agreed_mark, mod_coursework{{/str}}</label>
                         </div>
                         {{#hasgradeboundaries}}
-                            <h4 class="badge badge-dark">{{#str}}gradeboundaries, mod_coursework{{/str}}</h4>
+                            <h4 class="badge bg-dark text-white">{{#str}}gradeboundaries, mod_coursework{{/str}}</h4>
                             {{#gradeboundaries}}
-                                <div class="pb-1 custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-boundary-{{key}}" data-filter-type="boundary" data-filter-value="boundary-{{key}}">
-                                    <label class="custom-control-label" for="filter-boundary-{{key}}">{{low}} - {{high}}%</label>
+                                <div class="pb-1 form-check">
+                                    <input type="checkbox" class="form-check-input" id="filter-boundary-{{key}}" data-filter-type="boundary" data-filter-value="boundary-{{key}}">
+                                    <label class="form-check-label" for="filter-boundary-{{key}}">{{low}} - {{high}}%</label>
                                 </div>
                             {{/gradeboundaries}}
                         {{/hasgradeboundaries}}
 
-                        <h4 class="badge badge-dark">{{#str}}submission, mod_coursework{{/str}}</h4>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-extension-granted" data-filter-type="status" data-filter-value="extension-granted">
-                            <label class="custom-control-label" for="filter-extension-granted">{{#str}}extension_granted, mod_coursework{{/str}}</label>
+                        <h4 class="badge bg-dark text-white">{{#str}}submission, mod_coursework{{/str}}</h4>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-extension-granted" data-filter-type="status" data-filter-value="extension-granted">
+                            <label class="form-check-label" for="filter-extension-granted">{{#str}}extension_granted, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-flagged-plagiarism" data-filter-type="status" data-filter-value="flagged-for-plagiarism">
-                            <label class="custom-control-label" for="filter-flagged-plagiarism">{{#str}}flagged_plagiarism, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-flagged-plagiarism" data-filter-type="status" data-filter-value="flagged-for-plagiarism">
+                            <label class="form-check-label" for="filter-flagged-plagiarism">{{#str}}flagged_plagiarism, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-late" data-filter-type="status" data-filter-value="late">
-                            <label class="custom-control-label" for="filter-late">{{#str}}submitted_late, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-late" data-filter-type="status" data-filter-value="late">
+                            <label class="form-check-label" for="filter-late">{{#str}}submitted_late, mod_coursework{{/str}}</label>
                         </div>
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-not-submitted" data-filter-type="status" data-filter-value="not-submitted">
-                            <label class="custom-control-label" for="filter-not-submitted">{{#str}}statusnotsubmitted, mod_coursework{{/str}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-not-submitted" data-filter-type="status" data-filter-value="not-submitted">
+                            <label class="form-check-label" for="filter-not-submitted">{{#str}}statusnotsubmitted, mod_coursework{{/str}}</label>
                         </div>
                     </div>
                     {{#hasmarkers}}
                     <div class="col-6">
-                        <h4 class="badge badge-dark">{{#str}} marker, mod_coursework {{/str}}</h4>
+                        <h4 class="badge bg-dark text-white">{{#str}} marker, mod_coursework {{/str}}</h4>
                         {{#markerfilter}}
-                        <div class="pb-1 custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="filter-{{markeridentifier}}" data-filter-type="marker" data-filter-value="{{markeridentifier}}">
-                            <label class="custom-control-label" for="filter-{{markeridentifier}}">{{markername}}</label>
+                        <div class="pb-1 form-check">
+                            <input type="checkbox" class="form-check-input" id="filter-{{markeridentifier}}" data-filter-type="marker" data-filter-value="{{markeridentifier}}">
+                            <label class="form-check-label" for="filter-{{markeridentifier}}">{{markername}}</label>
                         </div>
                         {{/markerfilter}}
                     </div>
                     {{/hasmarkers}}
                 </div>
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="button" class="btn btn-secondary mr-2" id="close-filter-popup">
+                    <button type="button" class="btn btn-secondary me-2" id="close-filter-popup">
                         {{#str}}close_filter_popup, mod_coursework{{/str}}
                     </button>
                     <button type="button" class="btn btn-primary" id="apply-filter-popup">
@@ -127,8 +127,8 @@
         </div>
 
         {{! Search. }}
-        <div class="input-group mr-2" style="width: 250px;">
-            <label for="user-search" class="sr-only">{{#str}}search_for_student, mod_coursework{{/str}}</label>
+        <div class="input-group me-2" style="width: 250px;">
+            <label for="user-search" class="visually-hidden">{{#str}}search_for_student, mod_coursework{{/str}}</label>
             <input type="search" name="search_query"
                 id="user-search" class="form-control"
                 aria-controls="filter-display-area table-body-rows"
@@ -137,9 +137,9 @@
             />
             <button class="btn btn-secondary" type="button" id="search-button">
                 <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                <span class="sr-only">{{#str}}search, mod_coursework{{/str}}</span>
+                <span class="visually-hidden">{{#str}}search, mod_coursework{{/str}}</span>
             </button>
-            <p id="search-instructions" class="sr-only">
+            <p id="search-instructions" class="visually-hidden">
                 {{#str}}search_instructions, mod_coursework{{/str}}
             </p>
         </div>
@@ -147,7 +147,7 @@
         {{! Release marks. }}
         {{#releasemarks}}
         <a id="release-marks-button" href="{{{releasemarks.url}}}"
-                class="btn btn-primary ml-auto"
+                class="btn btn-primary ms-auto"
                 data-confirmation="modal"
                 data-confirmation-title-str='["confirm"]'
                 data-confirmation-content-str='["confirmpublish", "mod_coursework", {"warning": "{{releasemarks.warning}}"}]'
@@ -162,11 +162,11 @@
     <div id="filter-display-area" class="d-flex align-items-center pb-3" aria-live="polite" aria-atomic="true">
         <div id="record-count-display">
             <strong>0 records</strong>
-            <span class="sr-only">
+            <span class="visually-hidden">
                 {{#str}}filters_applied_sr, mod_coursework{{/str}}
             </span>
         </div>
-        <ul id="active-filters-list" class="list-inline ml-3 mb-0">
+        <ul id="active-filters-list" class="list-inline ms-3 mb-0">
         </ul>
     </div>
 </form>
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const filter_dropdown_button = document.getElementById('filter-submissions');
     const filter_dropdown_menu = document.querySelector('#filter-submissions + .dropdown-menu');
     const filter_button_text_display = document.getElementById('filter-button-text-display');
-    const filter_checkboxes = document.querySelectorAll('.custom-control-input[type="checkbox"][data-filter-type]');
+    const filter_checkboxes = document.querySelectorAll('.form-check-input[type="checkbox"][data-filter-type]');
     const close_filter_popup_button = document.getElementById('close-filter-popup');
     const apply_filter_popup_button = document.getElementById('apply-filter-popup');
     const record_count_display = document.getElementById('record-count-display').querySelector('strong');
@@ -378,11 +378,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 : `${visible_rows_count} {{#str}}records_displayed_with_filters, mod_coursework{{/str}}`);
 
         const live_region_div = document.getElementById('filter-display-area');
-        let existing_sr_only_announcement = live_region_div.querySelector('.sr-only.results-announcement');
+        let existing_sr_only_announcement = live_region_div.querySelector('.visually-hidden.results-announcement');
 
         if (!existing_sr_only_announcement) {
             existing_sr_only_announcement = document.createElement('div');
-            existing_sr_only_announcement.classList.add('sr-only', 'results-announcement');
+            existing_sr_only_announcement.classList.add('visually-hidden', 'results-announcement');
             live_region_div.appendChild(existing_sr_only_announcement);
         }
 
@@ -489,10 +489,10 @@ document.addEventListener('DOMContentLoaded', function() {
         apply_filters_and_search();
 
         const live_region_div = document.getElementById('filter-display-area');
-        let existing_sr_only_announcement = live_region_div.querySelector('.sr-only.results-announcement');
+        let existing_sr_only_announcement = live_region_div.querySelector('.visually-hidden.results-announcement');
         if (!existing_sr_only_announcement) {
             existing_sr_only_announcement = document.createElement('div');
-            existing_sr_only_announcement.classList.add('sr-only', 'results-announcement');
+            existing_sr_only_announcement.classList.add('visually-hidden', 'results-announcement');
             live_region_div.appendChild(existing_sr_only_announcement);
         }
         existing_sr_only_announcement.textContent = '{{#str}}all_filters_and_search_reset, mod_coursework{{/str}}';

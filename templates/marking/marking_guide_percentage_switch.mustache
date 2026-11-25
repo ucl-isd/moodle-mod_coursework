@@ -13,11 +13,11 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-<form>
-    <div class="custom-control custom-switch text-right">
+<form class="d-flex justify-content-end">
+    <div class="form-check form-switch">
         <input type="checkbox" {{#enterpercentgrades}} checked {{/enterpercentgrades}}
-        class="custom-control-input" id="switch-entergradesaspercent">
-        <label class="custom-control-label" for="switch-entergradesaspercent">
+        class="form-check-input" id="switch-entergradesaspercent">
+        <label class="form-check-label" for="switch-entergradesaspercent">
             <small>{{#str}}entergradesaspercent, coursework{{/str}}</small>
         </label>
     </div>
