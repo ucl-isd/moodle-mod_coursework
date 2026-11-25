@@ -71,7 +71,8 @@ class grading_sheet extends csv {
                         foreach ($insample as $i) {
                             $stageidentifiers[] = $i->stageidentifier;
                         }
-                    } else { // if sampling not enabled, everyone is marked in all stages
+                    } else {
+                        // if sampling not enabled, everyone is marked in all stages
                         for ($i = 1; $i <= $stages; $i++) {
                             $stageidentifiers[] = 'assessor_' . $i;
                         }

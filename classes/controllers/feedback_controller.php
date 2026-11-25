@@ -341,7 +341,8 @@ class feedback_controller extends controller_base {
 
             $form->save_feedback_files();
 
-            if ($submission->is_published()) { // Keep the gradebook updated
+            if ($submission->is_published()) {
+                // Keep the gradebook updated
                 $this->coursework->grade_changed_event();
                 $submission->publish();
             }
@@ -446,7 +447,8 @@ class feedback_controller extends controller_base {
 
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());
 
-            if ($teacherfeedback->get_submission()->is_published()) { // Keep the gradebook updated
+            if ($teacherfeedback->get_submission()->is_published()) {
+                // Keep the gradebook updated
                 $this->coursework->grade_changed_event();
                 $teacherfeedback->get_submission()->publish();
             }

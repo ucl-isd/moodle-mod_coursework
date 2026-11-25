@@ -124,13 +124,16 @@ class student_submission_form extends moodleform {
             $filecount = count($existingfiles);
 
             if (!isset($data->finalisebutton)) {
-                if ($filecount > 0) { // Only send to plagiarism if there is a file.
+                if ($filecount > 0) {
+                    // Only send to plagiarism if there is a file.
                     $submission->submit_plagiarism('draft');
                     $message = get_string('changessaved');
                     redirect($link, $message);
                 }
-            } else { // Finalise it!
-                if ($filecount > 0) { // Check that there is a file before updating to finalised.
+            } else {
+                // Finalise it!
+                if ($filecount > 0) {
+                    // Check that there is a file before updating to finalised.
                     // Confirm finalise state.
                     $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
                     $submission->save();
@@ -202,7 +205,8 @@ class student_submission_form extends moodleform {
                     mailer::queue('submission_receipt', $coursework->id(), $submission->id(), $student->id(), $data->finalisebutton);
                 }
             }
-        } else { // Feedback already exists, or already finalised - allow no changes.
+        } else {
+            // Feedback already exists, or already finalised - allow no changes.
             if (!$coursework->allowed_to_submit()) {
                 $message = get_string('latesubmissionsnotallowed', 'mod_coursework');
             } else {

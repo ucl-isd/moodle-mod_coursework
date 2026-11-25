@@ -232,7 +232,8 @@ abstract class cell_base implements cell_interface {
             if ($feedback) {
                 $stageidentifier = $feedback->stageidentifier;
             }
-        } else { // 1 marker only
+        } else {
+            // 1 marker only
             $stageidentifier = 'assessor_1';
         }
 
@@ -268,7 +269,8 @@ abstract class cell_base implements cell_interface {
             }
         } else {
             $criterias = $this->coursework->get_rubric_criteria();
-            foreach ($criterias as $unused) { // if no marks we need same amount of empty holders
+            foreach ($criterias as $unused) {
+                // if no marks we need same amount of empty holders
                 $gradedata[] = '';
                 $gradedata[] = '';
             }

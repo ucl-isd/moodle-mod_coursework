@@ -608,11 +608,13 @@ abstract class base {
                 break;
             }
             $class = get_class($stage);
-            if ($class != $currentstage) { // New stage type
+            if ($class != $currentstage) {
+                // New stage type
                 $currentstage = $class;
                 $previousstageok = $currentstageok;
                 $currentstageok = $stage->has_feedback($allocatable);
-            } else { // Same stage (parallel)
+            } else {
+                // Same stage (parallel)
                 $currentstageok = $currentstageok && $stage->has_feedback($allocatable);
             }
         }

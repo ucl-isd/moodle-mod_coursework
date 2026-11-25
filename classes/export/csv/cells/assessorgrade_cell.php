@@ -67,7 +67,8 @@ class assessorgrade_cell extends cell_base {
         } else {
             if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
-                foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
+                foreach ($criterias as $criteria) {
+                    // rubrics can have multiple parts, so let's create header for each of it
                     $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('mark_hidden_manager', 'mod_coursework');
                     $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
                 }
@@ -89,7 +90,8 @@ class assessorgrade_cell extends cell_base {
         if ($this->coursework->is_using_rubric()) {
             $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
-            foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
+            foreach ($criterias as $criteria) {
+                // rubrics can have multiple parts, so let's create header for each of it
                 $strings['assessorgrade' . $stage . '_' . $criteria['id']] = get_string('csvmarkerstage', 'mod_coursework', ['stage' => $stage, 'description' => $criteria['description']]);
                 $strings['assessorgrade' . $stage . '_' . $criteria['id'] . 'comment'] = get_string('csvmarkerstagecomment', 'mod_coursework', ['stage' => $stage, 'description' => $criteria['description']]);
             }

@@ -64,7 +64,8 @@ class mailer {
     public function send_submission_receipt($user, submission $submission, $finalised = false) {
         global $CFG;
 
-        if ($this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
+        if ($this->coursework && $this->coursework->is_coursework_visible()) {
+            // check if coursework exists and is not hidden
             $emaildata = new stdClass();
             $emaildata->name = $user->name();
             $dateformat = '%a, %d %b %Y, %H:%M';
@@ -167,7 +168,8 @@ class mailer {
 
         global $CFG;
 
-        if (!$this->coursework || !$this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
+        if (!$this->coursework || !$this->coursework->is_coursework_visible()) {
+            // check if coursework exists and is not hidden
             return false;
         }
         $emaildata = new stdClass();
@@ -216,7 +218,8 @@ class mailer {
 
         global $CFG;
 
-        if ($this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
+        if ($this->coursework && $this->coursework->is_coursework_visible()) {
+            // check if coursework exists and is not hidden
             $emaildata = new stdClass();
             $emaildata->coursework_name = $this->coursework->name;
 

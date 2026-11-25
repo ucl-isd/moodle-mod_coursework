@@ -748,7 +748,8 @@ class import extends grading_sheet {
             $record = $DB->get_record_sql($sql, ['userid' => $USER->id, 'submissionid' => $submissionid]);
             if (!empty($record)) {
                 $stageidentifier = $record->stageidentifier;
-            } else if (!$this->coursework->sampling_enabled()) { // Samplings disabled
+            } else if (!$this->coursework->sampling_enabled()) {
+                // Samplings disabled
                 // workout if any stage is still available
                 $sql = "SELECT count(*) as graded FROM {coursework_feedbacks}
                         WHERE submissionid = :submissionid
@@ -759,14 +760,16 @@ class import extends grading_sheet {
                     $stage = $record->graded + 1;
                     $stageidentifier = 'assessor_' . $stage;
                 }
-            } else if ($this->coursework->sampling_enabled()) { // samplings enabled
+            } else if ($this->coursework->sampling_enabled()) {
+                // samplings enabled
                 $insample = ($subs = $submission->get_submissions_in_sample()) ? count($subs) : 0;
                 $feedback = $DB->record_exists('coursework_feedbacks', ['submissionid' => $submissionid,
                                                                              'stageidentifier' => 'assessor_1']);
                 // no sample or no feedback for sample yet
                 if (!$insample || ($insample && !$feedback)) {
                     $stageidentifier = 'assessor_1';
-                } else { // find out which sample wasn't graded yet
+                } else {
+                    // find out which sample wasn't graded yet
                     $samples = $submission->get_submissions_in_sample();
                     foreach ($samples as $sample) {
                         $feedback = $DB->record_exists('coursework_feedbacks', ['submissionid' => $submissionid,

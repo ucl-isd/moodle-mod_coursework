@@ -1157,7 +1157,8 @@ class submission extends table_base implements renderable {
         // check if submission has personal deadline
         if ($this->get_coursework()->personaldeadlineenabled) {
             $deadline = $this->submission_personaldeadline();
-        } else { // if not, use coursework default deadline
+        } else {
+            // if not, use coursework default deadline
             $deadline = $this->get_coursework()->get_deadline();
         }
 
