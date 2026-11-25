@@ -931,9 +931,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $submitted = '';
             $timedue = ($coursework->deadline) ? date('l, d F Y, h:i A', $coursework->deadline) : "No deadline";
-            if ($coursework->can_grade()) { // teachers
+            if ($coursework->can_grade()) {
+                // teachers
                 $submitted = count($coursework->get_all_submissions());
-            } else if ($coursework->can_submit()) { // Students
+            } else if ($coursework->can_submit()) {
+                // Students
                 if ($coursework->usegroups) {
                     $allocatable = $coursework->get_coursework_group_from_user_id($USER->id);
                 } else {
@@ -948,7 +950,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     } else {
                         $submitted = get_string('statusnotsubmitted', 'coursework');
                     }
-                } else { // message that student is not in the group
+                } else {
+                    // message that student is not in the group
                     $submitted = "Not in group, can't submit";
                 }
             }

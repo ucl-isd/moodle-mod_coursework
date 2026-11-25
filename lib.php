@@ -335,7 +335,8 @@ function mod_coursework_core_calendar_provide_event_action(
     $student = $coursework->can_submit();
     $marker = $coursework->is_assessor($USER->id);
 
-    if ($marker) { // For markers
+    if ($marker) {
+        // For markers
         // Check how many submissions to mark
         $outstandingmarking = new outstanding_marking();
 
@@ -352,7 +353,8 @@ function mod_coursework_core_calendar_provide_event_action(
         }
 
         $submissionurl = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
-    } else if ($student) { // for students
+    } else if ($student) {
+        // for students
         $user = user::find($USER, false);
         // if group cw check if student is in group, if not then don't display 'Add submission' link
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_coursework_group_from_user_id($user->id())) {
@@ -1060,7 +1062,8 @@ function coursework_send_deadline_changed_emails($eventdata) {
 
     $coursework = coursework::get_from_id($eventdata->other['courseworkid']);
 
-    if (empty($coursework) || !$coursework->is_coursework_visible()) { // check if coursework exists and is not hidden
+    if (empty($coursework) || !$coursework->is_coursework_visible()) {
+        // check if coursework exists and is not hidden
         return true;
     }
 
@@ -1201,22 +1204,28 @@ function course_group_member_added($eventdata) {
             $assessorsingroup = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
             unset($assessorsingroup[$addeduserid]); // Remove added assessor as at this point they will be already in the group
 
-            if ($assessorsingroup) {// yes - do nothing as other assessor is already assigned to group members, return true
+            if ($assessorsingroup) {
+                // yes - do nothing as other assessor is already assigned to group members, return true
                 break;
-            } else { // No - check if CW is a group coursework
-                if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the tutor to a allocatable group
+            } else {
+                // No - check if CW is a group coursework
+                if ($coursework->is_configured_to_have_group_submissions()) {
+                    // yes - assign the tutor to a allocatable group
                     $stage1->make_auto_allocation_if_necessary(group::get_from_id($groupid));
-                } else {  // no, check if group has any student members
+                } else {
+                    // no, check if group has any student members
                     $allocatables = $coursework->get_allocatables();
                     if ($allocatables) {
                         // yes - assign this assessor to every allocatable student in the appropriate course group - at this point assessor should already be a member
                         foreach ($allocatables as $allocatable) {
                             // process students allocations
-                            if ($coursework->student_is_in_any_group($allocatable)) { // student must belong to a group
+                            if ($coursework->student_is_in_any_group($allocatable)) {
+                                // student must belong to a group
                                 $stage1->make_auto_allocation_if_necessary($allocatable);
                             }
                         }
-                    } else {// no - do nothing, return true
+                    } else {
+                        // no - do nothing, return true
                         continue;
                     }
                 }
@@ -1303,8 +1312,10 @@ function course_group_member_removed($eventdata) {
             // check if there are any other assessor in the group, at this point the removed member should no longer be in the group
             $assessorsingroup = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
 
-            if ($assessorsingroup) { // if another assessor found, assign all allocatables in this group to the other assessor
-                if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the assessor to a allocatable group
+            if ($assessorsingroup) {
+                // if another assessor found, assign all allocatables in this group to the other assessor
+                if ($coursework->is_configured_to_have_group_submissions()) {
+                    // yes - assign the assessor to a allocatable group
                     $stage1->make_auto_allocation_if_necessary(group::get_from_id($groupid));
                 } else {
                     $allocatables = $coursework->get_allocatables();
@@ -1314,7 +1325,8 @@ function course_group_member_removed($eventdata) {
                             // process students allocations
                             $stage1->make_auto_allocation_if_necessary($allocatable);
                         }
-                    } else {// no - do nothing, return true
+                    } else {
+                        // no - do nothing, return true
                         continue;
                     }
                 }
@@ -1326,7 +1338,8 @@ function course_group_member_removed($eventdata) {
                 // check if student was the only student member in the group
                 $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid); // at this point student should be already removed from the group
 
-                if (!$students) { // if no students in group, then remove group allocation
+                if (!$students) {
+                    // if no students in group, then remove group allocation
                     $allocatableid = $groupid;
                 } else {
                     continue; // continue as we store group allocatableid, so removing student from the group with many students doesn't affect allocations
@@ -1425,7 +1438,8 @@ function teacher_allocation_cache_purge($eventdata) {
 
     // get roles with a specific capability
     $roles = get_roles_with_capability('mod/coursework:addinitialgrade');
-    if (in_array($roleid, array_keys($roles))) { // if any role with above capability is in array, purge cache
+    if (in_array($roleid, array_keys($roles))) {
+        // if any role with above capability is in array, purge cache
         // purge only coursework cache
         $cache = cache::make('mod_coursework', 'courseworkdata');
         $cache->purge();

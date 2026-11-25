@@ -71,7 +71,8 @@ class user_cell extends cell_base implements allocatable_cell {
                 $options['sortby'],
                 $tablename
             );
-        } else { // otherwise display header without sorting
+        } else {
+            // otherwise display header without sorting
             $sortbyfirstname = get_string('firstname');
             $sortbylastname = get_string('lastname');
             $sortbyemail = get_string('email', 'mod_coursework');

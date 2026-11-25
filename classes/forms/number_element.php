@@ -82,7 +82,7 @@ class number_element extends MoodleQuickForm_text {
      *
      * @return string
      */
-    public function toHtml(): string { // @codingStandardsIgnoreLine
+    public function toHtml(): string { // phpcs:ignore moodle.NamingConventions.ValidFunctionName.LowercaseMethod
         global $OUTPUT;
         $context = $this->export_for_template($OUTPUT);
         return $OUTPUT->render_from_template('mod_coursework/form_number', $context);

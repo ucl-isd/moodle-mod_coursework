@@ -87,7 +87,8 @@ class stages_cell extends cell_base {
             }
         }
 
-        if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
+        if ($this->stages >= 2) {
+            // if there are two or more stages for a submission, we will have agreed grade
             $grade = $submission->get_assessor_feedback_by_stage('final_agreed_1');
             if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 if ($this->coursework->is_using_advanced_grading()) {
@@ -139,7 +140,8 @@ class stages_cell extends cell_base {
             $fields['assessor' . $i . 'username'] = get_string('csvmarkerusername', 'mod_coursework', $i);
             $fields['assessor' . $i . 'markingtime'] = get_string('csvmarkermarkedon', 'mod_coursework', $i);
         }
-        if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
+        if ($this->stages >= 2) {
+            // if there are two or more stages for a submission, we will have agreed grade
             if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
                 foreach ($criteria as $id => $record) {

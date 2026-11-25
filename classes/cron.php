@@ -89,7 +89,8 @@ class cron {
              * @var coursework $coursework
              */
             $coursework = coursework::get_from_id($rawcoursework->id);
-            if (!$coursework || !$coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
+            if (!$coursework || !$coursework->is_coursework_visible()) {
+                // check if coursework exists and is not hidden
                 continue;
             }
 
@@ -139,7 +140,8 @@ class cron {
                            $student->nextremindernumber = 2;
                            $userswhoneedreminding[$student->id() . '_' . $coursework->id] = $student;
                     }
-                } else if ($deadline > time()) { // coursework or personal deadline hasn't passed
+                } else if ($deadline > time()) {
+                    // coursework or personal deadline hasn't passed
                     // check if 1st reminder is due to be sent but has not been sent yet
                     if ($coursework->due_to_send_first_reminders($deadline) && $student->has_not_been_sent_reminder($coursework, 1)) {
                             $student->deadline = $deadline;

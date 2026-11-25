@@ -2435,7 +2435,8 @@ class coursework extends table_base {
             }
         }
 
-        if ($this->extensions_enabled()) { // check if coursework allows extensions
+        if ($this->extensions_enabled()) {
+            // check if coursework allows extensions
             // check if extension for this user exists
             $extension = $this->get_allocatable_extension($allocatable);
             if (!empty($extension)) {

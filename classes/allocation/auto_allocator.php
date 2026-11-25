@@ -63,7 +63,8 @@ class auto_allocator {
         }
 
         foreach ($relevantstages as $stage) {
-            foreach ($allocatables as $allocatable) { // Allocatable = user or group
+            foreach ($allocatables as $allocatable) {
+                // Allocatable = user or group
                 if ($stage->allocatable_is_in_sample($allocatable)) {
                     $stage->make_auto_allocation_if_necessary($allocatable);
                 }
