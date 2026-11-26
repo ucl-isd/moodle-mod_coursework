@@ -426,15 +426,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                         'percentGradesAllowed' => $template->percentgradesallowed,
                     ]
                 );
+            } else {
+                $this->page->requires->js_call_amd(
+                    'mod_coursework/rubric',
+                    'init'
+                );
             }
-        } else {
-            $this->page->requires->js_call_amd(
-                'mod_coursework/rubric',
-                'init',
-                [
-                    'feedbackfor' => get_string('feedbackfor', 'coursework'),
-                ]
-            );
         }
 
         // Standard bit.
@@ -490,6 +487,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $template = new stdClass();
         $template->reviewcriteria = [];
+        $template->method = $coursework->get_advanced_grading_method();
         // "0" in this context means the same through all stages. So anything higher means use a different one.
         $template->differentfinalgradingmethod = ($coursework->finalstagegrading > 0);
 
@@ -517,6 +515,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 if ($isguide) {
                     $marker->maxscore = (float)($criterion['maxscore'] ?? 0);
                     $marker->score = $currentfilling ? (float)($currentfilling['score'] ?? 0) : 0;
+                    $marker->remark = $currentfilling ? format_text($currentfilling['remark'], FORMAT_HTML) : '';
+                } else if ($template->method === 'rubric_ranges') {
+                    $marker->maxscore = (float)($criterion['points'] ?? 0);
+                    if ($criterion['isranged']) {
+                        $marker->score = $currentfilling ? (float)($currentfilling['grade'] ?? 0) : 0;
+                    } else {
+                        $marker->score = $currentfilling ? (float) $criterion['levels'][$currentfilling['levelid']]['score'] ?? 0 : 0;
+                    }
                     $marker->remark = $currentfilling ? format_text($currentfilling['remark'], FORMAT_HTML) : '';
                 } else {
                     foreach ($criterion['levels'] as $level) {
@@ -558,7 +564,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         $template->markersdata = $markersdata;
-        $template->method = $isguide ? 'marking_guide' : 'rubric';
         return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 

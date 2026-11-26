@@ -87,6 +87,65 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Checks a field found by xpath matches a multiline value.
+     *
+     * Core only provides a multiline match for fields found by label, which does not work for fields that only
+     * have an aria-label, such as rubric remarks.
+     *
+     * @Then /^the field with xpath "(?P<xpath_string>(?:[^"]|\\")*)" matches multiline:$/
+     * @param string $xpath
+     * @param \Behat\Gherkin\Node\PyStringNode $value
+     */
+    public function the_field_with_xpath_matches_multiline(string $xpath, \Behat\Gherkin\Node\PyStringNode $value): void {
+        $this->execute('behat_forms::the_field_with_xpath_matches_value', [$xpath, (string)$value]);
+    }
+
+    /**
+     * Creates a ready ranged rubric (gradingform_rubric_ranges) for the submissions of a coursework.
+     *
+     * The levels column is a comma separated list of "definition:score" pairs, and ranged is 1 or 0.
+     *
+     * @Given /^the "(?P<coursework>(?:[^"]|\\")*)" coursework uses the following ranged rubric:$/
+     * @param string $courseworkname The coursework name.
+     * @param \Behat\Gherkin\Node\TableNode $table The criteria.
+     * @throws SkippedException if the ranged rubric plugin is not installed.
+     */
+    public function the_coursework_uses_the_following_ranged_rubric(
+        string $courseworkname,
+        \Behat\Gherkin\Node\TableNode $table
+    ): void {
+        if (!core_component::get_component_directory('gradingform_rubric_ranges')) {
+            throw new SkippedException('The gradingform_rubric_ranges plugin is not installed.');
+        }
+
+        $criteria = [];
+        foreach ($table->getHash() as $row) {
+            $levels = [];
+            foreach (explode(',', $row['levels']) as $level) {
+                [$definition, $score] = array_map('trim', explode(':', $level));
+                $levels[$definition] = (float)$score;
+            }
+            $criteria[] = [
+                'name' => $row['criterion'],
+                'isranged' => (int)$row['ranged'],
+                'levels' => $levels,
+            ];
+        }
+
+        $cm = $this->get_cm_by_coursework_name($courseworkname);
+        self::set_user();
+        $generator = testing_util::get_data_generator()->get_plugin_generator('gradingform_rubric_ranges');
+        $generator->create_instance(
+            context_module::instance($cm->id),
+            'mod_coursework',
+            'submissions',
+            $courseworkname . ' ranged rubric',
+            'Ranged rubric',
+            $criteria,
+        );
+    }
+
+    /**
      * Convert page names to URLs for steps like 'When I am on the "[identifier]" "[page type]" page'.
      *
      * Recognised page names are:

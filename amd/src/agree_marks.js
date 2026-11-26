@@ -45,7 +45,9 @@ export const init = async(args) => {
     }
 
     const targetCells = document.querySelectorAll(
-        '.gradingform_rubric .description, #advancedgrading-criteria .descriptionreadonly'
+        '.gradingform_rubric .description,' +
+        '#advancedgrading-criteria .descriptionreadonly,' +
+        '.gradingform_rubric_ranges .description'
     );
 
     sourceBlocks.forEach((block, index) => {
@@ -65,17 +67,27 @@ export const init = async(args) => {
 
     // Append a "Calculate grade" button to the marks for each criterion.
     const table = document.querySelector('#advancedgrading-criteria');
-    if (table && args.method === 'marking_guide') {
-        const cells = table.querySelectorAll('td.score');
+    if (table && (args.method === 'guide' || args.method === 'rubric_ranges')) {
+        let cells = [];
+        if (args.method === 'guide') {
+            cells = table.querySelectorAll('td.score');
+        } else if (args.method === 'rubric_ranges') {
+            cells = table.querySelectorAll('td.points');
+        }
         const linktext = await getString('calculateavggrade', 'mod_coursework');
         cells.forEach(cell => {
-            const link = document.createElement('a');
-            link.href = '#';
-            link.dataset.action = 'calculate-avg-grade';
-            const icon = document.createElement('i');
-            icon.classList.add('fa', 'fa-calculator', 'me-1');
-            link.append(icon, linktext);
-            cell.prepend(link);
+            const isRanged = cell.querySelector('input.rangegrade');
+            if (isRanged) {
+                const div = document.createElement('div');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.action = 'calculate-avg-grade';
+                const icon = document.createElement('i');
+                icon.classList.add('fa', 'fa-calculator', 'me-1');
+                link.append(icon, linktext);
+                div.append(link);
+                cell.prepend(div);
+            }
         });
     }
 
@@ -94,7 +106,8 @@ export const init = async(args) => {
             if (!row) {
                 return;
             }
-            const remarkInput = row.querySelector('td.remark textarea');
+
+            const remarkInput = row.querySelector('td.remark textarea, td.points div.remark textarea');
             if (remarkInput) {
                 // Append the feedback, but not if it's already there exactly.
                 const current = remarkInput.value.trim();
@@ -122,14 +135,19 @@ export const init = async(args) => {
             });
             const avg = scores.reduce((a, b) => a + parseFloat(b), 0) / scores.length;
 
+            let input = false;
+
             // Marking guide.
-            if (args.method === 'marking_guide') {
-                const scoreInput = row.querySelector('td.score input');
-                if (scoreInput) {
-                    scoreInput.value = avg;
-                    scoreInput.dispatchEvent(new Event('input', {bubbles: true}));
-                    scoreInput.dispatchEvent(new Event('change', {bubbles: true}));
-                }
+            if (args.method === 'guide') {
+                input = row.querySelector('td.score input');
+            } else if (args.method === 'rubric_ranges') {
+                input = row.querySelector('td.points input');
+            }
+
+            if (input) {
+                input.value = avg;
+                input.dispatchEvent(new Event('input', {bubbles: true}));
+                input.dispatchEvent(new Event('change', {bubbles: true}));
             }
         }
     });

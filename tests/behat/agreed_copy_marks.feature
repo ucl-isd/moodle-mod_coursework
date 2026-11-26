@@ -155,6 +155,98 @@ Feature: Copy a marker's criterion feedback and calculate average marks for the 
     And the rubric level with "3" points is not checked for criterion "R2"
 
   @javascript
+  Scenario: Copy marker feedback only to agreed when using a ranged rubric
+    Given the following "activity" exists:
+      | activity        | coursework    |
+      | course          | C1            |
+      | name            | Ranged CW     |
+      | numberofmarkers | 2             |
+      | deadline        | ##yesterday## |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Ranged CW  | 1               |
+    And the "Ranged CW" coursework uses the following ranged rubric:
+      | criterion | ranged | levels                     |
+      | Knowledge | 1      | Fail:10, Pass:20, Merit:30 |
+      | Analysis  | 1      | Fail:10, Pass:20, Merit:30 |
+    And I am on the "Ranged CW" "coursework activity" page logged in as "admin"
+    And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
+    And I wait until the page is ready
+    And I set the mark of the "Knowledge" ranged criterion to "25"
+    And I set the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" to "Marker one Knowledge comment"
+    And I set the mark of the "Analysis" ranged criterion to "5"
+    And I set the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" to "Marker one Analysis comment"
+    And I press "Save and finalise"
+    And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"
+    And I wait until the page is ready
+    And I set the mark of the "Knowledge" ranged criterion to "15"
+    And I set the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" to "Marker two Knowledge comment"
+    And I set the mark of the "Analysis" ranged criterion to "28"
+    And I set the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" to "Marker two Analysis comment"
+    And I press "Save and finalise"
+    When I follow "Agree marking"
+    And I wait until the page is ready
+    Then the mark of the "Knowledge" ranged criterion should be ""
+    And no level of the "Knowledge" ranged criterion should be selected
+    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" matches value ""
+    # Copy marker 2 for Knowledge: only the feedback is copied, no mark is set.
+    When I click on "button[aria-label='Copy Marker 2 feedback for Knowledge to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" matches value "Marker two Knowledge comment"
+    And the mark of the "Knowledge" ranged criterion should be ""
+    And no level of the "Knowledge" ranged criterion should be selected
+    # Other criteria are not affected.
+    And the mark of the "Analysis" ranged criterion should be ""
+    And no level of the "Analysis" ranged criterion should be selected
+    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" matches value ""
+    # Copying another marker appends their feedback.
+    When I click on "button[aria-label='Copy Marker 1 feedback for Knowledge to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" matches multiline:
+      """
+      Marker two Knowledge comment
+
+      Marker one Knowledge comment
+      """
+    # Copying the same feedback again does not duplicate it.
+    When I click on "button[aria-label='Copy Marker 1 feedback for Knowledge to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" matches multiline:
+      """
+      Marker two Knowledge comment
+
+      Marker one Knowledge comment
+      """
+    When I click on "button[aria-label='Copy Marker 2 feedback for Analysis to agreed']" "css_element"
+    Then the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" matches value "Marker two Analysis comment"
+    And the mark of the "Analysis" ranged criterion should be ""
+    # Calculate the average mark for Knowledge only: (25 + 15) / 2 = 20, which selects the matching level.
+    When I click on "Calculate average grade" "link" in the "Knowledge" "table_row"
+    Then the mark of the "Knowledge" ranged criterion should be "20"
+    And the "Pass" level of the "Knowledge" ranged criterion should be selected
+    And the mark of the "Analysis" ranged criterion should be ""
+    And no level of the "Analysis" ranged criterion should be selected
+    # Calculating the average does not touch feedback.
+    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" matches value "Marker two Analysis comment"
+    # Calculate the average mark for Analysis: (5 + 28) / 2 = 16.5.
+    When I click on "Calculate average grade" "link" in the "Analysis" "table_row"
+    Then the mark of the "Analysis" ranged criterion should be "16.5"
+    And the "Pass" level of the "Analysis" ranged criterion should be selected
+    # The calculated mark can still be changed before saving.
+    And I set the mark of the "Analysis" ranged criterion to "16"
+    When I press "Save and finalise"
+    # (20 + 16) / 60 = 60%.
+    Then I should see "60" in the "[data-behat-markstage='final_agreed']" "css_element"
+    And I click on "[data-behat-markstage='final_agreed'] a" "css_element"
+    And I wait until the page is ready
+    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Knowledge:')]" matches multiline:
+      """
+      Marker two Knowledge comment
+
+      Marker one Knowledge comment
+      """
+    And the field with xpath "//textarea[starts-with(@aria-label, 'Remark for criterion Analysis:')]" matches value "Marker two Analysis comment"
+    And the mark of the "Knowledge" ranged criterion should be "20"
+    And the mark of the "Analysis" ranged criterion should be "16"
+
+  @javascript
   Scenario: Copy to agreed is not offered when the agreed stage uses a different grading method
     Given the following "activity" exists:
       | activity          | coursework    |

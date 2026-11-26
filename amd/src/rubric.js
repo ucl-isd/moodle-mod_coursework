@@ -13,86 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 //
-
 /**
- * Rubric labels and make radio buttons work.
+ * Rubric scripts for coursework.
  *
- * @module     mod_coursework/rubric
- * @copyright  2026 UCL
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Conn Warwicker <conn.warwicker@catalyst-eu.net>
+ * @copyright 2026 onwards Catalyst IT EU {@link https://catalyst-eu.net}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Initialize rubric enhancements.
- *
- * @param {String} feedbackPrefix The localized string passed from Mustache.
- */
-export const init = (feedbackPrefix) => {
-    const rubricContainer = document.querySelector('.gradingform_rubric');
-    if (!rubricContainer) {
-        return;
+export const init = () => {
+    // Move the points to the right. The input must stay a direct child of the cell, as the ranged rubric's own JS
+    // finds the levels from the input's parent, so align the cell instead of wrapping the input.
+    const cells = document.querySelectorAll('.gradingform_rubric_ranges table td.points');
+    for (const cell of cells) {
+        if (!cell.querySelector('input.rangegrade')) {
+            continue;
+        }
+        cell.classList.add('text-end');
+        // Keep the remark box aligned as normal.
+        cell.querySelector('.remark')?.classList.add('text-start');
     }
-
-    // Radio button fix.
-    rubricContainer.addEventListener('click', (e) => {
-        const cell = e.target.closest('.level');
-        if (!cell) {
-            return;
-        }
-
-        const radio = cell.querySelector('input[type="radio"]');
-        if (!radio) {
-            return;
-        }
-
-        // Stop Moodle core JS from interfering.
-        e.stopPropagation();
-
-        if (e.target !== radio) {
-            radio.checked = true;
-        }
-
-        // Update visual states.
-        const row = cell.closest('tr');
-        row.querySelectorAll('.level').forEach((l) => {
-            l.classList.remove('checked', 'currentchecked');
-            l.setAttribute('aria-checked', 'false');
-        });
-
-        cell.classList.add('checked', 'currentchecked');
-        cell.setAttribute('aria-checked', 'true');
-
-        // Trigger change for Moodle's calculation logic.
-        radio.dispatchEvent(new Event('change', {bubbles: true}));
-    }, true);
-
-    // Feedback labels.
-    const remarkCells = rubricContainer.querySelectorAll('td.remark');
-
-    remarkCells.forEach(cell => {
-        const textarea = cell.querySelector('textarea');
-        const parentRow = cell.closest('tr');
-        const descriptionCell = parentRow ? parentRow.querySelector('td.description') : null;
-
-        if (textarea && descriptionCell) {
-            const tempDescription = descriptionCell.cloneNode(true);
-
-            // Remove the .review-marks element from the clone.
-            const reviewMarks = tempDescription.querySelector('.review-marks');
-            if (reviewMarks) {
-                reviewMarks.remove();
-            }
-
-            const criterionName = tempDescription.textContent.trim();
-
-            const feedbackLabel = document.createElement('label');
-            feedbackLabel.textContent = `${feedbackPrefix} ${criterionName}`;
-
-            if (textarea.id) {
-                feedbackLabel.setAttribute('for', textarea.id);
-            }
-
-            cell.insertBefore(feedbackLabel, textarea);
-        }
-    });
 };
