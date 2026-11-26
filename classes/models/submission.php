@@ -950,9 +950,9 @@ class submission extends table_base implements renderable {
                 break;
 
             case self::FINAL_GRADED:
-                $spanfinalgraded = '<span class="badge badge-warning">' . get_string('statusfinalmarked', 'coursework') . '</span>';
+                $spanfinalgraded = '<span class="badge bg-warning text-dark">' . get_string('statusfinalmarked', 'coursework') . '</span>';
 
-                $spanfinalgradedsingle = '<span class="badge badge-warning">' . get_string('statusfinalmarkedsingle', 'coursework') . '</span>';
+                $spanfinalgradedsingle = '<span class="badge bg-warning text-dark">' . get_string('statusfinalmarkedsingle', 'coursework') . '</span>';
 
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
                 if ($this->editable_final_feedback_exist()) {
@@ -961,7 +961,7 @@ class submission extends table_base implements renderable {
                 break;
 
             case self::PUBLISHED:
-                $statustext = '<span class="badge badge-success">' . get_string('statusreleased', 'coursework') . '</span>';
+                $statustext = '<span class="badge bg-success text-white">' . get_string('statusreleased', 'coursework') . '</span>';
                 break;
         }
 

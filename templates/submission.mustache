@@ -47,8 +47,8 @@
         {{#date}}
         <li class="d-flex py-1 border-top">
             {{#str}} tableheadtime, mod_coursework {{/str}}
-            <span class="ml-auto text-right">
-                {{#late}}<span class="badge badge-warning">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}
+            <span class="ms-auto text-end">
+                {{#late}}<span class="badge bg-warning text-dark">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}
                 {{#userdate}} {{date}}, {{#str}} strftimedatetime, langconfig {{/str}} {{/userdate}}
                 {{#late}}<br>{{.}}{{/late}}
             </span>
@@ -58,7 +58,7 @@
         {{#groupsubmitter}}
         <li class="d-flex py-1 border-top behat-groupsubmitter">
             {{#str}} submittedby, mod_coursework {{/str}}
-            <span class="ml-auto">
+            <span class="ms-auto">
                 {{{.}}}
             </span>
         </li>
@@ -67,9 +67,9 @@
         {{#submission}}
             <li class="d-flex py-1 border-top">
                 {{#str}} status, mod_coursework {{/str}}
-                <span class="ml-auto text-right">
+                <span class="ms-auto text-end">
                     {{#badge}}
-                        <span class="badge badge-{{badge}}">{{status}}</span>
+                        <span class="badge {{badge}}">{{status}}</span>
                     {{/badge}}
                 </span>
             </li>
@@ -78,14 +78,14 @@
         {{#marknotpublished}}
         <li class="d-flex py-1 border-top">
             {{#str}} mark, mod_coursework {{/str}}
-            <span class="ml-auto text-right">{{#str}} notpublishedyet, mod_coursework {{/str}}</span>
+            <span class="ms-auto text-end">{{#str}} notpublishedyet, mod_coursework {{/str}}</span>
         </li>
         {{/marknotpublished}}
 
         {{#mark}}
         <li class="d-flex py-1 border-top">
             {{#str}} mark, mod_coursework {{/str}}
-            <span class="ml-auto h2">{{mark}}</span>
+            <span class="ms-auto h2">{{mark}}</span>
         </li>
         {{/mark}}
     </ul>
@@ -93,7 +93,7 @@
 
     {{! Add/Edit submission. }}
     {{#submissionbutton}}
-        <a href="{{{url}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>{{label}}</a>
+        <a href="{{{url}}}" class="btn btn-primary d-block w-100"><i class="fa-solid fa-upload me-2"></i>{{label}}</a>
     {{/submissionbutton}}
 
     {{! Finalise submission. }}

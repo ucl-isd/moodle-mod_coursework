@@ -185,7 +185,7 @@ class deadline_extension_form extends dynamic_form {
             $data->deadlines[] = (object)[
                 'label' => get_string('personaldeadline', 'mod_coursework'),
                 'value' => userdate($this->personaldeadline->personaldeadline, get_string('strftimerecentfull', 'langconfig')),
-                'class' => 'info',
+                'class' => 'bg-info text-white',
             ];
         }
 
@@ -194,7 +194,7 @@ class deadline_extension_form extends dynamic_form {
             $data->deadlines[] = (object)[
                 'label' => get_string('extension_granted', 'mod_coursework'),
                 'value' => userdate($this->extension->extended_deadline, get_string('strftimerecentfull', 'langconfig')),
-                'class' => 'success',
+                'class' => 'bg-success text-white',
             ];
         }
 

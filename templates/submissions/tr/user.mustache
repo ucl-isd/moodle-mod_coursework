@@ -2,7 +2,7 @@
 <div class="d-flex align-items-center">
     {{#user}}
         {{#user.picture}}
-            <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{user.picture}}'); height: 2rem; width: 2rem;"></div>
+            <div class="me-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{user.picture}}'); height: 2rem; width: 2rem;"></div>
         {{/user.picture}}
         {{#user.url}}
             <a href="{{{.}}}" class="d-flex align-items-center" target="_blank">
@@ -15,15 +15,15 @@
     {{/user}}
 
     {{#group}}
-        <div class="d-inline-block text-left">
+        <div class="d-inline-block text-start">
             <div class="d-flex align-items-center">
                 {{#group.picture}}
-                    <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{group.picture}}'); height: 2rem; width: 2rem;"></div>
+                    <div class="me-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{group.picture}}'); height: 2rem; width: 2rem;"></div>
                 {{/group.picture}}
                 {{group.name}}
             </div>
             <div class="dropdown mt-1">
-                <button class="btn btn-secondary btn-sm dropdown-toggle mt-1" type="button" data-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-secondary btn-sm dropdown-toggle mt-1" type="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     {{#str}} viewmembers, mod_coursework {{/str}}
                 </button>
                 <ul class="dropdown-menu">

@@ -144,7 +144,7 @@ class personaldeadline_form extends dynamic_form {
                     'label' => get_string('default_deadline_short', 'mod_coursework'),
                     'value' => userdate($this->coursework->deadline, get_string('strftimerecentfull', 'langconfig')),
                     'notes' => [],
-                    'class' => 'light',
+                    'class' => 'bg-light text-dark',
                     'hasnotes' => false,
                 ],
             ],
@@ -163,7 +163,7 @@ class personaldeadline_form extends dynamic_form {
                     ),
                 ],
                 'hasnotes' => true,
-                'class' => 'info',
+                'class' => 'bg-info text-white',
             ];
             if ($this->existingdeadline->lastmodifiedbyid ?? false) {
                 $deadline->notes[] = get_string(
