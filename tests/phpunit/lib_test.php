@@ -78,6 +78,43 @@ final class lib_test extends \advanced_testcase {
     }
 
     /**
+     * Test that saving the activity settings does not change the "Feedback for all students" release date.
+     *
+     * @covers ::coursework_update_instance
+     */
+    public function test_coursework_update_instance_keeps_general_feedback_release_date(): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/mod/coursework/lib.php');
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $releasedate = time() + (3 * WEEKSECS);
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'deadline' => time() + WEEKSECS,
+            'generalfeedback' => $releasedate,
+        ]);
+
+        $data = $DB->get_record('coursework', ['id' => $coursework->id]);
+        $data->instance = $coursework->id;
+        $data->coursemodule = $coursework->cmid;
+        $data->name = 'Renamed coursework';
+        unset($data->generalfeedback);
+
+        $sink = $this->redirectEvents();
+        coursework_update_instance($data);
+        $events = array_filter($sink->get_events(), fn($e) => $e instanceof event\coursework_deadline_changed);
+        $sink->close();
+
+        $record = $DB->get_record('coursework', ['id' => $coursework->id]);
+        $this->assertEquals('Renamed coursework', $record->name);
+        $this->assertEquals($releasedate, $record->generalfeedback);
+        $this->assertEmpty($events);
+    }
+
+    /**
      * Creates an action event.
      *
      * @param int $courseid The course id.

@@ -598,9 +598,11 @@ function coursework_update_instance($coursework) {
         $coursework->renamefiles = 1;
     }
 
+    // The release date for "Feedback for all students" is managed on its own page, not in the settings form.
+    $coursework->generalfeedback = $oldcoursework->generalfeedback;
+
     if (
         $coursework->deadline != $oldcoursework->deadline ||
-        $coursework->generalfeedback != $oldcoursework->generalfeedback ||
         $coursework->individualfeedback != $oldcoursework->individualfeedback
     ) {
         // Fire an event to send emails to students affected

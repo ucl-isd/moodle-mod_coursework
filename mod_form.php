@@ -123,7 +123,6 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $this->add_feedback_header();
 
-        $this->add_general_feedback_release_date_field();
         $this->add_individual_feedback_release_date_field();
         $this->add_email_individual_feedback_notification_field();
         $this->add_all_feedbacks_field();
@@ -207,10 +206,6 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         if ($data['individualfeedback'] != 0 && !empty($data['deadline']) && $data['individualfeedback'] < $data['deadline']) {
             $errors['individualfeedback'] = get_string('must_be_after_deadline', 'mod_coursework');
-        }
-
-        if ($data['generalfeedback'] != 0 && !empty($data['deadline']) && $data['generalfeedback'] < $data['deadline']) {
-            $errors['generalfeedback'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']) {
@@ -1148,37 +1143,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('select', 'feedbackreleaseemail', get_string('feedbackreleaseemail', 'mod_coursework'), $options);
         $moodleform->addHelpButton('feedbackreleaseemail', 'feedbackreleaseemail', 'mod_coursework');
         $moodleform->setDefault('feedbackreleaseemail', get_config('mod_coursework', 'feedbackreleaseemail'));
-    }
-
-    /**
-     * Feedback for all students release date.
-     * @throws coding_exception
-     */
-    protected function add_general_feedback_release_date_field() {
-        global $CFG;
-
-        $moodleform =& $this->_form;
-
-        $moodleform->addElement(
-            'date_time_selector',
-            'generalfeedback',
-            get_string('generalfeedbackreleasedate', 'coursework'),
-            ['optional' => true, 'disabled' => true]
-        );
-        // We have a field which is sometimes disabled. Disabled fields are not sent back to the
-        // server, so the default is used.
-        $timestamp = strtotime('+' . get_config('mod_coursework', 'generalfeedback') . ' weeks');
-
-        $default = [
-            'day' => date('j', $timestamp),
-            'month' => date('n', $timestamp),
-            'year' => date('Y', $timestamp),
-            'hour' => date('G', $timestamp),
-            'minute' => date('i', $timestamp),
-        ];
-        $moodleform->setDefault('generalfeedback', $default);
-        $moodleform->addHelpButton('generalfeedback', 'generalfeedback', 'mod_coursework');
-        $moodleform->hideif('generalfeedback', 'deadline[enabled]', 'notchecked');
     }
 
     /**
