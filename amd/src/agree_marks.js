@@ -76,15 +76,18 @@ export const init = async(args) => {
         }
         const linktext = await getString('calculateavggrade', 'mod_coursework');
         cells.forEach(cell => {
-            const div = document.createElement('div');
-            const link = document.createElement('a');
-            link.href = '#';
-            link.dataset.action = 'calculate-avg-grade';
-            const icon = document.createElement('i');
-            icon.classList.add('fa', 'fa-calculator', 'me-1');
-            link.append(icon, linktext);
-            div.append(link);
-            cell.prepend(div);
+            const isRanged = cell.querySelector('input.rangegrade');
+            if (isRanged) {
+                const div = document.createElement('div');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.dataset.action = 'calculate-avg-grade';
+                const icon = document.createElement('i');
+                icon.classList.add('fa', 'fa-calculator', 'me-1');
+                link.append(icon, linktext);
+                div.append(link);
+                cell.prepend(div);
+            }
         });
     }
 

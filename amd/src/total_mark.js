@@ -91,10 +91,30 @@ const calculateRubricRanges = () => {
     let runningMax = 0;
 
     rubric.querySelectorAll('.criterion').forEach(row => {
+        // There might be a mix of ranged and non-ranged criteria.
+        // If it's ranged, it will be in an input with class rangegrade.
         const points = row.querySelector('.points input.rangegrade');
+        // If it's non ranged, it'll be like the rubric calculation function above.
+        const scoreValue = row.querySelector('.level .scorevalue');
+
+        // Ranged criterion.
         if (points) {
             runningTotal += parseFloat(points.value) || 0;
             runningMax += parseFloat(points.getAttribute('max')) || 0;
+        } else if (scoreValue) {
+            // Non-ranged criterion.
+            const selected = row.querySelector('.level.checked .scorevalue');
+            if (selected) {
+                runningTotal += parseFloat(selected.textContent) || 0;
+            }
+            let rowMax = 0;
+            row.querySelectorAll('.scorevalue').forEach(span => {
+                const val = parseFloat(span.textContent) || 0;
+                if (val > rowMax) {
+                    rowMax = val;
+                }
+            });
+            runningMax += rowMax;
         }
     });
 

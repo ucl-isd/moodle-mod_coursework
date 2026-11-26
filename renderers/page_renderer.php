@@ -518,7 +518,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     $marker->remark = $currentfilling ? format_text($currentfilling['remark'], FORMAT_HTML) : '';
                 } else if ($template->method === 'rubric_ranges') {
                     $marker->maxscore = (float)($criterion['points'] ?? 0);
-                    $marker->score = $currentfilling ? (float)($currentfilling['grade'] ?? 0) : 0;
+                    if ($criterion['isranged']) {
+                        $marker->score = $currentfilling ? (float)($currentfilling['grade'] ?? 0) : 0;
+                    } else {
+                        $marker->score = $currentfilling ? (float) $criterion['levels'][$currentfilling['levelid']]['score'] ?? 0 : 0;
+                    }
                     $marker->remark = $currentfilling ? format_text($currentfilling['remark'], FORMAT_HTML) : '';
                 } else {
                     foreach ($criterion['levels'] as $level) {
