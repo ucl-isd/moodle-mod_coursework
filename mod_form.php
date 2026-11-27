@@ -1354,8 +1354,17 @@ class mod_coursework_mod_form extends moodleform_mod {
             }
         }
 
-        $select = $moodleform->addElement('select', 'submissionnotification', get_string('submissionnotification', 'mod_coursework'), $selectableusers);
-        $select->setMultiple(true);
+        $moodleform->addElement(
+            'autocomplete',
+            'submissionnotification',
+            get_string('submissionnotification', 'mod_coursework'),
+            $selectableusers,
+            [
+                'multiple' => true,
+                'noselectionstring' => get_string('submissionnotificationnone', 'mod_coursework'),
+            ],
+        );
+        $moodleform->addHelpButton('submissionnotification', 'submissionnotification', 'mod_coursework');
         $moodleform->hideif('submissionnotification', 'deadline[enabled]', 'checked');
     }
 

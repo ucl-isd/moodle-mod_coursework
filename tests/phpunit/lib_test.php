@@ -78,6 +78,40 @@ final class lib_test extends \advanced_testcase {
     }
 
     /**
+     * Test submission notification users are stored on add and can be cleared on update.
+     *
+     * @covers ::coursework_add_instance
+     * @covers ::coursework_update_instance
+     */
+    public function test_coursework_submission_notification_can_be_turned_off(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $user1 = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $user2 = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $coursework = $this->getDataGenerator()->create_module('coursework', [
+            'course' => $course->id,
+            'deadline' => 0,
+            'submissionnotification' => [$user1->id, $user2->id],
+        ]);
+
+        $stored = $DB->get_field('coursework', 'submissionnotification', ['id' => $coursework->id]);
+        $this->assertEquals("{$user1->id},{$user2->id}", $stored);
+
+        // Moodle forms omit a multi-select from the submitted data when nothing is selected.
+        $formdata = $DB->get_record('coursework', ['id' => $coursework->id]);
+        $formdata->instance = $coursework->id;
+        $formdata->coursemodule = $coursework->cmid;
+        unset($formdata->submissionnotification);
+        coursework_update_instance($formdata);
+
+        $stored = $DB->get_field('coursework', 'submissionnotification', ['id' => $coursework->id]);
+        $this->assertSame('', $stored);
+    }
+
+    /**
      * Creates an action event.
      *
      * @param int $courseid The course id.
