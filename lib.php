@@ -212,15 +212,7 @@ function coursework_add_instance($formdata) {
     // If it doesn't we need to set the deadline to zero.
 
     $formdata->deadline = empty($formdata->deadline) ? 0 : $formdata->deadline;
-    $subnotify = '';
-    $comma = '';
-    if (!empty($formdata->submissionnotification)) {
-        foreach ($formdata->submissionnotification as $uid) {
-            $subnotify .= $comma . $uid;
-            $comma = ',';
-        }
-    }
-    $formdata->submissionnotification = $subnotify;
+    $formdata->submissionnotification = implode(',', (array)($formdata->submissionnotification ?? []));
 
     // If blind marking is set we will rename files.
     if ($formdata->blindmarking == 1) {
@@ -570,21 +562,13 @@ function coursework_update_instance($coursework) {
     $coursework->timemodified = time();
     $coursework->id = $coursework->instance;
 
-    $subnotify = '';
-    $comma = '';
-    if (!empty($coursework->submissionnotification)) {
-        foreach ($coursework->submissionnotification as $uid) {
-            $subnotify .= $comma . $uid;
-            $comma = ',';
-        }
-    }
+    // An empty selection means submission notifications are turned off.
+    $coursework->submissionnotification = implode(',', (array)($coursework->submissionnotification ?? []));
 
     if (!isset($coursework->allowenterguidegradesaspercent)) {
         // If checkbox not checked, zero is not passed, so add it.
          $coursework->allowenterguidegradesaspercent = 0;
     }
-
-    $coursework->submissionnotification = $subnotify;
 
     $courseworkhassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id]);
 
