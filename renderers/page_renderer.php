@@ -839,6 +839,42 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Ask the uploader to confirm granting the marker role to teaching staff listed in an allocations file.
+     *
+     * @param stdClass[] $users users who need the marker role.
+     * @param string $rolename name of the role that will be assigned.
+     * @param moodle_url $confirmurl posts the confirmation.
+     * @param moodle_url $cancelurl returns to the upload form.
+     * @return string
+     */
+    public function confirm_marker_role_assignment(
+        array $users,
+        string $rolename,
+        moodle_url $confirmurl,
+        moodle_url $cancelurl,
+    ): string {
+        $identifier = get_config('mod_coursework', 'allocation_identifier');
+        $items = array_map(
+            fn(stdClass $user): string => s(fullname($user) . ' (' . $user->$identifier . ')'),
+            $users,
+        );
+        $message = html_writer::tag('p', get_string('markerroleconfirmintro', 'mod_coursework', s($rolename)))
+            . html_writer::alist($items)
+            . html_writer::tag('p', get_string('markerroleconfirmquestion', 'mod_coursework', s($rolename)));
+
+        $continue = new single_button(
+            $confirmurl,
+            get_string('markerroleconfirm', 'mod_coursework'),
+            'post',
+            single_button::BUTTON_PRIMARY,
+        );
+
+        return $this->output->header()
+            . $this->output->confirm($message, $continue, $cancelurl)
+            . $this->output->footer();
+    }
+
+    /**
      * Information about upload results, errors etc
      *
      * @param $processingresults
